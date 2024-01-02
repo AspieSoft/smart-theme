@@ -1,0 +1,181 @@
+:root {
+  /** common fonts */
+  --ff-sans: 'Roboto', ui-sans-serif, system-ui, sans-serif;
+  --ff-logo: 'Varela Round', Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif;
+  --ff-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  --ff-serif: Superclarendon, 'Bookman Old Style', 'URW Bookman', 'URW Bookman L', 'Georgia Pro', Georgia, serif;
+  --ff-cursive: 'Segoe Print', 'Bradley Hand', Chilanka, TSCu_Comic, casual, cursive;
+
+  /** font settings */
+  --font-size: 1.1rem;
+  --line-height: 1.5em;
+
+  --font: var(--ff-sans);
+  --heading-font: var(--ff-serif);
+
+  --header-font: var(--ff-sans);
+  --header-img-font: var(--ff-sans);
+  --footer-font: var(--ff-sans);
+  --input-font: var(--ff-sans);
+  --logo-font: var(--ff-logo);
+  --copyright-font: var(--ff-logo);
+
+  /** other settings */
+  --page-padding-inline: 1rem;
+  --page-content-max-width: 120ch;
+  --page-breakout-max-width: 135ch;
+  --page-hard-max-width: 1200px; /*? only for page-bg mode */
+
+  --shadow-size: 0.25rem;
+  --shadow-text-size: 0.1em;
+
+  --border-radius: 0.5em;
+  --gradient-dir: to bottom right;
+}
+
+:root {
+  /** text colors */
+  --text-light: #ffffff;
+  --text-light-hover: #e7e7e7;
+  --text-dark: #0f0f0f;
+  --text-dark-hover: #242424;
+
+  --link-light: #3fbaeb;
+  --link-dark: #1a83c9;
+
+  --heading-light: #ffffff;
+  --heading-dark: #0f0f0f;
+
+  --strong-heading-light: linear-gradient(45deg, #4eecec, #226abd);
+  --strong-heading-dark: linear-gradient(45deg, #3cb6b6, #1b5392);
+  --strong-heading-accent-light: linear-gradient(45deg, #f3f3f3, #c4bcbc);
+  --strong-heading-accent-dark: linear-gradient(45deg, #4b4b4b, #312f2f);
+
+  --shadow-dark: rgba(0, 0, 0, 0.5);
+  --shadow-light: rgba(75, 75, 75, 0.5);
+  --shadow-text-dark: rgba(0, 0, 0, 0.25);
+  --shadow-text-light: rgba(75, 75, 75, 0.25);
+
+  --fallback-color: #afafaf;
+
+  /** page colors */
+  --bg-h: 0;
+  --bg-s: 0%;
+  --bg-l: 10%;
+  --bg-a: 1;
+  /* --bg-img: url('/assets/background-dark.webp'); */
+  --bg-img: url('/assets/wooden-floor.webp');
+
+  --text: var(--text-light);
+  --text-hover: var(--text-light-hover);
+  --text-contrast: var(--text-dark);
+  --text-contrast-hover: var(--text-dark-hover);
+
+  --link: var(--link-light);
+  --heading: var(--heading-light);
+  --strong-heading: var(--strong-heading-light);
+  --shadow: var(--shadow-dark);
+  --shadow-text: var(--shadow-text-dark);
+
+  /** header colors */
+  --header-bg-h: 0;
+  --header-bg-s: 0%;
+  --header-bg-l: 0%;
+  --header-bg-a: 0.75;
+
+  --header-text: var(--text-light);
+  --header-text-hover: var(--text-light-hover);
+  --header-text-contrast: var(--text-dark);
+  --header-text-contrast-hover: var(--text-dark-hover);
+
+  --header-link: var(--text-light);
+  --header-heading: var(--heading-light);
+  --header-strong-heading: var(--strong-heading-light);
+  --header-shadow: var(--shadow-dark);
+  --header-shadow-text: var(--shadow-text-dark);
+
+  /** card colors */
+  --card-h: 0;
+  --card-s: 0%;
+  --card-l: 0%;
+  --card-a: 0.5;
+
+  --card-text: var(--text-light);
+  --card-text-hover: var(--text-light-hover);
+  --card-text-contrast: var(--text-dark);
+  --card-text-contrast-hover: var(--text-dark-hover);
+
+  --card-link: var(--link-light);
+  --card-heading: var(--heading-light);
+  --card-strong-heading: var(--strong-heading-light);
+  --card-shadow: var(--shadow-dark);
+  --card-shadow-text: var(--shadow-text-dark);
+
+  /** dark colors */
+  --dark-h: 0;
+  --dark-s: 0%;
+  --dark-l: 17%;
+  --dark-a: 1;
+
+  --dark-text: var(--text-light);
+  --dark-text-hover: var(--text-light-hover);
+  --dark-text-contrast: var(--text-dark);
+  --dark-text-contrast-hover: var(--text-dark-hover);
+
+  --dark-link: var(--link-light);
+  --dark-heading: var(--heading-light);
+  --dark-strong-heading: var(--strong-heading-light);
+  --dark-shadow: var(--shadow-dark);
+  --dark-shadow-text: var(--shadow-text-dark);
+
+  /** light colors */
+  --light-h: 0;
+  --light-s: 0%;
+  --light-l: 94%;
+  --light-a: 1;
+
+  --light-text: var(--text-dark);
+  --light-text-hover: var(--text-dark-hover);
+  --light-text-contrast: var(--text-light);
+  --light-text-contrast-hover: var(--text-light-hover);
+
+  --light-link: var(--link-dark);
+  --light-heading: var(--heading-dark);
+  --light-strong-heading: var(--strong-heading-dark);
+  --light-shadow: var(--shadow-light);
+  --light-shadow-text: var(--shadow-text-light);
+
+  /** primary colors */
+  --primary-h: 192;
+  --primary-s: 100%;
+  --primary-l: 34%;
+  --primary-a: 1;
+
+  --primary-text: var(--text-light);
+  --primary-text-hover: var(--text-light-hover);
+  --primary-text-contrast: var(--text-dark);
+  --primary-text-contrast-hover: var(--text-dark-hover);
+
+  --primary-link: var(--text-light);
+  --primary-heading: var(--text-light);
+  --primary-strong-heading: var(--strong-heading-accent-light);
+  --primary-shadow: var(--shadow-dark);
+  --primary-shadow-text: var(--shadow-text-dark);
+
+  /** warn colors */
+  --warn-h: 0;
+  --warn-s: 76%;
+  --warn-l: 46%;
+  --warn-a: 1;
+
+  --warn-text: var(--text-light);
+  --warn-text-hover: var(--text-light-hover);
+  --warn-text-contrast: var(--text-dark);
+  --warn-text-contrast-hover: var(--text-dark-hover);
+
+  --warn-link: var(--text-light);
+  --warn-heading: var(--text-light);
+  --warn-strong-heading: var(--strong-heading-accent-light);
+  --warn-shadow: var(--shadow-dark);
+  --warn-shadow-text: var(--shadow-text-dark);
+}

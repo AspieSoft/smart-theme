@@ -1,0 +1,42 @@
+@import 'common.less';
+
+html, body {
+  background-color: hsl(var(--bg-h), var(--bg-s), var(--bg-l));
+  background-image: var(--bg-img);
+  color: var(--text);
+
+  //todo: apply heading colors
+}
+
+html {
+  width: 100vw;
+  min-height: 100vh;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+  overflow-y: overlay;
+}
+
+body {
+  width: 100%;
+  min-height: 110vh;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+main {
+  flex: 1;
+
+  &.page-bg {
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+  }
+}
