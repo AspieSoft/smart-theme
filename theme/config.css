@@ -22,15 +22,40 @@
 
   /** other settings */
   --page-padding-inline: 1rem;
-  --page-content-max-width: 120ch;
-  --page-breakout-max-width: 135ch;
-  --page-hard-max-width: 1200px; /*? only for page-bg mode */
+  --page-padding-inline-desktop: 1.5rem;
+  /* --page-content-max-width: 120ch; */
+  /* --page-content-max-width: 70rem; */
+  --page-content-max-width: 1250px;
+  /* --page-breakout-max-width: 75rem; */
+  --page-breakout-max-width: 1320px;
+  --page-hard-max-width: 1400px; /*? only for page-bg mode */
+
+  --widget-size: 20%;
+  --widget-max-size: 320px;
 
   --shadow-size: 0.25rem;
   --shadow-text-size: 0.1em;
 
   --border-radius: 0.5em;
   --gradient-dir: to bottom right;
+
+  /** default colors */
+  --bg-h: var(--base-h);
+  --bg-s: var(--base-s);
+  --bg-l: var(--base-l);
+  --bg-a: var(--base-a);
+  --bg-img: var(--base-img);
+
+  --text: var(--base-text);
+  --text-hover: var(--base-text-hover);
+  --text-contrast: var(--base-text-contrast);
+  --text-contrast-hover: var(--base-text-contrast-hover);
+
+  --link: var(--base-link);
+  --heading: var(--base-heading);
+  --strong-heading: var(--base-strong-heading);
+  --shadow: var(--base-shadow);
+  --shadow-text: var(--base-shadow-text);
 }
 
 :root {
@@ -58,30 +83,30 @@
 
   --fallback-color: #afafaf;
 
-  /** page colors */
-  --bg-h: 0;
-  --bg-s: 0%;
-  --bg-l: 10%;
-  --bg-a: 1;
+  /** base colors */
+  --base-h: 0;
+  --base-s: 0%;
+  --base-l: 10%;
+  --base-a: 1;
   /* --bg-img: url('/assets/background-dark.webp'); */
-  --bg-img: url('/assets/wooden-floor.webp');
+  --base-img: url('/assets/wooden-floor.webp');
 
-  --text: var(--text-light);
-  --text-hover: var(--text-light-hover);
-  --text-contrast: var(--text-dark);
-  --text-contrast-hover: var(--text-dark-hover);
+  --base-text: var(--text-light);
+  --base-text-hover: var(--text-light-hover);
+  --base-text-contrast: var(--text-dark);
+  --base-text-contrast-hover: var(--text-dark-hover);
 
-  --link: var(--link-light);
-  --heading: var(--heading-light);
-  --strong-heading: var(--strong-heading-light);
-  --shadow: var(--shadow-dark);
-  --shadow-text: var(--shadow-text-dark);
+  --base-link: var(--link-light);
+  --base-heading: var(--heading-light);
+  --base-strong-heading: var(--strong-heading-light);
+  --base-shadow: var(--shadow-dark);
+  --base-shadow-text: var(--shadow-text-dark);
 
   /** header colors */
-  --header-bg-h: 0;
-  --header-bg-s: 0%;
-  --header-bg-l: 0%;
-  --header-bg-a: 0.75;
+  --header-h: 0;
+  --header-s: 0%;
+  --header-l: 0%;
+  --header-a: 0.75;
 
   --header-text: var(--text-light);
   --header-text-hover: var(--text-light-hover);
