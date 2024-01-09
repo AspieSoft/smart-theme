@@ -38,24 +38,6 @@
 
   --border-radius: 0.5em;
   --gradient-dir: to bottom right;
-
-  /** default colors */
-  --bg-h: var(--base-h);
-  --bg-s: var(--base-s);
-  --bg-l: var(--base-l);
-  --bg-a: var(--base-a);
-  --bg-img: var(--base-img);
-
-  --text: var(--base-text);
-  --text-hover: var(--base-text-hover);
-  --text-contrast: var(--base-text-contrast);
-  --text-contrast-hover: var(--base-text-contrast-hover);
-
-  --link: var(--base-link);
-  --heading: var(--base-heading);
-  --strong-heading: var(--base-strong-heading);
-  --shadow: var(--base-shadow);
-  --shadow-text: var(--base-shadow-text);
 }
 
 :root {

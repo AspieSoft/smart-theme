@@ -11,6 +11,24 @@ html, body {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+
+  //* default colors
+  --bg-h: var(--base-h);
+  --bg-s: var(--base-s);
+  --bg-l: var(--base-l);
+  --bg-a: var(--base-a);
+  --bg-img: var(--base-img);
+
+  --text: var(--base-text);
+  --text-hover: var(--base-text-hover);
+  --text-contrast: var(--base-text-contrast);
+  --text-contrast-hover: var(--base-text-contrast-hover);
+
+  --link: var(--base-link);
+  --heading: var(--base-heading);
+  --strong-heading: var(--base-strong-heading);
+  --shadow: var(--base-shadow);
+  --shadow-text: var(--base-shadow-text);
 }
 
 html {
@@ -94,7 +112,7 @@ main {
 
     & > :last-child.widget-smaller-than-vh {
       position: sticky;
-      top: var(--page-padding-inline, 1rem);
+      top: calc(var(--page-padding-inline, 1rem) + var(--header-height, 0.001px));
     }
   
     &.page-bg, &.card-bg {
