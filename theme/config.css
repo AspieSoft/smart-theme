@@ -1,10 +1,10 @@
 :root {
   /** common fonts */
   --ff-sans: 'Roboto', ui-sans-serif, system-ui, sans-serif;
-  --ff-logo: 'Varela Round', Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif;
   --ff-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
   --ff-serif: Superclarendon, 'Bookman Old Style', 'URW Bookman', 'URW Bookman L', 'Georgia Pro', Georgia, serif;
   --ff-cursive: 'Segoe Print', 'Bradley Hand', Chilanka, TSCu_Comic, casual, cursive;
+  --ff-logo: 'Varela Round', Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif;
 
   /** font settings */
   --font-size: 1.1rem;
@@ -14,7 +14,7 @@
   --heading-font: var(--ff-serif);
 
   --header-font: var(--ff-sans);
-  --header-img-font: var(--ff-sans);
+  --headerimg-font: var(--ff-sans);
   --footer-font: var(--ff-sans);
   --input-font: var(--ff-sans);
   --logo-font: var(--ff-logo);
@@ -29,6 +29,9 @@
   /* --page-breakout-max-width: 75rem; */
   --page-breakout-max-width: 1320px;
   --page-hard-max-width: 1400px; /*? only for page-bg mode */
+
+  --headerimg-width: auto; /*? only for side image */
+  --headerimg-height: 100vh;
 
   --widget-size: 20%;
   --widget-max-size: 320px;
@@ -70,8 +73,7 @@
   --base-s: 0%;
   --base-l: 10%;
   --base-a: 1;
-  /* --bg-img: url('/assets/background-dark.webp'); */
-  --base-img: url('/assets/wooden-floor.webp');
+  --base-img: url('/assets/background/beach.webp');
 
   --base-text: var(--text-light);
   --base-text-hover: var(--text-light-hover);
@@ -100,6 +102,56 @@
   --header-strong-heading: var(--strong-heading-light);
   --header-shadow: var(--shadow-dark);
   --header-shadow-text: var(--shadow-text-dark);
+
+  /** header image */
+  --headerimg-img: url('/assets/background/sunset.webp');
+  --headerimg-overlay: rgba(0, 0, 0, 0.25);
+  --headerimg-blend: overlay;
+  --headerimg-size: cover; /*? cover | contain */
+  --headerimg-pos: center; /*? center | top | bottom | left | right */
+  --headerimg-attachment: fixed; /*? scroll | fixed */
+
+  /** footer image */
+  --footerimg-img: url('/assets/background/wave.webp');
+  --footerimg-overlay: rgba(0, 0, 0, 0.25);
+  --footerimg-blend: overlay;
+  --footerimg-size: cover; /*? cover | contain */
+  --footerimg-pos: center; /*? center | top | bottom | left | right */
+  --footerimg-attachment: fixed; /*? scroll | fixed */
+
+  /** headerimg colors */
+  --headerimg-h: 0;
+  --headerimg-s: 0%;
+  --headerimg-l: 0%;
+  --headerimg-a: 1;
+
+  --headerimg-text: var(--text-light);
+  --headerimg-text-hover: var(--text-light-hover);
+  --headerimg-text-contrast: var(--text-dark);
+  --headerimg-text-contrast-hover: var(--text-dark-hover);
+
+  --headerimg-link: var(--text-light);
+  --headerimg-heading: var(--heading-light);
+  --headerimg-strong-heading: var(--strong-heading-light);
+  --headerimg-shadow: var(--shadow-dark);
+  --headerimg-shadow-text: var(--shadow-text-dark);
+
+  /** footer colors */
+  --footer-h: 0;
+  --footer-s: 0%;
+  --footer-l: 0%;
+  --footer-a: 0.75;
+
+  --footer-text: var(--text-light);
+  --footer-text-hover: var(--text-light-hover);
+  --footer-text-contrast: var(--text-dark);
+  --footer-text-contrast-hover: var(--text-dark-hover);
+
+  --footer-link: var(--text-light);
+  --footer-heading: var(--heading-light);
+  --footer-strong-heading: var(--strong-heading-light);
+  --footer-shadow: var(--shadow-dark);
+  --footer-shadow-text: var(--shadow-text-dark);
 
   /** card colors */
   --card-h: 0;

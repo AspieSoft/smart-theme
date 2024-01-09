@@ -68,12 +68,12 @@ main {
 
   &.page-bg, &.card-bg {
     .clip-shadow(none);
-    border-radius: 0 0 var(--border-radius) var(--border-radius);
-    margin-bottom: 40px;
+    border-radius: var(--border-radius);
+    margin-block: 40px;
 
     @media (max-width: @desktop-width) {
       border-radius: 0;
-      margin-bottom: 0;
+      margin-block: 0;
     }
   }
 }
@@ -118,8 +118,16 @@ main {
     }
   
     &.page-bg, &.card-bg {
-      border-radius: 0 0 var(--border-radius) var(--border-radius);
-      margin-bottom: 40px;
+      border-radius: var(--border-radius);
+      margin-block: 40px;
+
+      &:first-child {
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      }
+
+      &:last-child {
+        border-radius: var(--border-radius) 0 0 var(--border-radius);
+      }
     }
   
     @media (max-width: @desktop-width) {
