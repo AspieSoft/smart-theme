@@ -1,17 +1,6 @@
 @import 'common.less';
 
-html, body {
-  font-family: var(--font);
-  font-size: var(--font-size);
-  line-height: var(--line-height);
-  text-shadow: 2px 2px var(--shadow-text-size) var(--shadow-text);
-
-  width: 100%;
-  min-height: 100vh;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-
+:root {
   //* default colors
   --bg-h: var(--base-h);
   --bg-s: var(--base-s);
@@ -29,6 +18,19 @@ html, body {
   --strong-heading: var(--base-strong-heading);
   --shadow: var(--base-shadow);
   --shadow-text: var(--base-shadow-text);
+}
+
+html, body {
+  font-family: var(--font);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  text-shadow: 2px 2px var(--shadow-text-size) var(--shadow-text);
+
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html {

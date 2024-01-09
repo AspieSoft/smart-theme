@@ -1,14 +1,10 @@
 @import 'common.less';
 
-html {
-  // --header-height: calc((var(--font-size) * 1.3) + 42px);
-}
-
 header {
   min-height: var(--header-height);
   font-size: calc(var(--font-size) * 1.2);
 
-  html:has(&) {
+  body:has(&) {
     --header-height: calc((var(--font-size) * 1.3) + 42px);
   }
 
