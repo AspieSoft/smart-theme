@@ -109,15 +109,16 @@
   --headerimg-blend: overlay;
   --headerimg-size: cover; /*? cover | contain */
   --headerimg-pos: center; /*? center | top | bottom | left | right */
-  --headerimg-attachment: fixed; /*? scroll | fixed */
+  --headerimg-attachment: fixed; /*? fixed | scroll */
 
   /** footer image */
   --footerimg-img: url('/assets/background/wave.webp');
   --footerimg-overlay: rgba(0, 0, 0, 0.25);
   --footerimg-blend: overlay;
+  /*! note: if --footerimg-size is contain, --footerimg-pos may need to be bottom to prevent weird image movement */
   --footerimg-size: cover; /*? cover | contain */
   --footerimg-pos: center; /*? center | top | bottom | left | right */
-  --footerimg-attachment: fixed; /*? scroll | fixed */
+  --footerimg-attachment: fixed; /*? fixed | scroll */
 
   /** headerimg colors */
   --headerimg-h: 0;

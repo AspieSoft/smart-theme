@@ -1,7 +1,7 @@
 @import 'common.less';
 
 header {
-  background-color: hsla(var(--headerimg-h), var(--headerimg-s), var(--headerimg-l), var(--headerimg-a));
+  background-color: hsla(var(--headerimg-h), var(--headerimg-s), var(--headerimg-l), 1);
 
   min-height: var(--header-height);
   font-size: calc(var(--font-size) * 1.2);
@@ -77,7 +77,7 @@ header {
 
     background-size: var(--headerimg-size, cover);
     background-position: var(--headerimg-pos, center);
-    background-attachment: var(--headerimg-attachment, scroll);
+    background-attachment: var(--headerimg-attachment, fixed);
     background-repeat: no-repeat;
 
     overflow: hidden;
@@ -92,6 +92,14 @@ header {
 
     & > * {
       --shadow: var(--header-shadow);
+    }
+
+    & > .content-grid {
+      padding-block: 40px;
+
+      &:first-child {
+        padding-top: calc(var(--header-height, 0.001px) + 20px);
+      }
     }
 
     & > .content, & > .header-content {
@@ -205,7 +213,7 @@ footer {
 
   background-size: var(--footerimg-size, cover);
   background-position: var(--footerimg-pos, center);
-  background-attachment: var(--footerimg-attachment, scroll);
+  background-attachment: var(--footerimg-attachment, fixed);
   background-repeat: no-repeat;
 
   overflow: hidden;
@@ -218,8 +226,20 @@ footer {
 
   position: relative;
 
+  &::before {
+    content: '';
+    background-color: hsla(var(--footer-h), var(--footer-s), var(--footer-l), 1);
+    position: absolute;
+    .pos(0, 0, 0, 0);
+    z-index: -10;
+  }
+
   & > * {
     --shadow: var(--header-shadow);
+  }
+
+  & > .content-grid {
+    padding-block: 20px;
   }
 
   & > .content, & > .footer-content {
