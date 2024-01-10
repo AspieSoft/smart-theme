@@ -20,7 +20,8 @@ A simple theme that adjusts easily to a users preferences.
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AspieSoft/smart-theme@0.0.1/theme/style.min.css"/>
 
 <!-- Theme Script -->
-<script src="https://cdn.jsdelivr.net/gh/AspieSoft/smart-theme@0.0.1/theme/script.min.js" defer></script>
+<!-- notice: script.min.js is not currently compiling from script.js (minification error) -->
+<script src="https://cdn.jsdelivr.net/gh/AspieSoft/smart-theme@0.0.1/theme/script.js" defer></script>
 ```
 
 ## Setup
@@ -43,7 +44,8 @@ A simple theme that adjusts easily to a users preferences.
 
   <link rel="stylesheet" href="/theme/style.norm.min.css"/>
 
-  <script src="/theme/script.min.js" defer></script>
+  <!-- notice: script.min.js is not currently compiling from script.js (minification error) -->
+  <script src="/theme/script.js" defer></script>
 
   <!--? optional: tailwind and htmx recommended -->
   <script src="https://cdn.tailwindcss.com"></script>
