@@ -45,6 +45,10 @@ onReady(async function(){
         return;
       }
 
+      if(elm.classList.contains('background-size-w') || elm.classList.contains('background-size-h')){
+        return;
+      }
+
       const css = window.getComputedStyle(elm);
       if(typeof css['background-size'] !== 'string' || typeof css['background-image'] !== 'string'){
         return;
@@ -66,6 +70,7 @@ onReady(async function(){
                 elm.classList.remove('background-size-w');
               }
             }
+            img.remove();
           }
         });
       }
@@ -78,6 +83,10 @@ onReady(async function(){
     document.querySelectorAll('header .header-image, footer').forEach(function(elm){
       if(elm.clientHeight < 300){
         elm.classList.remove('background-size-w', 'background-size-h');
+        return;
+      }
+
+      if(!elm.classList.contains('background-size-w') && !elm.classList.contains('background-size-h')){
         return;
       }
 
