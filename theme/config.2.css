@@ -1,0 +1,152 @@
+:root {
+  /** common fonts */
+  --ff-sans: 'Roboto', ui-sans-serif, system-ui, sans-serif;
+  --ff-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  --ff-serif: Superclarendon, 'Bookman Old Style', 'URW Bookman', 'URW Bookman L', 'Georgia Pro', Georgia, serif;
+  --ff-cursive: 'Segoe Print', 'Bradley Hand', Chilanka, TSCu_Comic, casual, cursive;
+  --ff-logo: 'Varela Round', Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif;
+
+  /** font settings */
+  --font-size: 1.1rem;
+  --line-height: 1.5em;
+
+  --font: var(--ff-sans);
+  --heading-font: var(--ff-serif);
+
+  --header-font: var(--ff-sans);
+  --headerimg-font: var(--ff-sans);
+  --footer-font: var(--ff-sans);
+  --input-font: var(--ff-sans);
+  --logo-font: var(--ff-logo);
+  --copyright-font: var(--ff-logo);
+
+  /** other settings */
+  --page-padding-inline: 1rem;
+  --page-padding-inline-desktop: 1.5rem;
+  /* --page-content-max-width: 120ch; */
+  /* --page-content-max-width: 70rem; */
+  --page-content-max-width: 1250px;
+  /* --page-breakout-max-width: 75rem; */
+  --page-breakout-max-width: 1320px;
+  --page-hard-max-width: 1400px; /*? only for page-bg mode */
+
+  --headerimg-width: auto; /*? only for side image */
+  --headerimg-height: 100vh;
+  --headernav-justify: center; /*? center | flex-start | flex-end | space-around | space-evenly | stretch */
+  --nav-underline-radius: 0.125em; /*? default: 0.125em | cool effect: 50% */
+
+  --widget-size: 20%;
+  --widget-max-size: 320px;
+
+  --shadow-size: 0.25rem;
+  --shadow-text-size: 0.1em;
+
+  --border-radius: 0.5em;
+  --gradient-dir: to bottom right;
+}
+
+:root {
+  /** Colors */
+  --primary-h: 192;
+  --primary-s: 100%;
+  --primary-l: 34%;
+
+  --accent-h: 130;
+  --accent-s: 80%;
+  --accent-l: 35%;
+
+  --warn-h: 0;
+  --warn-s: 76%;
+  --warn-l: 46%;
+
+  --link-light-h: 197; /*! 180 - 260 */
+  --link-light-s: 81%;
+  --link-light-l: 58%; /*! 50 - 100 */
+
+  --link-dark-h: 204; /*! 180 - 260 */
+  --link-dark-s: 77%;
+  --link-dark-l: 45%; /*! 0 - 49 */
+
+
+  /** Color Variants */
+  --text-light-s: 0%; /*! 0 - 10 */
+  --text-light-l: 100%; /*! 50-100 */
+
+  --text-dark-s: 0%; /*! 0 - 10 */
+  --text-dark-l: 7%; /*! 0 - 49 */
+
+  --dark-s: 0%; /*! 0-15 */
+  --dark-l: 17%; /*! 0-49 */
+
+  --light-s: 0%; /*! 0-15 */
+  --light-l: 94%; /*! 50-100 */
+
+
+  /** Element Colors */
+  --base-s: 0%;
+  --base-l: 10%;
+  --base-a: 1;
+  --base-text: var(--text-light); /*! theme generated: based on base contrast */
+  --base-link: var(--link-light); /*! theme generated: based on base contrast */
+  /* todo: add heading and strongheading text color variations */
+
+  --card-s: 0%;
+  --card-l: 0%;
+  --card-a: 0.5;
+  --card-text: var(--text-light); /*! theme generated: based on card contrast */
+  --card-link: var(--link-light); /*! theme generated: based on card contrast */
+
+  --header-s: 0%;
+  --header-l: 0%;
+  --header-a: 0.75;
+  --header-text: var(--text-light); /*! theme generated: based on header contrast */
+  --header-link: var(--link-light); /*! theme generated: based on header contrast */
+
+  --headerimg-s: 0%;
+  --headerimg-l: 0%;
+  --headerimg-a: 1;
+  --headerimg-text: var(--text-light); /*! theme generated: based on headerimg contrast */
+  --headerimg-link: var(--link-light); /*! theme generated: based on headerimg contrast */
+
+  --footer-s: 0%;
+  --footer-l: 0%;
+  --footer-a: 1;
+  --footer-text: var(--text-light); /*! theme generated: based on footer contrast */
+  --footer-link: var(--link-light); /*! theme generated: based on footer contrast */
+
+
+  /** Default Colors */
+  --color-h: var(--primary-h); /*! theme generated: css */
+  --color-s: var(--base-s); /*! theme generated: css */
+  --color-l: var(--base-l); /*! theme generated: css */
+  --color-a: var(--base-a); /*! theme generated: css */
+
+  --text: var(--base-text); /*! theme generated: css */
+  --link: var(--base-link); /*! theme generated: css */
+
+  /** Theme Generated */
+  --text-light: hsl(var(--color-h), var(--text-light-s), var(--text-light-l)); /*! theme generated: css */
+  --text-dark: hsl(var(--color-h), var(--text-dark-s), var(--text-dark-l)); /*! theme generated: css */
+  --link-light: hsl(var(--link-light-h), var(--link-light-s), var(--link-light-l));
+  --link-dark: hsl(var(--link-dark-h), var(--link-dark-s), var(--link-dark-l));
+
+  --primary: hsl(var(--primary-h), var(--primary-s), var(--primary-l)); /*! theme generated: css */
+  --primary-text: var(--text-light); /*! theme generated: based on primary contrast */
+  --primary-link: var(--text-light); /*! theme generated: based on primary contrast */
+
+  --accent: hsl(var(--accent-h), var(--accent-s), var(--accent-l)); /*! theme generated: css */
+  --accent-text: var(--text-light); /*! theme generated: based on accent contrast */
+  --accent-link: var(--text-light); /*! theme generated: based on primary contrast */
+
+  --warn: hsl(var(--warn-h), var(--warn-s), var(--warn-l)); /*! theme generated: css */
+  --warn-text: var(--text-light); /*! theme generated: based on warn contrast */
+  --warn-link: var(--text-light); /*! theme generated: based on primary contrast */
+
+  --dark: hsl(var(--color-h), var(--dark-s), var(--dark-l)); /*! theme generated: css */
+  --dark-text: var(--text-light); /*! theme generated: based on dark contrast */
+  --dark-link: var(--link-light); /*! theme generated: based on primary contrast */
+
+  --light: hsl(var(--color-h), var(--light-s), var(--light-l)); /*! theme generated: css */
+  --light-text: var(--text-dark); /*! theme generated: based on light contrast */
+  --light-link: var(--link-dark); /*! theme generated: based on primary contrast */
+}
