@@ -1,6 +1,0 @@
-primary: hsl(192, 100%, 34%)
-accent: hsl(130, 80%, 35%)
-warn: hsl(0, 76%, 46%)
-
-text-dark: hsl(0, 0%, 6%)
-text-light: hsl(0, 0%, 100%)
