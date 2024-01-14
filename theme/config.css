@@ -156,7 +156,13 @@
   --base-s: 0%;
   --base-l: 10%;
   --base-a: 1;
+
   --base-img: url('/assets/background/beach.webp');
+  --base-img-overlay: transparent;
+  --base-img-blend: overlay;
+  --base-imp-size: cover; /*? cover | contain */
+  --base-img-pos: center; /*? center | top | bottom | left | right */
+  --base-img-attachment: fixed;
 
   --base-bg: hsla(var(--base-h), var(--base-s), var(--base-l), var(--base-a)); /*? allow user adjustments */
   --base-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
@@ -177,7 +183,13 @@
   --card-s: 0%;
   --card-l: 0%;
   --card-a: 0.5;
+
   --card-img: none;
+  --base-img-overlay: transparent;
+  --base-img-blend: overlay;
+  --base-imp-size: cover; /*? cover | contain */
+  --base-img-pos: center; /*? center | top | bottom | left | right */
+  --base-img-attachment: scroll; /*? scroll | fixed */
 
   --card-bg: hsla(var(--card-h), var(--card-s), var(--card-l), var(--card-a)); /*? allow user adjustments */
   --card-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
@@ -198,7 +210,13 @@
   --header-s: 0%;
   --header-l: 0%;
   --header-a: 0.75;
+
   --header-img: none;
+  --base-img-overlay: transparent;
+  --base-img-blend: overlay;
+  --base-imp-size: cover; /*? cover | contain */
+  --base-img-pos: center; /*? center | top | bottom | left | right */
+  --base-img-attachment: scroll; /*? scroll | fixed */
 
   --header-bg: hsla(var(--header-h), var(--header-s), var(--header-l), var(--header-a)); /*? allow user adjustments */
   --header-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
@@ -219,9 +237,13 @@
   --headerimg-s: 0%;
   --headerimg-l: 0%;
   --headerimg-a: 0.75;
-  --headerimg-img: url('/assets/background/sunset.webp');
 
-  /* todo: add other background image options from old config */
+  --headerimg-img: url('/assets/background/sunset.webp');
+  --headerimg-img-overlay: rgba(0, 0, 0, 0.25);
+  --headerimg-img-blend: overlay;
+  --headerimg-imp-size: cover; /*? cover | contain */
+  --headerimg-img-pos: center; /*? center | top | bottom | left | right */
+  --headerimg-img-attachment: fixed; /*? fixed | scroll */
 
   --headerimg-bg: hsla(var(--headerimg-h), var(--headerimg-s), var(--headerimg-l), var(--headerimg-a)); /*? allow user adjustments */
   --headerimg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
@@ -242,7 +264,13 @@
   --footer-s: 0%;
   --footer-l: 0%;
   --footer-a: 0.75;
+
   --footer-img: url('/assets/background/wave.webp');
+  --footer-img-overlay: rgba(0, 0, 0, 0.25);
+  --footer-img-blend: overlay;
+  --footer-imp-size: cover; /*? cover | contain */
+  --footer-img-pos: center; /*? center | top | bottom | left | right */
+  --footer-img-attachment: fixed; /*? fixed | scroll */
 
   --footer-bg: hsla(var(--footer-h), var(--footer-s), var(--footer-l), var(--footer-a)); /*? allow user adjustments */
   --footer-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
@@ -263,7 +291,13 @@
   --copyright-s: 0%;
   --copyright-l: 0%;
   --copyright-a: 0.75;
+
   --copyright-img: none;
+  --base-img-overlay: transparent;
+  --base-img-blend: overlay;
+  --base-imp-size: cover; /*? cover | contain */
+  --base-img-pos: center; /*? center | top | bottom | left | right */
+  --base-img-attachment: scroll; /*? scroll | fixed */
 
   --copyright-bg: hsla(var(--copyright-h), var(--copyright-s), var(--copyright-l), var(--copyright-a)); /*? allow user adjustments */
   --copyright-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
