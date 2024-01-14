@@ -1,0 +1,69 @@
+:root {
+  /** text colors */
+  --text-dark: #0f0f0f;
+  --text-light: #ffffff;
+  --text-mid: #b0b0b0;
+
+  --link-dark: #1a83c9;
+  --link-light: #3fbaeb;
+  --link-mid: #2087b6;
+
+  --heading-dark: var(--text-dark);
+  --heading-light: var(--text-light);
+  --heading-mid: var(--text-mid);
+
+  --strongheading-dark: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 10), var(--color-fg-s), 20), hsl(calc(var(--color-fg-h) + 10), var(--color-fg-s), 35));
+  --strongheading-light: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 10), var(--color-fg-s), 75), hsl(calc(var(--color-fg-h) + 10), var(--color-fg-s), 90));
+  --strongheading-mid: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 10), var(--color-fg-s), 45), hsl(calc(var(--color-fg-h) + 10), var(--color-fg-s), 60));
+
+  /** type colors */
+  --primary-h: 192;
+  --primary-s: 100%;
+  --primary-l: 34%;
+  --primary-a: 1;
+  --primary-img: none;
+
+  --primary-text: var(--text-light);
+  --primary-link: var(--link-light);
+  --primary-heading: var(--heading-light);
+  --primary-strongheading: var(--strongheading-light);
+
+  --primary-fg-h: 192;
+  --primary-fg-s: 100%;
+  --primary-fg-l: 34%;
+  --primary-fg-a: 1;
+
+  /** emement colors */
+  --base-h: 0;
+  --base-s: 0%;
+  --base-l: 10%;
+  --base-a: 1;
+  --base-img: url('/assets/background/beach.webp');
+
+  --base-text: var(--text-light);
+  --base-link: var(--link-light);
+  --base-heading: var(--heading-light);
+  --base-strongheading: var(--strongheading-light);
+
+  /*! primary */
+  --base-fg-h: 192;
+  --base-fg-s: 100%;
+  --base-fg-l: 34%;
+  --base-fg-a: 1;
+
+  --base-fg-text: var(--text-light);
+  --base-fg-link: var(--link-light);
+  --base-fg-heading: var(--heading-light);
+  --base-fg-strongheading: var(--strongheading-light);
+
+  /** default colors */
+  --color-h: var(--base-bg-h);
+  --color-s: var(--base-bg-s);
+  --color-l: var(--base-bg-l);
+  --color-a: var(--base-bg-a);
+
+  --color-fg-h: var(--base-fg-h);
+  --color-fg-s: var(--base-fg-s);
+  --color-fg-l: var(--base-fg-l);
+  --color-fg-a: var(--base-fg-a);
+}

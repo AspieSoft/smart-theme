@@ -50,14 +50,20 @@
   --primary-h: 192;
   --primary-s: 100%;
   --primary-l: 34%;
+  --primary-heading: var(--primary-text); /*! [default, text, primary, accent, custom] */
+  --primary-strongheading: var(--strongheading-light); /*! [default, text, primary, accent, both, custom] */
 
-  --accent-h: 130;
+  --accent-h: 130; /*! ensure primary contrast (or same as primary) */
   --accent-s: 80%;
   --accent-l: 35%;
+  --accent-heading: var(--accent-text); /*! [default, text, primary, accent, custom] */
+  --accent-strongheading: var(--strongheading-light); /*! [default, text, primary, accent, both, custom] */
 
-  --warn-h: 0;
+  --warn-h: 0; /*! 0 - 64, 264 - 360 (ensure primary contrast) */
   --warn-s: 76%;
   --warn-l: 46%;
+  --warn-heading: var(--warn-text); /*! [default, text, primary, accent, custom] */
+  --warn-strongheading: var(--strongheading-light); /*! [default, text, primary, accent, both, custom] */
 
   --link-light-h: 197; /*! 180 - 260 */
   --link-light-s: 81%;
@@ -73,13 +79,20 @@
   --text-light-l: 100%; /*! 50-100 */
 
   --text-dark-s: 0%; /*! 0 - 10 */
-  --text-dark-l: 7%; /*! 0 - 49 */
+  --text-dark-l: 6%; /*! 0 - 49 */
+
+  --strongheading-light: linear-gradient(45deg, #f3f3f3, #c4bcbc); /*! [default, text, primary, accent, both, custom] */
+  --strongheading-dark: linear-gradient(45deg, #4b4b4b, #312f2f); /*! [default, text, primary, accent, both, custom] */
 
   --dark-s: 0%; /*! 0-15 */
   --dark-l: 17%; /*! 0-49 */
+  --dark-heading: var(--dark-text); /*! [default, text, primary, accent, custom] */
+  --dark-strongheading: linear-gradient(45deg, hsl(calc(var(--primary-h) - 5), calc(var(--primary-s) - 10), var(--text-dark-l)), hsl(calc(var(--primary-h) + 5), calc(var(--primary-s) + 10), var(--text-dark-l))); /*! [default, text, primary, accent, both, custom] */
 
   --light-s: 0%; /*! 0-15 */
   --light-l: 94%; /*! 50-100 */
+  --light-heading: var(--light-text); /*! [default, text, primary, accent, custom] */
+  --light-strongheading: linear-gradient(45deg, hsl(calc(var(--primary-h) - 5), calc(var(--primary-s) - 10), var(--text-light-l)), hsl(calc(var(--primary-h) + 5), calc(var(--primary-s) + 10), var(--text-light-l))); /*! [default, text, primary, accent, both, custom] */
 
 
   /** Element Colors */
@@ -88,6 +101,8 @@
   --base-a: 1;
   --base-text: var(--text-light); /*! theme generated: based on base contrast */
   --base-link: var(--link-light); /*! theme generated: based on base contrast */
+  --base-heading: var(--base-text); /*! [default, text, primary, accent, custom] */
+  --base-strongheading: linear-gradient(45deg, hsl(calc(var(--primary-h) - 5), calc(var(--primary-s) - 10), var(--text-light-l)), hsl(calc(var(--primary-h) + 5), calc(var(--primary-s) + 10), var(--text-light-l))); /*! [default, text, primary, accent, both, custom] */
   /* todo: add heading and strongheading text color variations */
 
   --card-s: 0%;
@@ -95,24 +110,32 @@
   --card-a: 0.5;
   --card-text: var(--text-light); /*! theme generated: based on card contrast */
   --card-link: var(--link-light); /*! theme generated: based on card contrast */
+  --card-heading: var(--card-text); /*! [default, text, primary, accent, custom] */
+  --card-strongheading: linear-gradient(45deg, hsl(calc(var(--primary-h) - 5), calc(var(--primary-s) - 10), var(--text-light-l)), hsl(calc(var(--primary-h) + 5), calc(var(--primary-s) + 10), var(--text-light-l))); /*! [default, text, primary, accent, both, custom] */
 
   --header-s: 0%;
   --header-l: 0%;
   --header-a: 0.75;
   --header-text: var(--text-light); /*! theme generated: based on header contrast */
   --header-link: var(--link-light); /*! theme generated: based on header contrast */
+  --header-heading: var(--header-text); /*! [default, text, primary, accent, custom] */
+  --header-strongheading: linear-gradient(45deg, hsl(calc(var(--primary-h) - 5), calc(var(--primary-s) - 10), var(--text-light-l)), hsl(calc(var(--primary-h) + 5), calc(var(--primary-s) + 10), var(--text-light-l))); /*! [default, text, primary, accent, both, custom] */
 
   --headerimg-s: 0%;
   --headerimg-l: 0%;
   --headerimg-a: 1;
   --headerimg-text: var(--text-light); /*! theme generated: based on headerimg contrast */
   --headerimg-link: var(--link-light); /*! theme generated: based on headerimg contrast */
+  --headerimg-heading: var(--headerimg-text); /*! [default, text, primary, accent, custom] */
+  --headerimg-strongheading: linear-gradient(45deg, hsl(calc(var(--primary-h) - 5), calc(var(--primary-s) - 10), var(--text-light-l)), hsl(calc(var(--primary-h) + 5), calc(var(--primary-s) + 10), var(--text-light-l))); /*! [default, text, primary, accent, both, custom] */
 
   --footer-s: 0%;
   --footer-l: 0%;
   --footer-a: 1;
   --footer-text: var(--text-light); /*! theme generated: based on footer contrast */
   --footer-link: var(--link-light); /*! theme generated: based on footer contrast */
+  --footer-heading: var(--footer-text); /*! [default, text, primary, accent, custom] */
+  --footer-strongheading: linear-gradient(45deg, hsl(calc(var(--primary-h) - 5), calc(var(--primary-s) - 10), var(--text-light-l)), hsl(calc(var(--primary-h) + 5), calc(var(--primary-s) + 10), var(--text-light-l))); /*! [default, text, primary, accent, both, custom] */
 
 
   /** Default Colors */
@@ -123,6 +146,8 @@
 
   --text: var(--base-text); /*! theme generated: css */
   --link: var(--base-link); /*! theme generated: css */
+  --heading: var(--base-heading); /*! theme generated: css */
+  --strongheading: var(--base-strongheading); /*! theme generated: css */
 
   /** Theme Generated */
   --text-light: hsl(var(--color-h), var(--text-light-s), var(--text-light-l)); /*! theme generated: css */

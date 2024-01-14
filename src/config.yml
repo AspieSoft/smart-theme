@@ -1,0 +1,141 @@
+colors:
+  primary: [192, 100, 34, 100] # hsla
+  accent: [130, 80, 35, 100] # hsla
+  warn: [0, 76, 46, 100] # hsla
+  dark: [-1, 0, 17, 100] # hsla
+  light: [-1, 0, 94, 100] # hsla
+text:
+  dark: [0, 0, 6, 100] # hsla (h math)
+  light: [0, 0, 100, 100] # hsla (h math)
+link:
+  dark: [204, 77, 45, 100] # hsla
+  light: [197, 81, 58, 100] # hsla
+heading:
+  dark: [0, 0, 6, 100] # hsla (h math)
+  light: [0, 0, 100, 100] # hsla (h math)
+strongheading:
+  dark: default # gradient
+  light: default # gradient
+strongheadingaccent:
+  dark: default # gradient
+  light: default # gradient
+
+primary:
+  color:
+    dark: [0, 100, 34, 100] # hsla (h math)
+    light: [0, 100, 34, 100] # hsla (h math)
+  gradient:
+    dark: default # gradient
+    light: default # gradient
+  text: auto
+  link: auto
+  heading: auto
+  strongheading: auto
+
+accent:
+  color:
+    dark: [0, 80, 35, 100] # hsla (h math)
+    light: [0, 80, 35, 100] # hsla (h math)
+  gradient:
+    dark: default # gradient
+    light: default # gradient
+  text: light
+  link: light
+  heading: light
+  strongheading: light
+
+warn:
+  color:
+    dark: [0, 76, 46, 100] # hsla (h math)
+    light: [0, 76, 46, 100] # hsla (h math)
+  gradient:
+    dark: default # gradient
+    light: default # gradient
+  text: light
+  link: light
+  heading: light
+  strongheading: light
+
+dark:
+  color:
+    dark: [0, 0, 17, 100] # hsla (h math)
+    light: [0, 0, 17, 100] # hsla (h math)
+  gradient:
+    dark: default # gradient
+    light: default # gradient
+  text: light
+  link: light
+  heading: default
+  strongheading: default
+
+light:
+  color:
+    dark: [0, 0, 94, 100] # hsla (h math)
+    light: [0, 0, 94, 100] # hsla (h math)
+  gradient:
+    dark: default # gradient
+    light: default # gradient
+  text: dark
+  link: dark
+  heading: default
+  strongheading: default
+
+base:
+  color:
+    dark: [0, 0, 10, 100] # hsla (h math)
+    light: [0, 0, 10, 100] # hsla (h math)
+  gradient:
+    dark: default # gradient
+    light: default # gradient
+  text: light
+  link: light
+  heading: default
+  strongheading: default
+
+card:
+  color:
+    dark: [0, 0, 0, 50] # hsla (h math)
+    light: [0, 0, 0, 50] # hsla (h math)
+  gradient:
+    dark: default # gradient
+    light: default # gradient
+  text: light
+  link: light
+  heading: default
+  strongheading: default
+
+header:
+  color:
+    dark: [0, 0, 0, 75] # hsla (h math)
+    light: [0, 0, 0, 75] # hsla (h math)
+  gradient:
+    dark: default # gradient
+    light: default # gradient
+  text: light
+  link: light
+  heading: default
+  strongheading: default
+
+headerimg:
+  color:
+    dark: [0, 0, 0, 100] # hsla (h math)
+    light: [0, 0, 0, 100] # hsla (h math)
+  gradient:
+    dark: default # gradient
+    light: default # gradient
+  text: light
+  link: light
+  heading: default
+  strongheading: default
+
+footer:
+  color:
+    dark: [0, 0, 0, 100] # hsla (h math)
+    light: [0, 0, 0, 100] # hsla (h math)
+  gradient:
+    dark: default # gradient
+    light: default # gradient
+  text: light
+  link: light
+  heading: default
+  strongheading: default

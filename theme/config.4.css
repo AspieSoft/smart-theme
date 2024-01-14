@@ -1,0 +1,293 @@
+:root {
+  /** text colors */
+
+  /*! text */
+  --text-dark-s: 0%; /*? 0 - 10 */
+  --text-dark-l: 6%; /*? 0 - 40 */
+
+  --text-light-s: 0%; /*? 0 - 10 */
+  --text-light-l: 100%; /*? 60 - 100 */
+
+  --text-mid-s: 0%; /*? 0 - 10 */
+  --text-mid-l: 69%; /*? 35 - 75 */
+
+  /*! links */
+  --link-dark-h: 204; /*? 180 - 260 */
+  --link-dark-s: 77%;
+  --link-dark-l: 45%; /*? 0 - 49 */
+
+  --link-light-h: 197; /*? 180 - 260 */
+  --link-light-s: 81%;
+  --link-light-l: 58%; /*? 50 - 100 */
+
+  --link-mid-h: 199; /*? 180 - 260 */
+  --link-mid-s: 70%;
+  --link-mid-l: 42%; /*? 35 - 75 */
+
+  /*! headings */
+  /*? allow user adjustments */
+  --heading-dark: hsl(var(--color-fg-h), var(--text-dark-s), var(--text-dark-l));
+  --heading-light: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
+  --heading-mid: hsl(var(--color-fg-h), var(--text-mid-s), var(--text-mid-l));
+
+  /*? allow user adjustments */
+  --strongheading-dark: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 10), var(--color-fg-s), 20), hsl(calc(var(--color-fg-h) + 10), var(--color-fg-s), 35));
+  --strongheading-light: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 10), var(--color-fg-s), 75), hsl(calc(var(--color-fg-h) + 10), var(--color-fg-s), 90));
+  --strongheading-mid: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 10), var(--color-fg-s), 45), hsl(calc(var(--color-fg-h) + 10), var(--color-fg-s), 60));
+
+  /** type colors */
+
+  /*! primary */
+  --primary-h: 192;
+  --primary-s: 100%;
+  --primary-l: 34%;
+  --primary-a: 1;
+  --primary-img: none;
+
+  --primary-bg: hsla(var(--primary-h), var(--primary-s), var(--primary-l), var(--primary-a)); /*? allow user adjustments */
+  --primary-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
+  --primary-link: hsl(var(--link-light-h), var(--link-light-s), var(--link-light-l)); /*? auto contrast */
+
+  /*? allow custom or auto contrast */
+  --primary-heading: var(--heading-light);
+  --primary-strongheading: var(--strongheading-light);
+
+  --primary-fg-h: var(--primary-h);
+  --primary-fg-s: var(--text-light-s); /*? auto contrast */
+  --primary-fg-l: var(--text-light-l); /*? auto contrast */
+  --primary-fg-a: var(--primary-a);
+  --primary-fg-text: hsl(var(--color-fg-h), var(--text-dark-s), var(--text-dark-l));
+
+  /*! accent */
+  --accent-h: 130; /*? more than 20 away from primary */
+  --accent-s: 80%;
+  --accent-l: 35%;
+  --accent-a: 1;
+  --accent-img: none;
+
+  --accent-bg: hsla(var(--accent-h), var(--accent-s), var(--accent-l), var(--accent-a)); /*? allow user adjustments */
+  --accent-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
+  --accent-link: hsl(var(--link-light-h), var(--link-light-s), var(--link-light-l)); /*? auto contrast */
+
+  /*? allow custom or auto contrast */
+  --accent-heading: var(--heading-light);
+  --accent-strongheading: var(--strongheading-light);
+
+  --accent-fg-h: var(--accent-h);
+  --accent-fg-s: var(--text-light-s); /*? auto contrast */
+  --accent-fg-l: var(--text-light-l); /*? auto contrast */
+  --accent-fg-a: var(--accent-a);
+  --accent-fg-text: hsl(var(--color-fg-h), var(--text-dark-s), var(--text-dark-l));
+
+  /*! warn */
+  --warn-h: 0; /*? red: 0 - 64 or 264 - 360, and more than 20 away from primary and accent */
+  --warn-s: 76%;
+  --warn-l: 46%;
+  --warn-a: 1;
+  --warn-img: none;
+
+  --warn-bg: hsla(var(--warn-h), var(--warn-s), var(--warn-l), var(--warn-a)); /*? allow user adjustments */
+  --warn-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
+  --warn-link: hsl(var(--link-light-h), var(--link-light-s), var(--link-light-l)); /*? auto contrast */
+
+  /*? allow custom or auto contrast */
+  --warn-heading: var(--heading-light);
+  --warn-strongheading: var(--strongheading-light);
+
+  --warn-fg-h: var(--warn-h);
+  --warn-fg-s: var(--text-light-s); /*? auto contrast */
+  --warn-fg-l: var(--text-light-l); /*? auto contrast */
+  --warn-fg-a: var(--warn-a);
+  --warn-fg-text: hsl(var(--color-fg-h), var(--text-dark-s), var(--text-dark-l));
+
+  /** type basic colors */
+
+  /*! dark */
+  --dark-h: var(--color-fg-h);
+  --dark-s: 0%; /*? 0-15 */
+  --dark-l: 17%; /*? 0-49 */
+  --dark-a: 1;
+  --dark-img: none;
+
+  --dark-bg: hsla(var(--dark-h), var(--dark-s), var(--dark-l), var(--dark-a)); /*? allow user adjustments */
+  --dark-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
+  --dark-link: hsl(var(--link-light-h), var(--link-light-s), var(--link-light-l)); /*? auto contrast */
+
+  /*? allow custom or auto contrast */
+  --dark-heading: var(--heading-light);
+  --dark-strongheading: var(--strongheading-light);
+
+  --dark-fg-h: var(--primary-h);
+  --dark-fg-s: var(--primary-s);
+  --dark-fg-l: var(--primary-l);
+  --dark-fg-a: var(--primary-a);
+  --dark-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
+
+  /*! light */
+  --light-h: var(--color-fg-h);
+  --light-s: 0%; /*? 0-15 */
+  --light-l: 94%; /*? 50-100 */
+  --light-a: 1;
+  --light-img: none;
+
+  --light-bg: hsla(var(--light-h), var(--light-s), var(--light-l), var(--light-a)); /*? allow user adjustments */
+  --light-text: hsl(var(--color-fg-h), var(--text-dark-s), var(--text-dark-l)); /*? auto contrast */
+  --light-link: hsl(var(--link-dark-h), var(--link-dark-s), var(--link-dark-l)); /*? auto contrast */
+
+  /*? allow custom or auto contrast */
+  --light-heading: var(--heading-dark);
+  --light-strongheading: var(--strongheading-dark);
+
+  --light-fg-h: var(--primary-h);
+  --light-fg-s: var(--primary-s);
+  --light-fg-l: var(--primary-l);
+  --light-fg-a: var(--primary-a);
+  --light-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
+
+  /** emement colors */
+
+  /*! base */
+  --base-h: 0;
+  --base-s: 0%;
+  --base-l: 10%;
+  --base-a: 1;
+  --base-img: url('/assets/background/beach.webp');
+
+  --base-bg: hsla(var(--base-h), var(--base-s), var(--base-l), var(--base-a)); /*? allow user adjustments */
+  --base-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
+  --base-link: hsl(var(--link-light-h), var(--link-light-s), var(--link-light-l)); /*? auto contrast */
+
+  /*? allow custom or auto contrast */
+  --base-heading: var(--heading-light);
+  --base-strongheading: var(--strongheading-light);
+
+  --base-fg-h: var(--primary-h);
+  --base-fg-s: var(--primary-s);
+  --base-fg-l: var(--primary-l);
+  --base-fg-a: var(--primary-a);
+  --base-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
+
+  /*! card */
+  --card-h: 0;
+  --card-s: 0%;
+  --card-l: 0%;
+  --card-a: 0.5;
+  --card-img: none;
+
+  --card-bg: hsla(var(--card-h), var(--card-s), var(--card-l), var(--card-a)); /*? allow user adjustments */
+  --card-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
+  --card-link: hsl(var(--link-light-h), var(--link-light-s), var(--link-light-l)); /*? auto contrast */
+
+  /*? allow custom or auto contrast */
+  --card-heading: var(--heading-light);
+  --card-strongheading: var(--strongheading-light);
+
+  --card-fg-h: var(--primary-h);
+  --card-fg-s: var(--primary-s);
+  --card-fg-l: var(--primary-l);
+  --card-fg-a: var(--primary-a);
+  --card-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
+
+  /*! header */
+  --header-h: 0;
+  --header-s: 0%;
+  --header-l: 0%;
+  --header-a: 0.75;
+  --header-img: none;
+
+  --header-bg: hsla(var(--header-h), var(--header-s), var(--header-l), var(--header-a)); /*? allow user adjustments */
+  --header-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
+  --header-link: var(--header-text);
+
+  /*? allow custom or auto contrast */
+  --header-heading: var(--heading-light);
+  --header-strongheading: var(--strongheading-light);
+
+  --header-fg-h: var(--primary-h);
+  --header-fg-s: var(--text-light-s); /*? auto contrast */
+  --header-fg-l: var(--text-light-l); /*? auto contrast */
+  --header-fg-a: var(--primary-a);
+  --header-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
+
+  /*! headerimg */
+  --headerimg-h: 0;
+  --headerimg-s: 0%;
+  --headerimg-l: 0%;
+  --headerimg-a: 0.75;
+  --headerimg-img: url('/assets/background/sunset.webp');
+
+  --headerimg-bg: hsla(var(--headerimg-h), var(--headerimg-s), var(--headerimg-l), var(--headerimg-a)); /*? allow user adjustments */
+  --headerimg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
+  --headerimg-link: hsl(var(--link-light-h), var(--link-light-s), var(--link-light-l)); /*? auto contrast */
+
+  /*? allow custom or auto contrast */
+  --headerimg-heading: var(--heading-light);
+  --headerimg-strongheading: var(--strongheading-light);
+
+  --headerimg-fg-h: var(--primary-h);
+  --headerimg-fg-s: var(--primary-s);
+  --headerimg-fg-l: var(--primary-l);
+  --headerimg-fg-a: var(--primary-a);
+  --headerimg-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
+
+  /*! footer */
+  --footer-h: 0;
+  --footer-s: 0%;
+  --footer-l: 0%;
+  --footer-a: 0.75;
+  --footer-img: url('/assets/background/wave.webp');
+
+  --footer-bg: hsla(var(--footer-h), var(--footer-s), var(--footer-l), var(--footer-a)); /*? allow user adjustments */
+  --footer-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
+  --footer-link: hsl(var(--link-light-h), var(--link-light-s), var(--link-light-l)); /*? auto contrast */
+
+  /*? allow custom or auto contrast */
+  --footer-heading: var(--heading-light);
+  --footer-strongheading: var(--strongheading-light);
+
+  --footer-fg-h: var(--primary-h);
+  --footer-fg-s: var(--primary-s);
+  --footer-fg-l: var(--primary-l);
+  --footer-fg-a: var(--primary-a);
+  --footer-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
+
+  /*! copyright */
+  --copyright-h: 0;
+  --copyright-s: 0%;
+  --copyright-l: 0%;
+  --copyright-a: 0.75;
+  --copyright-img: none;
+
+  --copyright-bg: hsla(var(--copyright-h), var(--copyright-s), var(--copyright-l), var(--copyright-a)); /*? allow user adjustments */
+  --copyright-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
+  --copyright-link: var(--copyright-text);
+
+  /*? allow custom or auto contrast */
+  --copyright-heading: var(--heading-light);
+  --copyright-strongheading: var(--strongheading-light);
+
+  --copyright-fg-h: var(--primary-h);
+  --copyright-fg-s: var(--text-light-s); /*? auto contrast */
+  --copyright-fg-l: var(--text-light-l); /*? auto contrast */
+  --copyright-fg-a: var(--primary-a);
+  --copyright-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
+
+  /** default colors */
+  --color-h: var(--base-h);
+  --color-s: var(--base-s);
+  --color-l: var(--base-l);
+  --color-a: var(--base-a);
+  --color-img: var(--base-img);
+
+  --bg: var(--base-bg);
+  --text: var(--base-text);
+  --link: var(--base-link);
+  --heading: var(--base-heading);
+  --strongheading: var(--base-strongheading);
+
+  --color-fg-h: var(--base-fg-h);
+  --color-fg-s: var(--base-fg-s);
+  --color-fg-l: var(--base-fg-l);
+  --color-fg-a: var(--base-fg-a);
+  --color-fg-text: var(--base-fg-text);
+}
