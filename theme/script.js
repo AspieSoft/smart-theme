@@ -28,5 +28,17 @@ async function onReady(cb){
 }
 
 onReady(async function(){
-  
+
+  function onInterval(){
+    document.querySelectorAll('.widget > *, .sidebar > *').forEach(function(elm) {
+      if(elm.clientHeight < window.innerHeight - 150) {
+        elm.classList.add('widget-smaller-than-vh');
+      }else{
+        elm.classList.remove('widget-smaller-than-vh');
+      }
+    });
+  }
+  onInterval();
+  setInterval(onInterval, 1000);
+
 });

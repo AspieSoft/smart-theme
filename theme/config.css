@@ -1,5 +1,50 @@
 :root {
   /* todo: copy other non-color options from old config */
+
+  /** common fonts */
+  --ff-sans: 'Roboto', ui-sans-serif, system-ui, sans-serif;
+  --ff-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  --ff-serif: Superclarendon, 'Bookman Old Style', 'URW Bookman', 'URW Bookman L', 'Georgia Pro', Georgia, serif;
+  --ff-cursive: 'Segoe Print', 'Bradley Hand', Chilanka, TSCu_Comic, casual, cursive;
+  --ff-logo: 'Varela Round', Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif;
+
+  /** font settings */
+  --font-size: 1.1rem;
+  --line-height: 1.5em;
+
+  --base-font: var(--ff-sans);
+  --heading-font: var(--ff-serif);
+
+  --header-font: var(--ff-sans);
+  --headerimg-font: var(--ff-sans);
+  --footer-font: var(--ff-sans);
+  --input-font: var(--ff-sans);
+  --logo-font: var(--ff-logo);
+  --copyright-font: var(--ff-logo);
+
+  /** layout settings */
+  --page-padding-inline: 1rem;
+  --page-padding-inline-desktop: 1.5rem;
+  /* --page-content-max-width: 120ch; */
+  /* --page-content-max-width: 70rem; */
+  --page-content-max-width: 1250px;
+  /* --page-breakout-max-width: 75rem; */
+  --page-breakout-max-width: 1320px;
+  --page-hard-max-width: 1400px; /*? only for page-bg mode */
+
+  /** other settings */
+  --headerimg-width: auto; /*? only for side image */
+  --headerimg-height: 100vh;
+  --headernav-justify: center; /*? center | flex-start | flex-end | space-around | space-evenly | stretch */
+  --nav-underline-radius: 0.125em; /*? default: 0.125em | cool effect: 50% */
+
+  --widget-size: 20%;
+  --widget-max-size: 320px;
+
+  --shadow-size: 0.25rem;
+  --textshadow-size: 0.1em;
+
+  --border-radius: 0.5em;
 }
 
 /** Dark Theme */
@@ -36,9 +81,15 @@
   --heading-mid: hsl(var(--color-fg-h), var(--text-mid-s), var(--text-mid-l));
 
   /*? allow user adjustments */
-  --strongheading-dark: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 10), var(--color-fg-s), 20), hsl(calc(var(--color-fg-h) + 10), var(--color-fg-s), 35));
-  --strongheading-light: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 10), var(--color-fg-s), 75), hsl(calc(var(--color-fg-h) + 10), var(--color-fg-s), 90));
-  --strongheading-mid: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 10), var(--color-fg-s), 45), hsl(calc(var(--color-fg-h) + 10), var(--color-fg-s), 60));
+  --strongheading-dark: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 5), calc(var(--color-fg-s) - 10), 20), hsl(calc(var(--color-fg-h) + 5),  calc(var(--color-fg-s) + 10), 35));
+  --strongheading-light: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 5),  calc(var(--color-fg-s) - 10), 75), hsl(calc(var(--color-fg-h) + 5),  calc(var(--color-fg-s) + 10), 90));
+  --strongheading-mid: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 5),  calc(var(--color-fg-s) - 10), 45), hsl(calc(var(--color-fg-h) + 5),  calc(var(--color-fg-s) + 10), 60));
+
+  /*! shadows */
+  --shadow-dark: rgba(0, 0, 0, 0.5);
+  --shadow-light: rgba(75, 75, 75, 0.5);
+  --textshadow-dark: rgba(0, 0, 0, 0.25);
+  --textshadow-light: rgba(75, 75, 75, 0.25);
 
   /** type colors */
 
@@ -56,6 +107,9 @@
   /*? allow custom or auto contrast */
   --primary-heading: var(--heading-light);
   --primary-strongheading: var(--strongheading-light);
+
+  --primary-shadow: var(--shadow-dark); /*? auto min contrast */
+  --primary-textshadow: var(--textshadow-dark); /*? auto min contrast */
 
   --primary-fg-h: var(--primary-h);
   --primary-fg-s: var(--text-light-s); /*? auto contrast */
@@ -78,6 +132,9 @@
   --accent-heading: var(--heading-light);
   --accent-strongheading: var(--strongheading-light);
 
+  --accent-shadow: var(--shadow-dark); /*? auto min contrast */
+  --accent-textshadow: var(--textshadow-dark); /*? auto min contrast */
+
   --accent-fg-h: var(--accent-h);
   --accent-fg-s: var(--text-light-s); /*? auto contrast */
   --accent-fg-l: var(--text-light-l); /*? auto contrast */
@@ -98,6 +155,9 @@
   /*? allow custom or auto contrast */
   --warn-heading: var(--heading-light);
   --warn-strongheading: var(--strongheading-light);
+
+  --warn-shadow: var(--shadow-dark); /*? auto min contrast */
+  --warn-textshadow: var(--textshadow-dark); /*? auto min contrast */
 
   --warn-fg-h: var(--warn-h);
   --warn-fg-s: var(--text-light-s); /*? auto contrast */
@@ -122,6 +182,9 @@
   --dark-heading: var(--heading-light);
   --dark-strongheading: var(--strongheading-light);
 
+  --dark-shadow: var(--shadow-dark); /*? auto min contrast */
+  --dark-textshadow: var(--textshadow-dark); /*? auto min contrast */
+
   --dark-fg-h: var(--primary-h);
   --dark-fg-s: var(--primary-s);
   --dark-fg-l: var(--primary-l);
@@ -142,6 +205,9 @@
   /*? allow custom or auto contrast */
   --light-heading: var(--heading-dark);
   --light-strongheading: var(--strongheading-dark);
+
+  --light-shadow: var(--shadow-light); /*? auto min contrast */
+  --light-textshadow: var(--textshadow-light); /*? auto min contrast */
 
   --light-fg-h: var(--primary-h);
   --light-fg-s: var(--primary-s);
@@ -172,11 +238,46 @@
   --base-heading: var(--heading-light);
   --base-strongheading: var(--strongheading-light);
 
+  /*? allow custom or auto min contrast */
+  --base-shadow: var(--shadow-dark);
+  --base-textshadow: var(--textshadow-dark);
+
   --base-fg-h: var(--primary-h);
   --base-fg-s: var(--primary-s);
   --base-fg-l: var(--primary-l);
   --base-fg-a: var(--primary-a);
   --base-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
+
+  /*! page */
+  --page-h: 0;
+  --page-s: 0%;
+  --page-l: 0%;
+  --page-a: 0.5;
+
+  --page-img: none;
+  --page-img-overlay: transparent;
+  --page-img-blend: overlay;
+  --page-imp-size: cover; /*? cover | contain */
+  --page-img-pos: center; /*? center | top | bottom | left | right */
+  --page-img-attachment: scroll; /*? scroll | fixed */
+
+  --page-bg: hsla(var(--page-h), var(--page-s), var(--page-l), var(--page-a)); /*? allow user adjustments */
+  --page-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
+  --page-link: hsl(var(--link-light-h), var(--link-light-s), var(--link-light-l)); /*? auto contrast */
+
+  /*? allow custom or auto contrast */
+  --page-heading: var(--heading-light);
+  --page-strongheading: var(--strongheading-light);
+
+  /*? allow custom or auto min contrast */
+  --page-shadow: var(--shadow-dark);
+  --page-textshadow: var(--textshadow-dark);
+
+  --page-fg-h: var(--primary-h);
+  --page-fg-s: var(--primary-s);
+  --page-fg-l: var(--primary-l);
+  --page-fg-a: var(--primary-a);
+  --page-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
 
   /*! card */
   --card-h: 0;
@@ -185,11 +286,11 @@
   --card-a: 0.5;
 
   --card-img: none;
-  --base-img-overlay: transparent;
-  --base-img-blend: overlay;
-  --base-imp-size: cover; /*? cover | contain */
-  --base-img-pos: center; /*? center | top | bottom | left | right */
-  --base-img-attachment: scroll; /*? scroll | fixed */
+  --card-img-overlay: transparent;
+  --card-img-blend: overlay;
+  --card-imp-size: cover; /*? cover | contain */
+  --card-img-pos: center; /*? center | top | bottom | left | right */
+  --card-img-attachment: scroll; /*? scroll | fixed */
 
   --card-bg: hsla(var(--card-h), var(--card-s), var(--card-l), var(--card-a)); /*? allow user adjustments */
   --card-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
@@ -198,6 +299,10 @@
   /*? allow custom or auto contrast */
   --card-heading: var(--heading-light);
   --card-strongheading: var(--strongheading-light);
+
+  /*? allow custom or auto min contrast */
+  --card-shadow: var(--shadow-dark);
+  --card-textshadow: var(--textshadow-dark);
 
   --card-fg-h: var(--primary-h);
   --card-fg-s: var(--primary-s);
@@ -212,11 +317,11 @@
   --header-a: 0.75;
 
   --header-img: none;
-  --base-img-overlay: transparent;
-  --base-img-blend: overlay;
-  --base-imp-size: cover; /*? cover | contain */
-  --base-img-pos: center; /*? center | top | bottom | left | right */
-  --base-img-attachment: scroll; /*? scroll | fixed */
+  --header-img-overlay: transparent;
+  --header-img-blend: overlay;
+  --header-imp-size: cover; /*? cover | contain */
+  --header-img-pos: center; /*? center | top | bottom | left | right */
+  --header-img-attachment: scroll; /*? scroll | fixed */
 
   --header-bg: hsla(var(--header-h), var(--header-s), var(--header-l), var(--header-a)); /*? allow user adjustments */
   --header-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
@@ -225,6 +330,10 @@
   /*? allow custom or auto contrast */
   --header-heading: var(--heading-light);
   --header-strongheading: var(--strongheading-light);
+
+  /*? allow custom or auto min contrast */
+  --header-shadow: var(--shadow-dark);
+  --header-textshadow: var(--textshadow-dark);
 
   --header-fg-h: var(--primary-h);
   --header-fg-s: var(--text-light-s); /*? auto contrast */
@@ -253,6 +362,10 @@
   --headerimg-heading: var(--heading-light);
   --headerimg-strongheading: var(--strongheading-light);
 
+  /*? allow custom or auto min contrast */
+  --headerimg-shadow: var(--shadow-dark);
+  --headerimg-textshadow: var(--textshadow-dark);
+
   --headerimg-fg-h: var(--primary-h);
   --headerimg-fg-s: var(--primary-s);
   --headerimg-fg-l: var(--primary-l);
@@ -280,6 +393,10 @@
   --footer-heading: var(--heading-light);
   --footer-strongheading: var(--strongheading-light);
 
+  /*? allow custom or auto min contrast */
+  --footer-shadow: var(--shadow-dark);
+  --footer-textshadow: var(--textshadow-dark);
+
   --footer-fg-h: var(--primary-h);
   --footer-fg-s: var(--primary-s);
   --footer-fg-l: var(--primary-l);
@@ -293,11 +410,11 @@
   --copyright-a: 0.75;
 
   --copyright-img: none;
-  --base-img-overlay: transparent;
-  --base-img-blend: overlay;
-  --base-imp-size: cover; /*? cover | contain */
-  --base-img-pos: center; /*? center | top | bottom | left | right */
-  --base-img-attachment: scroll; /*? scroll | fixed */
+  --copyright-img-overlay: transparent;
+  --copyright-img-blend: overlay;
+  --copyright-imp-size: cover; /*? cover | contain */
+  --copyright-img-pos: center; /*? center | top | bottom | left | right */
+  --copyright-img-attachment: scroll; /*? scroll | fixed */
 
   --copyright-bg: hsla(var(--copyright-h), var(--copyright-s), var(--copyright-l), var(--copyright-a)); /*? allow user adjustments */
   --copyright-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
@@ -307,6 +424,10 @@
   --copyright-heading: var(--heading-light);
   --copyright-strongheading: var(--strongheading-light);
 
+  /*? allow custom or auto min contrast */
+  --copyright-shadow: var(--shadow-dark);
+  --copyright-textshadow: var(--textshadow-dark);
+
   --copyright-fg-h: var(--primary-h);
   --copyright-fg-s: var(--text-light-s); /*? auto contrast */
   --copyright-fg-l: var(--text-light-l); /*? auto contrast */
@@ -314,7 +435,7 @@
   --copyright-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
 
   /** default colors */
-  --color-h: var(--base-h);
+  /* --color-h: var(--base-h);
   --color-s: var(--base-s);
   --color-l: var(--base-l);
   --color-a: var(--base-a);
@@ -330,5 +451,5 @@
   --color-fg-s: var(--base-fg-s);
   --color-fg-l: var(--base-fg-l);
   --color-fg-a: var(--base-fg-a);
-  --color-fg-text: var(--base-fg-text);
+  --color-fg-text: var(--base-fg-text); */
 }
