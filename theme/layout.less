@@ -7,7 +7,12 @@
   --color-l: var(--base-l);
   --color-a: var(--base-a);
 
+  //? Note: only use img-lowres and img-color for base, header, and headerimg elements
+  // no need to add the extra image performance for elements the user probobly wont see until after the page loads
   --color-img: var(--base-img);
+  --color-img-lowres: var(--base-img-lowres);
+  --color-img-color: var(--base-img-color);
+
   --color-img-overlay: var(--base-img-overlay);
   --color-img-blend: var(--base-img-blend);
   --color-imp-size: var(--base-imp-size);
@@ -31,6 +36,11 @@
   --font: var(--base-font);
 }
 
+@keyframes quickfade {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
 html, body {
   font-family: var(--font);
   font-size: var(--font-size);
@@ -46,11 +56,9 @@ html, body {
 
 html {
   background-color: hsl(var(--color-h), var(--color-s), var(--color-l));
-  //todo: detect if overlay exists
-  background-image: var(--color-img) var(--color-img-overlay);
+  background-image: var(--color-img-color);
   color: var(--text);
 
-  background-blend-mode: var(--color-img-blend);
   background-size: var(--color-imp-size);
   background-position: var(--color-img-pos);
   background-attachment: fixed;
@@ -59,6 +67,38 @@ html {
   overflow-x: hidden;
   overflow-y: auto;
   overflow-y: overlay;
+
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    .pos(0, 0, 0, 0);
+    z-index: -101;
+
+    background: var(--color-img-lowres) var(--color-img-overlay);
+    background-blend-mode: var(--color-img-blend);
+    background-size: var(--color-imp-size);
+    background-position: var(--color-img-pos);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+
+    animation: quickfade 0.15s linear;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    .pos(0, 0, 0, 0);
+    z-index: -100;
+
+    background: var(--color-img) var(--color-img-overlay);
+    background-blend-mode: var(--color-img-blend);
+    background-size: var(--color-imp-size);
+    background-position: var(--color-img-pos);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+  }
 }
 
 body {
@@ -208,5 +248,110 @@ main {
     margin-inline: auto;
 
     box-shadow: 0 0 var(--shadow-size) var(--shadow);
+  }
+}
+
+//* Spacer
+.spacer {
+  display: block;
+  height: 0.2rem;
+  margin: 0.5rem;
+  border-radius: 0.2rem;
+  background: none;
+
+  &.fill {
+    background: var(--text);
+    box-shadow: 0 0 var(--shadow-size) var(--shadow);
+  }
+}
+
+//* Row
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: stretch;
+  align-items: stretch;
+
+  &.row-gap {
+    gap: 1.5rem;
+  }
+
+  &.row-align-start {
+    align-items: flex-start;
+  }
+
+  &.row-align-center {
+    align-items: center;
+  }
+
+  &.row-align-end {
+    align-items: flex-end;
+  }
+
+  &.row-start {
+    justify-content: flex-start;
+  }
+
+  &.row-center {
+    justify-content: center;
+  }
+
+  &.row-end {
+    justify-content: flex-end;
+  }
+
+  &.row-space, &.row-space-around {
+    justify-content: space-around;
+  }
+
+  &.row-even, &.row-space-even, &.row-space-evenly {
+    justify-content: space-evenly;
+  }
+
+  &.row-between, &.row-space-between {
+    justify-content: space-between;
+  }
+
+  &.row-reverse {
+    flex-direction: row-reverse;
+  }
+
+  &.row-scroll {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-x: overlay;
+
+    & > * {
+      flex-shrink: 0;
+    }
+  }
+
+  &.row-wrap-reverse, &.row-reverse-wrap {
+    flex-wrap: wrap-reverse;
+  }
+
+  &.row-span > *, &.row-expand > * {
+    flex-grow: 3;
+  }
+
+  & > .row-span, & > .row-expand {
+    flex-grow: 3;
+  }
+
+  & > .row-span-smaller, & > .row-expand-smaller {
+    flex-grow: 1.25;
+  }
+
+  & > .row-span-small, & > .row-expand-small {
+    flex-grow: 2;
+  }
+
+  & > .row-span-big, & > .row-expand-big {
+    flex-grow: 4.5;
+  }
+
+  & > .row-span-bigger, & > .row-expand-bigger {
+    flex-grow: 7;
   }
 }

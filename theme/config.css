@@ -223,7 +223,10 @@
   --base-l: 10%;
   --base-a: 1;
 
-  --base-img: url('/assets/background/beach.webp');
+  --base-img: url('/assets/background/beach.1080p.webp');
+  --base-img-lowres: url('/assets/background/beach.480p.webp'); /*? auto generate lowres */
+  --base-img-color: linear-gradient(172deg, #b6a8a0, #c6ac8d, #94806d, #7a6e63, #675e54); /* ? auto generate based on image colors (rotate image 8deg, scale image 1x5, use image colors in order from top to bottom) */
+
   --base-img-overlay: transparent;
   --base-img-blend: overlay;
   --base-imp-size: cover; /*? cover | contain */
@@ -317,6 +320,9 @@
   --header-a: 0.75;
 
   --header-img: none;
+  --header-img-lowres: none; /*? auto generate lowres */
+  --header-img-color: transparent; /* ? auto generate based on image colors (rotate image 8deg, scale image 1x5, use image colors in order from top to bottom) */
+
   --header-img-overlay: transparent;
   --header-img-blend: overlay;
   --header-imp-size: cover; /*? cover | contain */
@@ -347,7 +353,10 @@
   --headerimg-l: 0%;
   --headerimg-a: 0.75;
 
-  --headerimg-img: url('/assets/background/sunset.webp');
+  --headerimg-img: url('/assets/background/sunset.webp'); /*? note: if original image is smaller than 1080p, than it should not be scaled up */
+  --headerimg-img-lowres: url('/assets/background/sunset.480p.webp'); /*? auto generate lowres */
+  --headerimg-img-color: linear-gradient(172deg, #b6a8a0, #c6ac8d, #94806d, #7a6e63, #675e54); /* ? auto generate based on image colors (rotate image 8deg, scale image 1x5, use image colors in order from top to bottom) */
+
   --headerimg-img-overlay: rgba(0, 0, 0, 0.25);
   --headerimg-img-blend: overlay;
   --headerimg-imp-size: cover; /*? cover | contain */
@@ -378,7 +387,7 @@
   --footer-l: 0%;
   --footer-a: 0.75;
 
-  --footer-img: url('/assets/background/wave.webp');
+  --footer-img: url('/assets/background/wave.webp'); /*? note: if image is not immediately visible to the user on first page load, we only need to scale down to 1080p (if smaller than the original) */
   --footer-img-overlay: rgba(0, 0, 0, 0.25);
   --footer-img-blend: overlay;
   --footer-imp-size: cover; /*? cover | contain */

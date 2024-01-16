@@ -29,6 +29,10 @@ async function onReady(cb){
 
 onReady(async function(){
 
+  //todo: see if its possible to detect user browser width server side
+  // or just use js to lazy load images to a good scale based on the page width
+  // may need to detect if js is enabled (server side)
+
   function onInterval(){
     document.querySelectorAll('.widget > *, .sidebar > *').forEach(function(elm) {
       if(elm.clientHeight < window.innerHeight - 150) {
