@@ -7,7 +7,7 @@
   --color-l: var(--base-l);
   --color-a: var(--base-a);
 
-  //? Note: only use img-lowres and img-color for base, header, and headerimg elements
+  //? Note: only use img-lowres, img-color, overlay, and blend for base and headerimg elements
   // no need to add the extra image performance for elements the user probobly wont see until after the page loads
   --color-img: var(--base-img);
   --color-img-lowres: var(--base-img-lowres);
@@ -15,7 +15,7 @@
 
   --color-img-overlay: var(--base-img-overlay);
   --color-img-blend: var(--base-img-blend);
-  --color-imp-size: var(--base-imp-size);
+  --color-img-size: var(--base-img-size);
   --color-img-pos: var(--base-img-pos);
   --color-img-attachment: var(--base-img-attachment);
 
@@ -59,9 +59,10 @@ html {
   background-image: var(--color-img-color);
   color: var(--text);
 
-  background-size: var(--color-imp-size);
+  background-blend-mode: var(--color-img-blend);
+  background-size: var(--color-img-size);
   background-position: var(--color-img-pos);
-  background-attachment: fixed;
+  background-attachment: var(--color-img-attachment);
   background-repeat: no-repeat;
 
   overflow-x: hidden;
@@ -74,13 +75,13 @@ html {
     content: '';
     position: absolute;
     .pos(0, 0, 0, 0);
-    z-index: -101;
+    z-index: -11;
 
     background: var(--color-img-lowres) var(--color-img-overlay);
     background-blend-mode: var(--color-img-blend);
-    background-size: var(--color-imp-size);
+    background-size: var(--color-img-size);
     background-position: var(--color-img-pos);
-    background-attachment: fixed;
+    background-attachment: var(--color-img-attachment);
     background-repeat: no-repeat;
 
     animation: quickfade 0.15s linear;
@@ -90,11 +91,11 @@ html {
     content: '';
     position: absolute;
     .pos(0, 0, 0, 0);
-    z-index: -100;
+    z-index: -10;
 
     background: var(--color-img) var(--color-img-overlay);
     background-blend-mode: var(--color-img-blend);
-    background-size: var(--color-imp-size);
+    background-size: var(--color-img-size);
     background-position: var(--color-img-pos);
     background-attachment: fixed;
     background-repeat: no-repeat;
@@ -112,7 +113,7 @@ main {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  padding-block: var(--page-padding-inline, 1rem);
+  padding-block: 20px;
   box-shadow: 0 0 var(--shadow-size) var(--shadow);
   z-index: 100;
 
@@ -156,13 +157,13 @@ main {
     width: var(--widget-size);
     max-width: var(--widget-max-size);
     margin: 0;
-    padding: var(--page-padding-inline, 1rem);
+    padding: 20px var(--page-padding-inline, 1rem);
     box-sizing: border-box;
     z-index: 50;
 
     & > :last-child.widget-smaller-than-vh {
       position: sticky;
-      top: calc(var(--page-padding-inline, 1rem) + var(--header-height, 0.001px));
+      top: calc(var(--header-height, 0.001px) + 20px);
     }
 
     &.page-bg, &.card-bg {
@@ -205,8 +206,8 @@ main {
 
   box-sizing: border-box;
 
-  @media (min-width: @mobile-width) {
-    --padding-inline: var(--page-padding-inline-desktop);
+  @media (max-width: @mobile-width) {
+    --padding-inline: var(--page-padding-inline-mobile, 1rem);
   }
 
   & > :not(.breakout, .full-width) {
@@ -353,5 +354,56 @@ main {
 
   & > .row-span-bigger, & > .row-expand-bigger {
     flex-grow: 7;
+  }
+}
+
+//* Colors
+.page-bg, .card-bg, .dark-bg, .light-bg, .primary-bg, .accent-bg, .warn-bg {
+  background-color: hsla(var(--color-h), var(--color-s), var(--color-l), var(--color-a));
+  background: linear-gradient(172deg, hsla(calc(var(--color-h) + 5), calc(var(--color-s) - 10%), calc(var(--color-l) - 10%), var(--color-a)), hsla(calc(var(--color-h) - 5), calc(var(--color-s) + 10%), calc(var(--color-l) + 10%), var(--color-a)));
+
+  color: var(--text);
+  box-shadow: 0 0 var(--shadow-size) var(--shadow);
+  border-radius: var(--border-radius);
+
+  // backdrop-filter: blur(2rem);
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  z-index: 10;
+}
+
+.page-bg {
+  --color-h: var(--page-h);
+  --color-s: var(--page-s);
+  --color-l: var(--page-l);
+  --color-a: var(--page-a);
+
+  //? Note: only use img-lowres, img-color, overlay, and blend for base and headerimg elements
+  // no need to add the extra image performance for elements the user probobly wont see until after the page loads
+  --color-img: var(--page-img);
+  --color-img-size: var(--page-img-size);
+  --color-img-pos: var(--page-img-pos);
+  --color-img-attachment: var(--page-img-attachment);
+
+  --bg: var(--page-bg);
+  --text: var(--page-text);
+  --link: var(--page-link);
+  --heading: var(--page-heading);
+  --strongheading: var(--page-strongheading);
+  --textshadow: var(--page-shadow);
+
+  --color-fg-h: var(--page-fg-h);
+  --color-fg-s: var(--page-fg-s);
+  --color-fg-l: var(--page-fg-l);
+  --color-fg-a: var(--page-fg-a);
+  --color-fg-text: var(--page-fg-text);
+
+  --font: var(--page-font);
+
+  & > * {
+    --shadow: var(--headerimg-shadow);
   }
 }

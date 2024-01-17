@@ -23,8 +23,8 @@
   --copyright-font: var(--ff-logo);
 
   /** layout settings */
-  --page-padding-inline: 1rem;
-  --page-padding-inline-desktop: 1.5rem;
+  --page-padding-inline: 1.5rem;
+  --page-padding-inline-mobile: 0.5rem;
   /* --page-content-max-width: 120ch; */
   /* --page-content-max-width: 70rem; */
   --page-content-max-width: 1250px;
@@ -81,9 +81,9 @@
   --heading-mid: hsl(var(--color-fg-h), var(--text-mid-s), var(--text-mid-l));
 
   /*? allow user adjustments */
-  --strongheading-dark: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 5), calc(var(--color-fg-s) - 10), 20), hsl(calc(var(--color-fg-h) + 5),  calc(var(--color-fg-s) + 10), 35));
-  --strongheading-light: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 5),  calc(var(--color-fg-s) - 10), 75), hsl(calc(var(--color-fg-h) + 5),  calc(var(--color-fg-s) + 10), 90));
-  --strongheading-mid: linear-gradient(45deg, hsl(calc(var(--color-fg-h) - 5),  calc(var(--color-fg-s) - 10), 45), hsl(calc(var(--color-fg-h) + 5),  calc(var(--color-fg-s) + 10), 60));
+  --strongheading-dark: linear-gradient(45deg, hsl(calc(var(--color-fg-h) + 5), calc(var(--color-fg-s) - 10%), 30%), hsl(calc(var(--color-fg-h) - 5),  calc(var(--color-fg-s) + 10%), 40%));
+  --strongheading-light: linear-gradient(45deg, hsl(calc(var(--color-fg-h) + 5),  calc(var(--color-fg-s) - 10%), 55%), hsl(calc(var(--color-fg-h) - 5),  calc(var(--color-fg-s) + 10%), 70%));
+  --strongheading-mid: linear-gradient(45deg, hsl(calc(var(--color-fg-h) + 5),  calc(var(--color-fg-s) - 10%), 40%), hsl(calc(var(--color-fg-h) - 5),  calc(var(--color-fg-s) + 10%), 50%));
 
   /*! shadows */
   --shadow-dark: rgba(0, 0, 0, 0.5);
@@ -98,7 +98,7 @@
   --primary-s: 100%;
   --primary-l: 34%;
   --primary-a: 1;
-  --primary-img: none;
+  /* --primary-img: none; */
 
   --primary-bg: hsla(var(--primary-h), var(--primary-s), var(--primary-l), var(--primary-a)); /*? allow user adjustments */
   --primary-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
@@ -122,7 +122,7 @@
   --accent-s: 80%;
   --accent-l: 35%;
   --accent-a: 1;
-  --accent-img: none;
+  /* --accent-img: none; */
 
   --accent-bg: hsla(var(--accent-h), var(--accent-s), var(--accent-l), var(--accent-a)); /*? allow user adjustments */
   --accent-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
@@ -146,7 +146,7 @@
   --warn-s: 76%;
   --warn-l: 46%;
   --warn-a: 1;
-  --warn-img: none;
+  /* --warn-img: none; */
 
   --warn-bg: hsla(var(--warn-h), var(--warn-s), var(--warn-l), var(--warn-a)); /*? allow user adjustments */
   --warn-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
@@ -172,7 +172,7 @@
   --dark-s: 0%; /*? 0-15 */
   --dark-l: 17%; /*? 0-49 */
   --dark-a: 1;
-  --dark-img: none;
+  /* --dark-img: none; */
 
   --dark-bg: hsla(var(--dark-h), var(--dark-s), var(--dark-l), var(--dark-a)); /*? allow user adjustments */
   --dark-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l)); /*? auto contrast */
@@ -196,7 +196,7 @@
   --light-s: 0%; /*? 0-15 */
   --light-l: 94%; /*? 50-100 */
   --light-a: 1;
-  --light-img: none;
+  /* --light-img: none; */
 
   --light-bg: hsla(var(--light-h), var(--light-s), var(--light-l), var(--light-a)); /*? allow user adjustments */
   --light-text: hsl(var(--color-fg-h), var(--text-dark-s), var(--text-dark-l)); /*? auto contrast */
@@ -218,7 +218,7 @@
   /** emement colors */
 
   /*! base */
-  --base-h: 0;
+  --base-h: var(--color-fg-h);
   --base-s: 0%;
   --base-l: 10%;
   --base-a: 1;
@@ -229,7 +229,7 @@
 
   --base-img-overlay: transparent;
   --base-img-blend: overlay;
-  --base-imp-size: cover; /*? cover | contain */
+  --base-img-size: cover; /*? cover | contain */
   --base-img-pos: center; /*? center | top | bottom | left | right */
   --base-img-attachment: fixed;
 
@@ -252,15 +252,16 @@
   --base-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
 
   /*! page */
-  --page-h: 0;
+  --page-h: var(--color-fg-h);
   --page-s: 0%;
   --page-l: 0%;
   --page-a: 0.5;
 
-  --page-img: none;
+  /* todo: remove page-img variants (and other element/color types that dont need them) */
+  /* --page-img: linear-gradient(172deg, hsla(calc(var(--page-h) + 5), calc(var(--page-s) - 10%), calc(var(--page-l) - 10%), var(--page-a)), hsla(calc(var(--page-h) - 5), calc(var(--page-s) + 10%), calc(var(--page-l) + 10%), var(--page-a))); */
   --page-img-overlay: transparent;
   --page-img-blend: overlay;
-  --page-imp-size: cover; /*? cover | contain */
+  --page-img-size: cover; /*? cover | contain */
   --page-img-pos: center; /*? center | top | bottom | left | right */
   --page-img-attachment: scroll; /*? scroll | fixed */
 
@@ -283,15 +284,15 @@
   --page-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
 
   /*! card */
-  --card-h: 0;
+  --card-h: var(--color-fg-h);
   --card-s: 0%;
   --card-l: 0%;
   --card-a: 0.5;
 
-  --card-img: none;
+  /* --card-img: none; */
   --card-img-overlay: transparent;
   --card-img-blend: overlay;
-  --card-imp-size: cover; /*? cover | contain */
+  --card-img-size: cover; /*? cover | contain */
   --card-img-pos: center; /*? center | top | bottom | left | right */
   --card-img-attachment: scroll; /*? scroll | fixed */
 
@@ -314,18 +315,22 @@
   --card-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
 
   /*! header */
-  --header-h: 0;
+  --header-h: var(--color-fg-h);
   --header-s: 0%;
   --header-l: 0%;
   --header-a: 0.75;
+  --header-a-top: 0; /*? only for scroll animation */
 
+  /* --header-img: url('/assets/background/dark.1080p.webp'); */
+  /* --header-img-lowres: url('/assets/background/dark.480p.webp'); */
+  /* --header-img-color: linear-gradient(172deg, #000000, #0f0f0f); */
   --header-img: none;
-  --header-img-lowres: none; /*? auto generate lowres */
-  --header-img-color: transparent; /* ? auto generate based on image colors (rotate image 8deg, scale image 1x5, use image colors in order from top to bottom) */
+  --header-img-lowres: none;
+  --header-img-color: none;
 
   --header-img-overlay: transparent;
   --header-img-blend: overlay;
-  --header-imp-size: cover; /*? cover | contain */
+  --header-img-size: cover; /*? cover | contain */
   --header-img-pos: center; /*? center | top | bottom | left | right */
   --header-img-attachment: scroll; /*? scroll | fixed */
 
@@ -348,18 +353,18 @@
   --header-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
 
   /*! headerimg */
-  --headerimg-h: 0;
+  --headerimg-h: var(--color-fg-h);
   --headerimg-s: 0%;
   --headerimg-l: 0%;
   --headerimg-a: 0.75;
 
   --headerimg-img: url('/assets/background/sunset.webp'); /*? note: if original image is smaller than 1080p, than it should not be scaled up */
   --headerimg-img-lowres: url('/assets/background/sunset.480p.webp'); /*? auto generate lowres */
-  --headerimg-img-color: linear-gradient(172deg, #b6a8a0, #c6ac8d, #94806d, #7a6e63, #675e54); /* ? auto generate based on image colors (rotate image 8deg, scale image 1x5, use image colors in order from top to bottom) */
+  --headerimg-img-color: linear-gradient(172deg, #101b42, #574854, #7c4c36, #3e343c, #3e343c); /* ? auto generate based on image colors (rotate image 8deg, scale image 1x5, use image colors in order from top to bottom) */
 
   --headerimg-img-overlay: rgba(0, 0, 0, 0.25);
   --headerimg-img-blend: overlay;
-  --headerimg-imp-size: cover; /*? cover | contain */
+  --headerimg-img-size: cover; /*? cover | contain */
   --headerimg-img-pos: center; /*? center | top | bottom | left | right */
   --headerimg-img-attachment: fixed; /*? fixed | scroll */
 
@@ -382,7 +387,7 @@
   --headerimg-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
 
   /*! footer */
-  --footer-h: 0;
+  --footer-h: var(--color-fg-h);
   --footer-s: 0%;
   --footer-l: 0%;
   --footer-a: 0.75;
@@ -390,7 +395,7 @@
   --footer-img: url('/assets/background/wave.webp'); /*? note: if image is not immediately visible to the user on first page load, we only need to scale down to 1080p (if smaller than the original) */
   --footer-img-overlay: rgba(0, 0, 0, 0.25);
   --footer-img-blend: overlay;
-  --footer-imp-size: cover; /*? cover | contain */
+  --footer-img-size: cover; /*? cover | contain */
   --footer-img-pos: center; /*? center | top | bottom | left | right */
   --footer-img-attachment: fixed; /*? fixed | scroll */
 
@@ -413,15 +418,15 @@
   --footer-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
 
   /*! copyright */
-  --copyright-h: 0;
+  --copyright-h: var(--color-fg-h);
   --copyright-s: 0%;
   --copyright-l: 0%;
   --copyright-a: 0.75;
 
-  --copyright-img: none;
+  /* --copyright-img: none; */
   --copyright-img-overlay: transparent;
   --copyright-img-blend: overlay;
-  --copyright-imp-size: cover; /*? cover | contain */
+  --copyright-img-size: cover; /*? cover | contain */
   --copyright-img-pos: center; /*? center | top | bottom | left | right */
   --copyright-img-attachment: scroll; /*? scroll | fixed */
 
