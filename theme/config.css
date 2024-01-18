@@ -223,11 +223,9 @@
   --base-l: 10%;
   --base-a: 1;
 
-  --base-img: url('/assets/background/beach.1080p.webp');
-  --base-img-lowres: url('/assets/background/beach.480p.webp'); /*? auto generate lowres */
-  --base-img-color: linear-gradient(172deg, #b6a8a0, #c6ac8d, #94806d, #7a6e63, #675e54); /* ? auto generate based on image colors (rotate image 8deg, scale image 1x5, use image colors in order from top to bottom) */
-
+  --base-img: url('/assets/background/beach.480p.webp');
   --base-img-overlay: transparent;
+  --base-img-opacity: 1;
   --base-img-blend: overlay;
   --base-img-size: cover; /*? cover | contain */
   --base-img-pos: center; /*? center | top | bottom | left | right */
@@ -255,11 +253,12 @@
   --page-h: var(--color-fg-h);
   --page-s: 0%;
   --page-l: 0%;
-  --page-a: 0.5;
+  --page-a: 0.75;
 
   /* todo: remove page-img variants (and other element/color types that dont need them) */
-  /* --page-img: linear-gradient(172deg, hsla(calc(var(--page-h) + 5), calc(var(--page-s) - 10%), calc(var(--page-l) - 10%), var(--page-a)), hsla(calc(var(--page-h) - 5), calc(var(--page-s) + 10%), calc(var(--page-l) + 10%), var(--page-a))); */
+  --page-img: linear-gradient(172deg, hsla(calc(var(--page-h) + 5), calc(var(--page-s) - 10%), calc(var(--page-l) - 10%), var(--page-a)), hsla(calc(var(--page-h) - 5), calc(var(--page-s) + 10%), calc(var(--page-l) + 10%), var(--page-a)));
   --page-img-overlay: transparent;
+  --page-img-opacity: 1;
   --page-img-blend: overlay;
   --page-img-size: cover; /*? cover | contain */
   --page-img-pos: center; /*? center | top | bottom | left | right */
@@ -289,8 +288,9 @@
   --card-l: 0%;
   --card-a: 0.5;
 
-  /* --card-img: none; */
+  --card-img: none;
   --card-img-overlay: transparent;
+  --card-img-opacity: 1;
   --card-img-blend: overlay;
   --card-img-size: cover; /*? cover | contain */
   --card-img-pos: center; /*? center | top | bottom | left | right */
@@ -321,14 +321,10 @@
   --header-a: 0.75;
   --header-a-top: 0; /*? only for scroll animation */
 
-  /* --header-img: url('/assets/background/dark.1080p.webp'); */
-  /* --header-img-lowres: url('/assets/background/dark.480p.webp'); */
-  /* --header-img-color: linear-gradient(172deg, #000000, #0f0f0f); */
-  --header-img: none;
-  --header-img-lowres: none;
-  --header-img-color: none;
-
+  /* --header-img: url('/assets/background/dark.480p.webp'); */
+  --header-img: linear-gradient(180deg, hsla(var(--header-h), var(--header-s), var(--header-l), 1), hsla(var(--header-h), var(--header-s), var(--header-l), var(--header-a)));
   --header-img-overlay: transparent;
+  --header-img-opacity: 1;
   --header-img-blend: overlay;
   --header-img-size: cover; /*? cover | contain */
   --header-img-pos: center; /*? center | top | bottom | left | right */
@@ -356,13 +352,11 @@
   --headerimg-h: var(--color-fg-h);
   --headerimg-s: 0%;
   --headerimg-l: 0%;
-  --headerimg-a: 0.75;
+  --headerimg-a: 1;
 
-  --headerimg-img: url('/assets/background/sunset.webp'); /*? note: if original image is smaller than 1080p, than it should not be scaled up */
-  --headerimg-img-lowres: url('/assets/background/sunset.480p.webp'); /*? auto generate lowres */
-  --headerimg-img-color: linear-gradient(172deg, #101b42, #574854, #7c4c36, #3e343c, #3e343c); /* ? auto generate based on image colors (rotate image 8deg, scale image 1x5, use image colors in order from top to bottom) */
-
+  --headerimg-img: url('/assets/background/sunset.480p.webp'); /*? note: if original image is smaller than 1080p, than it should not be scaled up */
   --headerimg-img-overlay: rgba(0, 0, 0, 0.25);
+  --headerimg-img-opacity: 1;
   --headerimg-img-blend: overlay;
   --headerimg-img-size: cover; /*? cover | contain */
   --headerimg-img-pos: center; /*? center | top | bottom | left | right */
@@ -394,6 +388,7 @@
 
   --footer-img: url('/assets/background/wave.webp'); /*? note: if image is not immediately visible to the user on first page load, we only need to scale down to 1080p (if smaller than the original) */
   --footer-img-overlay: rgba(0, 0, 0, 0.25);
+  --footer-img-opacity: 1;
   --footer-img-blend: overlay;
   --footer-img-size: cover; /*? cover | contain */
   --footer-img-pos: center; /*? center | top | bottom | left | right */
@@ -423,8 +418,9 @@
   --copyright-l: 0%;
   --copyright-a: 0.75;
 
-  /* --copyright-img: none; */
+  --copyright-img: none;
   --copyright-img-overlay: transparent;
+  --copyright-img-opacity: 1;
   --copyright-img-blend: overlay;
   --copyright-img-size: cover; /*? cover | contain */
   --copyright-img-pos: center; /*? center | top | bottom | left | right */
@@ -447,23 +443,4 @@
   --copyright-fg-l: var(--text-light-l); /*? auto contrast */
   --copyright-fg-a: var(--primary-a);
   --copyright-fg-text: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
-
-  /** default colors */
-  /* --color-h: var(--base-h);
-  --color-s: var(--base-s);
-  --color-l: var(--base-l);
-  --color-a: var(--base-a);
-  --color-img: var(--base-img);
-
-  --bg: var(--base-bg);
-  --text: var(--base-text);
-  --link: var(--base-link);
-  --heading: var(--base-heading);
-  --strongheading: var(--base-strongheading);
-
-  --color-fg-h: var(--base-fg-h);
-  --color-fg-s: var(--base-fg-s);
-  --color-fg-l: var(--base-fg-l);
-  --color-fg-a: var(--base-fg-a);
-  --color-fg-text: var(--base-fg-text); */
 }

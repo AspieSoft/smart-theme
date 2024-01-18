@@ -7,10 +7,8 @@ header {
   --color-a: var(--header-a);
 
   --color-img: var(--header-img);
-  --color-img-lowres: var(--header-img-lowres);
-  --color-img-color: var(--header-img-color);
-
   --color-img-overlay: var(--header-img-overlay);
+  --color-img-opacity: var(--header-img-opacity);
   --color-img-blend: var(--header-img-blend);
   --color-img-size: var(--header-img-size);
   --color-img-pos: var(--header-img-pos);
@@ -42,7 +40,6 @@ header {
   line-height: var(--line-height);
   text-shadow: 2px 2px var(--textshadow-size) var(--textshadow);
 
-  // background-color: hsl(var(--color-h), var(--color-s), var(--color-l));
   color: var(--text);
 
   min-height: var(--header-height);
@@ -69,12 +66,6 @@ header {
 
   .header-top {
     background-color: hsla(var(--color-h), var(--color-s), var(--color-l), var(--color-a));
-    background-image: var(--color-img-color);
-
-    background-size: var(--color-img-size);
-    background-position: var(--color-img-pos);
-    background-attachment: fixed;
-    background-repeat: no-repeat;
 
     margin: 0;
     padding: 15px 40px;
@@ -91,29 +82,14 @@ header {
       content: '';
       position: absolute;
       .pos(0, 0, 0, 0);
-      z-index: -11;
-  
-      background: var(--color-img-lowres) var(--color-img-overlay);
-      background-blend-mode: var(--color-img-blend);
-      background-size: var(--color-img-size);
-      background-position: var(--color-img-pos);
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-  
-      animation: quickfade 0.15s linear;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      .pos(0, 0, 0, 0);
       z-index: -10;
-  
+
       background: var(--color-img) var(--color-img-overlay);
+      opacity: var(--color-img-opacity, 1);
       background-blend-mode: var(--color-img-blend);
       background-size: var(--color-img-size);
       background-position: var(--color-img-pos);
-      background-attachment: fixed;
+      background-attachment: var(--color-img-attachment);
       background-repeat: no-repeat;
     }
   }
@@ -125,10 +101,8 @@ header {
     --color-a: var(--headerimg-a);
 
     --color-img: var(--headerimg-img);
-    --color-img-lowres: var(--headerimg-img-lowres);
-    --color-img-color: var(--headerimg-img-color);
-
     --color-img-overlay: var(--headerimg-img-overlay);
+    --color-img-opacity: var(--headerimg-img-opacity);
     --color-img-blend: var(--headerimg-img-blend);
     --color-img-size: var(--headerimg-img-size);
     --color-img-pos: var(--headerimg-img-pos);
@@ -156,12 +130,6 @@ header {
 
   .header-img {
     background-color: hsla(var(--color-h), var(--color-s), var(--color-l), var(--color-a));
-    background-image: var(--color-img-color);
-
-    background-size: var(--color-img-size);
-    background-position: var(--color-img-pos);
-    background-attachment: fixed;
-    background-repeat: no-repeat;
 
     min-height: var(--headerimg-height, 30vh);
     margin: 0;
@@ -183,29 +151,14 @@ header {
       content: '';
       position: absolute;
       .pos(0, 0, 0, 0);
-      z-index: -11;
-  
-      background: var(--color-img-lowres) var(--color-img-overlay);
-      background-blend-mode: var(--color-img-blend);
-      background-size: var(--color-img-size);
-      background-position: var(--color-img-pos);
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-  
-      animation: quickfade 0.15s linear;
-    }
-
-    &::after {
-      content: '';
-      position: absolute;
-      .pos(0, 0, 0, 0);
       z-index: -10;
-  
+
       background: var(--color-img) var(--color-img-overlay);
+      opacity: var(--color-img-opacity, 1);
       background-blend-mode: var(--color-img-blend);
       background-size: var(--color-img-size);
       background-position: var(--color-img-pos);
-      background-attachment: fixed;
+      background-attachment: var(--color-img-attachment);
       background-repeat: no-repeat;
     }
 

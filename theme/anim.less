@@ -1,8 +1,32 @@
 @import 'common.less';
 
 @keyframes scroll-header-top {
-  0% {background-color: hsla(var(--color-h), var(--color-s), var(--color-l), var(--color-a-top)); box-shadow: 0 0 0 var(--shadow);}
-  100% {background-color: hsla(var(--color-h), var(--color-s), var(--color-l), var(--color-a)); box-shadow: 0 0 var(--shadow-size) var(--shadow);}
+  0% {
+    background-color: hsla(var(--color-h), var(--color-s), var(--color-l), var(--header-a-top));
+    box-shadow: 0 0 0 var(--shadow);
+  }
+  100% {
+    background-color: hsla(var(--color-h), var(--color-s), var(--color-l), var(--color-a));
+    box-shadow: 0 0 var(--shadow-size) var(--shadow);
+  }
+}
+
+@keyframes scroll-header-top-shadow {
+  0% {
+    box-shadow: 0 0 0 var(--shadow);
+  }
+  100% {
+    box-shadow: 0 0 var(--shadow-size) var(--shadow);
+  }
+}
+
+@keyframes scroll-header-top-img {
+  0% {
+    opacity: var(--header-a-top);
+  }
+  100% {
+    opacity: var(--color-img-opacity, 1);
+  }
 }
 
 @keyframes scroll-scale-bg-w {
@@ -20,13 +44,20 @@
     animation: scroll-header-top ease-out forwards;
     animation-timeline: view(y);
     animation-range-start: exit;
-    animation-range-end: exit calc(var(--headerimg-height) / 1);
+    animation-range-end: exit calc(var(--headerimg-height) / 2);
+
+    &::before {
+      animation: scroll-header-top-img ease-out forwards;
+      animation-timeline: view(y);
+      animation-range-start: exit;
+      animation-range-end: exit calc(var(--headerimg-height) / 2);
+    }
   }
 
   @media (prefers-reduced-motion: no-preference) {
     header .header-img {
       &.background-size-w, &.background-size-h {
-        &::after {
+        &::before {
           animation-timing-function: linear;
           animation-fill-mode: forwards;
           animation-timeline: view(y);
@@ -35,13 +66,13 @@
       }
 
       &.background-size-w {
-        &::after {
+        &::before {
           animation-name: scroll-scale-bg-w;
         }
       }
 
       &.background-size-h {
-        &::after {
+        &::before {
           animation-name: scroll-scale-bg-h;
         }
       }
@@ -49,7 +80,7 @@
 
     footer {
       &.background-size-w, &.background-size-h {
-        &::after {
+        &::before {
           animation-timing-function: linear;
           animation-fill-mode: forwards;
           animation-direction: reverse;
@@ -59,13 +90,13 @@
       }
 
       &.background-size-w {
-        &::after {
+        &::before {
           animation-name: scroll-scale-bg-w;
         }
       }
 
       &.background-size-h {
-        &::after {
+        &::before {
           animation-name: scroll-scale-bg-h;
         }
       }

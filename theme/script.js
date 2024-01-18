@@ -53,11 +53,11 @@ onReady(async function(){
       }
 
       const css = window.getComputedStyle(elm);
-      if(typeof css['background-size'] !== 'string' || typeof css.getPropertyValue('--color-img') !== 'string'){
+      if(typeof css.getPropertyValue('--color-img-size') !== 'string' || typeof css.getPropertyValue('--color-img') !== 'string'){
         return;
       }
 
-      if(css['background-size'].includes('cover')){
+      if(css.getPropertyValue('--color-img-size').includes('cover')){
         css.getPropertyValue('--color-img').replace(/url\s*\(\s*(["'`])(.*?)\1\s*\)/i, function(_, _, url){
           const img = new Image();
           img.src = url;
@@ -76,6 +76,18 @@ onReady(async function(){
             img.remove();
           }
         });
+      }
+    });
+
+    document.querySelectorAll('header .header-top').forEach(function(elm) {
+      const css = window.getComputedStyle(elm);
+      const img = css.getPropertyValue('--color-img');
+      if(img !== '' && img !== 'none' && img.match(/^\s*([\w_-]+-gradient|url)/)){
+        elm.style['background-color'] = 'transparent';
+        elm.style['animation-name'] = 'scroll-header-top-shadow';
+      }else{
+        elm.style['background-color'] = '';
+        elm.style['animation-name'] = '';
       }
     });
   }
@@ -109,5 +121,44 @@ onReady(async function(){
   }
   onResize();
   window.addEventListener('resize', onResize, {passive: true});
+
+  //todo: add other imidiatelly visible header elements to list
+  document.querySelectorAll('html, header .header-img, header .header-top').forEach(function(elm){
+    const css = window.getComputedStyle(elm);
+    let src = css.getPropertyValue('--color-img');
+    if(src.startsWith('url')){
+      src = src.replace(/^\s*[\w_-]+\s*\(\s*(["'`])(.*?)\1\s*\)\s*$/, '$2');
+
+      if(!src.match(/\.[0-9]+p\.([\w_-]+)$/)){
+        return;
+      }
+
+      if(window.innerWidth <= 800){
+        src = src.replace(/\.[0-9]+p\.([\w_-]+)$/, '.720p.$1');
+      }else if(window.innerWidth <= 2000){
+        src = src.replace(/\.[0-9]+p\.([\w_-]+)$/, '.1080p.$1');
+      }else{
+        src = src.replace(/\.[0-9]+p\.([\w_-]+)$/, '.$1');
+      }
+
+      const img = new Image();
+      img.onload = function(){
+        elm.style.setProperty('--color-img', `url('${src.replace(/(\\*)([\\'])/g, function(_, s, q){
+          if(s.length % 0 === 0){
+            return s+'\\'+q;
+          }else{
+            return s+q;
+          }
+        })}')`);
+      };
+      img.onerror = function(){
+        if(src.match(/\.[0-9]+p\.([\w_-]+)$/)){
+          src = src.replace(/\.[0-9]+p\.([\w_-]+)$/, '.$1');
+          img.src = src;
+        }
+      };
+      img.src = src;
+    }
+  });
 
 });

@@ -7,13 +7,9 @@
   --color-l: var(--base-l);
   --color-a: var(--base-a);
 
-  //? Note: only use img-lowres, img-color, overlay, and blend for base and headerimg elements
-  // no need to add the extra image performance for elements the user probobly wont see until after the page loads
   --color-img: var(--base-img);
-  --color-img-lowres: var(--base-img-lowres);
-  --color-img-color: var(--base-img-color);
-
   --color-img-overlay: var(--base-img-overlay);
+  --color-img-opacity: var(--base-img-opacity)
   --color-img-blend: var(--base-img-blend);
   --color-img-size: var(--base-img-size);
   --color-img-pos: var(--base-img-pos);
@@ -36,11 +32,6 @@
   --font: var(--base-font);
 }
 
-@keyframes quickfade {
-  from {opacity: 0;}
-  to {opacity: 1;}
-}
-
 html, body {
   font-family: var(--font);
   font-size: var(--font-size);
@@ -56,14 +47,7 @@ html, body {
 
 html {
   background-color: hsl(var(--color-h), var(--color-s), var(--color-l));
-  background-image: var(--color-img-color);
   color: var(--text);
-
-  background-blend-mode: var(--color-img-blend);
-  background-size: var(--color-img-size);
-  background-position: var(--color-img-pos);
-  background-attachment: var(--color-img-attachment);
-  background-repeat: no-repeat;
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -75,29 +59,14 @@ html {
     content: '';
     position: absolute;
     .pos(0, 0, 0, 0);
-    z-index: -11;
+    z-index: -10;
 
-    background: var(--color-img-lowres) var(--color-img-overlay);
+    background: var(--color-img) var(--color-img-overlay);
+    opacity: var(--color-img-opacity, 1);
     background-blend-mode: var(--color-img-blend);
     background-size: var(--color-img-size);
     background-position: var(--color-img-pos);
     background-attachment: var(--color-img-attachment);
-    background-repeat: no-repeat;
-
-    animation: quickfade 0.15s linear;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    .pos(0, 0, 0, 0);
-    z-index: -10;
-
-    background: var(--color-img) var(--color-img-overlay);
-    background-blend-mode: var(--color-img-blend);
-    background-size: var(--color-img-size);
-    background-position: var(--color-img-pos);
-    background-attachment: fixed;
     background-repeat: no-repeat;
   }
 }
@@ -368,8 +337,11 @@ main {
 
   // backdrop-filter: blur(2rem);
 
-  background-size: cover;
-  background-position: center;
+  opacity: var(--color-img-opacity, 1);
+  background-blend-mode: var(--color-img-blend);
+  background-size: var(--color-img-size);
+  background-position: var(--color-img-pos);
+  background-attachment: var(--color-img-attachment);
   background-repeat: no-repeat;
 
   z-index: 10;
