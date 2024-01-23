@@ -131,9 +131,8 @@ func handleCompileTheme(port string){
 			return
 		}
 
-		//todo: replace less with sass/scss
-		// compileSass(themeDir, themeDist)
-		compileCSS(themeDir, themeDist)
+		compileLess(themeDir, themeDist)
+		// compileCSS(themeDir, themeDist)
 		compileJS(themeDir, themeDist)
 
 		if port == "" {
@@ -143,23 +142,16 @@ func handleCompileTheme(port string){
 		watcher := fs.Watcher()
 		watcher.OnAny = func(path, op string) {
 			path = string(regex.Comp(`^%1[\\/]?`, themeDir).RepStrLit([]byte(path), []byte{}))
-			if (strings.HasSuffix(path, ".scss") && !strings.HasSuffix(path, ".min.scss")) || (strings.HasSuffix(path, ".sass") && !strings.HasSuffix(path, ".min.sass")) {
-				// compileSass(themeDir, themeDist)
-			}else if strings.HasSuffix(path, ".less") && !strings.HasSuffix(path, ".min.less") {
-				// compileLess(themeDir, themeDist)
+			if strings.HasSuffix(path, ".less") && !strings.HasSuffix(path, ".min.less") {
+				compileLess(themeDir, themeDist)
 			}else if strings.HasSuffix(path, ".css") && !strings.HasSuffix(path, ".min.css") {
-				compileCSS(themeDir, themeDist)
+				// compileCSS(themeDir, themeDist)
 			}else if strings.HasSuffix(path, ".js") && !strings.HasSuffix(path, ".min.js") {
 				compileJS(themeDir, themeDist)
 			}
 		}
 		watcher.WatchDir(themeDir)
 	}
-}
-
-
-func compileSass(themeDir string, themeDist string){
-	
 }
 
 
@@ -201,10 +193,16 @@ func compileLess(themeDir string, themeDist string){
 		}
 	}
 
+	res = compileGoLess(res)
+
 	m := minify.New()
 	m.AddFunc("text/css", css.Minify)
 	if res, err := m.Bytes("text/css", res); err == nil {
 		res = append([]byte("/*! "+config["theme_name"]+" "+config["theme_version"]+" | "+config["theme_license"]+" | "+config["theme_uri"]+" */\n"), res...)
+
+		if path, err := fs.JoinPath(themeDist, "style.css"); err == nil {
+			os.WriteFile(path, res, 0755)
+		}
 
 		if path, err := fs.JoinPath(themeDist, "style.min.css"); err == nil {
 			os.WriteFile(path, res, 0755)
@@ -220,6 +218,20 @@ func compileLess(themeDir string, themeDist string){
 			os.WriteFile(path, res, 0755)
 		}
 	}
+}
+
+func compileGoLess(buf []byte) []byte {
+	//todo: compile special functions from go.less
+
+	buf = regex.Comp(`---COMP_text_contrast:\s*hsl\(([0-9]+(?:deg|)),\s*([0-9]+(?:%|\.[0-9]+)),\s*([0-9]+(?:%|\.[0-9]+))\);?`).RepFunc(buf, func(data func(int) []byte) []byte {
+		//todo: calculate best contrast to text color
+		
+		return []byte{}
+	})
+
+	fmt.Println(string(buf))
+
+	return buf
 }
 
 
