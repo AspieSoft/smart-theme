@@ -1,2 +1,2 @@
 /*! Smart Theme v0.0.1 | MIT License | github.com/AspieSoft/smart-theme */
-:root{---COMP_set_color-text: (192, 100, 80);---COMP_set_color-text-dark: (192, 100, 60);---COMP_set_text-fg-v: (192, 0, 10) auto [80];---COMP_set_text-text: (192, 0, 10) auto [192];---COMP_set_text-link: (192, 0, 10) auto [192];---COMP_set_text-heading: (192, 0, 10) auto [192];---COMP_set_text-strongheading: (192, 0, 10) auto [192, 100]}
+:root{---COMP_set_text-fg-v: (192, 0, 10) auto [80];---COMP_set_text-text: (192, 0, 10) auto [192];---COMP_set_text-link: (192, 0, 10) auto [192];---COMP_set_text-heading: (192, 0, 10) auto [192];---COMP_set_text-strongheading: (192, 0, 10) auto [192, 100]}

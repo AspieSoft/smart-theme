@@ -11,13 +11,20 @@
   )`;
 
   @color-h: `'@{name}' === 'warn' ? (
-    (@{primary-h} - 20 < @{tmp_h2} || @{primary-h} + 20 > @{tmp_h2}) && (@{accent-h} - 20 < @{tmp_h2} || @{accent-h} + 20 > @{tmp_h2}) ? @{tmp_h2} : (
-      @{primary-h} > 20 && @{accent-h} > 20 ? 0 : (
-        (@{primary-h} - 20 < 270 || @{primary-h} + 20 > 270) && (@{accent-h} - 20 < 270 || @{accent-h} + 20 > 270) ? 270 : (
-          (@{primary-h} - 20 < 32 || @{primary-h} + 20 > 32) && (@{accent-h} - 20 < 32 || @{accent-h} + 20 > 32) ? 32 : (
-            (@{primary-h} - 20 < 330 || @{primary-h} + 20 > 330) && (@{accent-h} - 20 < 330 || @{accent-h} + 20 > 330) ? 330 : (
-              (@{primary-h} - 20 < 54 || @{primary-h} + 20 > 54) && (@{accent-h} - 20 < 54 || @{accent-h} + 20 > 54) ? 54 : (
-                (@{primary-h} - 20 < 300 || @{primary-h} + 20 > 300) && (@{accent-h} - 20 < 300 || @{accent-h} + 20 > 300) ? 300 : @{tmp_h2}
+    /* self */
+    !((@{tmp_h2} < @{primary-h} + 20 || @{tmp_h2} > @{primary-h} - 20 || (@{primary-h} < 20 && @{tmp_h2} > 360 - @{primary-h}) || (@{primary-h} > 340 && @{tmp_h2} < 360 - @{primary-h})) || (@{tmp_h2} < @{accent-h} + 20 || @{tmp_h2} > @{accent-h} - 20 || (@{accent-h} < 20 && @{tmp_h2} > 360 - @{accent-h}) || (@{accent-h} > 340 && @{tmp_h2} < 360 - @{accent-h}))) ? @{tmp_h2} : (
+      /* red */
+      !((0 < @{primary-h} + 20 || 0 > @{primary-h} - 20 || (@{primary-h} < 20 && 0 > 360 - @{primary-h}) || (@{primary-h} > 340 && 0 < 360 - @{primary-h})) || (0 < @{accent-h} + 20 || 0 > @{accent-h} - 20 || (@{accent-h} < 20 && 0 > 360 - @{accent-h}) || (@{accent-h} > 340 && 0 < 360 - @{accent-h}))) ? 0 : (
+        /* purple */
+        !((270 < @{primary-h} + 20 || 270 > @{primary-h} - 20 || (@{primary-h} < 20 && 270 > 360 - @{primary-h}) || (@{primary-h} > 340 && 270 < 360 - @{primary-h})) || (270 < @{accent-h} + 20 || 270 > @{accent-h} - 20 || (@{accent-h} < 20 && 270 > 360 - @{accent-h}) || (@{accent-h} > 340 && 270 < 360 - @{accent-h}))) ? 270 : (
+          /* orange */
+          !((32 < @{primary-h} + 20 || 32 > @{primary-h} - 20 || (@{primary-h} < 20 && 32 > 360 - @{primary-h}) || (@{primary-h} > 340 && 32 < 360 - @{primary-h})) || (32 < @{accent-h} + 20 || 32 > @{accent-h} - 20 || (@{accent-h} < 20 && 32 > 360 - @{accent-h}) || (@{accent-h} > 340 && 32 < 360 - @{accent-h}))) ? 32 : (
+            /* pink */
+            !((330 < @{primary-h} + 20 || 330 > @{primary-h} - 20 || (@{primary-h} < 20 && 330 > 360 - @{primary-h}) || (@{primary-h} > 340 && 330 < 360 - @{primary-h})) || (330 < @{accent-h} + 20 || 330 > @{accent-h} - 20 || (@{accent-h} < 20 && 330 > 360 - @{accent-h}) || (@{accent-h} > 340 && 330 < 360 - @{accent-h}))) ? 330 : (
+              /* yellow */
+              !((54 < @{primary-h} + 20 || 54 > @{primary-h} - 20 || (@{primary-h} < 20 && 54 > 360 - @{primary-h}) || (@{primary-h} > 340 && 54 < 360 - @{primary-h})) || (54 < @{accent-h} + 20 || 54 > @{accent-h} - 20 || (@{accent-h} < 20 && 54 > 360 - @{accent-h}) || (@{accent-h} > 340 && 54 < 360 - @{accent-h}))) ? 54 : (
+                /* light purple */
+                !((300 < @{primary-h} + 20 || 300 > @{primary-h} - 20 || (@{primary-h} < 20 && 300 > 360 - @{primary-h}) || (@{primary-h} > 340 && 300 < 360 - @{primary-h})) || (300 < @{accent-h} + 20 || 300 > @{accent-h} - 20 || (@{accent-h} < 20 && 300 > 360 - @{accent-h}) || (@{accent-h} > 340 && 300 < 360 - @{accent-h}))) ? 300 : @{tmp_h2}
               )
             )
           )
@@ -36,11 +43,8 @@
 
 
   //todo: see if best contrast can be determined in less (or with js eval)
-  @color-text: auto; //? hsl(@{color-h}deg, @{text-s}%, @{test-light-l}%)
-  ---COMP_set_color-text: (@color-h, @color-s, @color-v);
-
-  @color-text-dark: auto; //? hsl(@{color-h}deg, @{text-s}%, @{test-light-l}%)
-  ---COMP_set_color-text-dark: (@color-h, @color-s, @color-v-dark);
+  @color-text: contrast(hsv(@color-h, `@{color-s} / 100`, `@{color-v} / 100`), hsl(@color-h, `@{text-s} / 100`, `@{text-dark-l} / 100`), hsl(@color-h, `@{text-s} / 100`, `@{text-light-l} / 100`), 45%);
+  @color-text-dark: contrast(hsv(@color-h, `@{color-s} / 100`, `@{color-v-dark} / 100`), hsl(@color-h, `@{text-s} / 100`, `@{text-dark-l} / 100`), hsl(@color-h, `@{text-s} / 100`, `@{text-light-l} / 100`), 45%);
 }
 
 .set_elm(@name){
