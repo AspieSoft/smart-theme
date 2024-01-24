@@ -1,2 +1,9 @@
-/*! Smart Theme v0.0.1 | MIT License | github.com/AspieSoft/smart-theme */
-:root{--primary-h:192deg;--primary-s:100%;--primary-l:40%;--primary-text:var(--text-light);--bg-h:192deg;--bg-s:0%;--bg-l:10%;--fg-h:var(--color-h);--fg-s:var(--color-s);--fg-l:var(--color-l);--fg-text:var(--color-text);--text:var(--text-light);--link:var(--link-light);--heading:var(--heading-light, var(--text-light));--strongheading:var(--strongheading-light, linear-gradient(45deg, hsl(calc(var(--fg-h) + 5), calc(var(--fg-s) - 10%), 55%), hsl(calc(var(--fg-h) - 5), calc(var(--fg-s) + 10%), 70%)));--textshadow:var(--textshadow-light);--img:var(--base-img);--img-size:var(--base-img-size);--img-pos:var(--base-img-pos);--img-att:var(--base-img-att)}:root>*{--shadow:var(--shadow-light)}@media(prefers-color-scheme:dark){:root{--primary-l:30%}}
+:root {
+  ---COMP_set_color-text: (192, 100, 80);
+  ---COMP_set_color-text-dark: (192, 100, 60);
+  ---COMP_set_text-fg-v: (192, 0, 10) auto [80];
+  ---COMP_set_text-text: (192, 0, 10) auto [192];
+  ---COMP_set_text-link: (192, 0, 10) auto [192];
+  ---COMP_set_text-heading: (192, 0, 10) auto [192];
+  ---COMP_set_text-strongheading: (192, 0, 10) auto [192, 100];
+}

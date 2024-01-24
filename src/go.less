@@ -1,33 +1,80 @@
-.auto_contrast(@h, @s, @l, @elm: auto){
-  //!Compiled
-  ---COMP_auto_contrast: hsl(@h, @s, @l), @elm;
-}
-
 .set_color(@name){
-  @color-h: ~"@{@{name}-h}";
-  @color-s: ~"@{@{name}-s}";
-  @color-l: ~"@{@{name}-l}";
-  @color-l-dark: ~"@{@{name}-l-dark}";
-  @color-text: ~"@{@{name}-text}";
+  @tmp_h: ~"@{@{name}-h}";
+  @tmp_h2: `'@{name}' === 'accent' ? (
+    Math.abs(@{tmp_h} - @{primary-h}) < 20 ? @{primary-h} : @{tmp_h}
+  ) : (
+    '@{name}' === 'warn' ? (
+      @{tmp_h} <= 64 || @{tmp_h} >= 264 ? @{tmp_h} : (
+        @{tmp_h} <= 164 - @{tmp_h} ? 64 : 264
+      )
+    ) : @{tmp_h}
+  )`;
 
-  --@{name}-h: ~"@{@{name}-h}";
-  --@{name}-s: ~"@{@{name}-s}";
-  --@{name}-l: ~"@{@{name}-l}";
-  --@{name}-text: ~"@{@{name}-text}";
+  @color-h: `'@{name}' === 'warn' ? (
+    (@{primary-h} - 20 < @{tmp_h2} || @{primary-h} + 20 > @{tmp_h2}) && (@{accent-h} - 20 < @{tmp_h2} || @{accent-h} + 20 > @{tmp_h2}) ? @{tmp_h2} : (
+      @{primary-h} > 20 && @{accent-h} > 20 ? 0 : (
+        (@{primary-h} - 20 < 270 || @{primary-h} + 20 > 270) && (@{accent-h} - 20 < 270 || @{accent-h} + 20 > 270) ? 270 : (
+          (@{primary-h} - 20 < 32 || @{primary-h} + 20 > 32) && (@{accent-h} - 20 < 32 || @{accent-h} + 20 > 32) ? 32 : (
+            (@{primary-h} - 20 < 330 || @{primary-h} + 20 > 330) && (@{accent-h} - 20 < 330 || @{accent-h} + 20 > 330) ? 330 : (
+              (@{primary-h} - 20 < 54 || @{primary-h} + 20 > 54) && (@{accent-h} - 20 < 54 || @{accent-h} + 20 > 54) ? 54 : (
+                (@{primary-h} - 20 < 300 || @{primary-h} + 20 > 300) && (@{accent-h} - 20 < 300 || @{accent-h} + 20 > 300) ? 300 : @{tmp_h2}
+              )
+            )
+          )
+        )
+      )
+    )
+  ) : @{tmp_h2}`;
 
-  @media (prefers-color-scheme: dark) {
-    --@{name}-l: ~"@{@{name}-l-dark}";
-  }
-}
+  @tmp_s: ~"@{@{name}-s}";
+  @color-s: `@{tmp_s} < 15 ? 15 : @{tmp_s}`;
 
-.set_img(@name){
-  --img: ~"var(--@{name}-img)";
-  --img-size: ~"var(--@{name}-img-size)";
-  --img-pos: ~"var(--@{name}-img-pos)";
-  --img-att: ~"var(--@{name}-img-att)";
+  @color-v: ~"@{@{name}-v}";
+
+  @tmp_v-dark: ~"@{@{name}-v-dark}";
+  @color-v-dark: `@{tmp_v-dark} < 15 ? 15 : @{tmp_v-dark}`;
+
+
+  @color-text: auto; //? hsl(@{color-h}deg, @{text-s}%, @{test-light-l}%)
+  ---COMP_set_color-text: (@color-h, @color-s, @color-v);
+
+  @color-text-dark: auto; //? hsl(@{color-h}deg, @{text-s}%, @{test-light-l}%)
+  ---COMP_set_color-text-dark: (@color-h, @color-s, @color-v-dark);
 }
 
 .set_elm(@name){
-  .auto_contrast(@color-h, ~"@{@{name}-s}", ~"@{@{name}-l}", ~"@{@{name}-fg}" ~"@{@{name}-link}" ~"@{@{name}-heading}" ~"@{@{name}-strongheading}");
-  .set_img(@name);
+  @bg-h: @color-h;
+  @bg-s: ~"@{@{name}-s}";
+  @bg-v: ~"@{@{name}-v}";
+  @DARK_bg-v: ~"@{DARK_@{name}-v}";
+
+  @bg-fg: ~"@{@{name}-fg}";
+}
+
+.set_text(){
+  @fg-h: @color-h;
+  @fg-s: `'@{bg-fg}' === 'text' ? @{text-s} : @{color-s}`;
+
+  @fg-v: auto; //? `'@{bg-fg}' === 'text' ? @{text-dark-l} : @{color-v}`
+  ---COMP_set_text-fg-v: (@bg-h, @bg-s, @bg-v) @bg-fg [@color-v];
+
+  @fg-text: @color-text;
+  @fg-text-dark: @color-text-dark;
+
+  @text: auto; //? hsl(@{color-h}deg, @{text-s}%, @{test-dark-l}%)
+  ---COMP_set_text-text: (@bg-h, @bg-s, @bg-v) @bg-fg [@color-h];
+
+  @link: auto; //? hsl(@{link-dark-h}deg, @{link-dark-s}%, @{link-dark-l}%) | hsl(@{color-h}deg, @{text-s}%, @{test-dark-l}%)
+  ---COMP_set_text-link: (@bg-h, @bg-s, @bg-v) @bg-fg [@color-h];
+
+  @heading: auto; //? @heading-dark | hsl(@{color-h}deg, @{text-s}%, @{test-dark-l}%)
+  ---COMP_set_text-heading: (@bg-h, @bg-s, @bg-v) @bg-fg [@color-h];
+
+  //todo: add var reference to gradient colors for dark and light
+  @strongheading: auto; //? @strongheading-dark | TODO
+  ---COMP_set_text-strongheading: (@bg-h, @bg-s, @bg-v) @bg-fg [@fg-h, @fg-s];
+  //! dark: linear-gradient(45deg, hsl(calc(var(--color-fg-h) + 5), calc(var(--color-fg-s) - 10%), 30%), hsl(calc(var(--color-fg-h) - 5),  calc(var(--color-fg-s) + 10%), 40%));
+  //! light: linear-gradient(45deg, hsl(calc(var(--color-fg-h) + 5),  calc(var(--color-fg-s) - 10%), 55%), hsl(calc(var(--color-fg-h) - 5),  calc(var(--color-fg-s) + 10%), 70%));
+
+  //todo: set shadow colors
 }

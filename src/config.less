@@ -1,114 +1,106 @@
 //* Text
-@text-dark-s: 0%; //? 0 - 10
-@text-dark-l: 6%; //? 0 - 40
+@text-s: 0; //? 0 - 10
 
-@text-light-s: 0%; //? 0 - 10
-@text-light-l: 100%; //? 60 - 100
+@text-dark-l: 6; //? 0 - 40
+@text-light-l: 100; //? 60 - 100
 
-//* Text Elements
-@link-dark: hsl(204, 77%, 45%); //? h: 180 - 260, l: 0 - 49
-@link-light: hsl(197, 81%, 58%); //? h: 180 - 260, l: 50 - 100
+//* Link
+@link-dark-h: 204; //? 180 - 260
+@link-dark-s: 77; //? 15 - 100
+@link-dark-l: 45; //? 0 - 49
 
-//? optional
+@link-light-h: 197; //? 180 - 260
+@link-light-s: 81; //? 15 - 100
+@link-light-l: 58; //? 50 - 100
+
+//* Heading
 @heading-dark: auto;
 @heading-light: auto;
-// @heading-dark: hsl(var(--color-fg-h), var(--text-dark-s), var(--text-dark-l));
-// @heading-light: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
 
-//? optional
 @strongheading-dark: auto;
 @strongheading-light: auto;
-// @strongheading-dark: linear-gradient(45deg, hsl(calc(var(--color-fg-h) + 5), calc(var(--color-fg-s) - 10%), 30%), hsl(calc(var(--color-fg-h) - 5),  calc(var(--color-fg-s) + 10%), 40%));
-// @strongheading-light: linear-gradient(45deg, hsl(calc(var(--color-fg-h) + 5),  calc(var(--color-fg-s) - 10%), 55%), hsl(calc(var(--color-fg-h) - 5),  calc(var(--color-fg-s) + 10%), 70%));
 
-@shadow-dark: hsla(0, 0%, 0%, 0.5);
-@shadow-light: hsla(0, 0%, 29%, 0.5);
+//* Shadow
+@shadow-dark: hsla(0, 0, 0, 0.5);
+@shadow-light: hsla(0, 0, 29, 0.5);
 
-@textshadow-dark: hsla(0, 0%, 0%, 0.25);
-@textshadow-light: hsla(0, 0%, 29%, 0.25);
+@textshadow-dark: hsla(0, 0, 0, 0.25);
+@textshadow-light: hsla(0, 0, 29, 0.25);
 
 //* Colors
 @primary-h: 192;
-@primary-s: 100%; //? 15 - 100
-@primary-l: 40%;
-@primary-l-dark: 30%;
-@primary-text: auto;
+@primary-s: 100; //? 15 - 100
+@primary-v: 80;
+@primary-v-dark: 60; //? 0 - 65
 
-@accent-h: 130;
-@accent-s: 80%; //? 15 - 100
-@accent-l: 40%;
-@accent-l-dark: 30%;
-@accent-text: auto;
+@accent-h: 130; //? more than 20 away from primary
+@accent-s: 90; //? 15 - 100
+@accent-v: 72;
+@accent-v-dark: 52; //? 0 - 65
 
-@warn-h: 0;
-@warn-s: 76%; //? 15 - 100
-@warn-l: 45%;
-@warn-l-dark: 35%;
-@warn-text: auto;
+@warn-h: 0; //? red: 0 - 64 or 264 - 360, and more than 20 away from primary and accent
+@warn-s: 85; //? 15 - 100
+@warn-v: 80;
+@warn-v-dark: 60; //? 0 - 65
 
 //* Background Colors
-@dark-s: 0%; //? 0 - 15
-@dark-l: 17%; //? 0 - 49
-@dark-l-dark: 17%; //? 0 - 30
-@dark-text: auto; //todo: compile dark text contrast
-
-@light-s: 0%; //? 0 - 15
-@light-l: 94%; //? 50 - 100
-@light-l-dark: 45%; //? 15 - 45 (must be 15 > @dark-l-dark)
-@light-text: auto; //todo: compile light text contrast
-@light-text-dark: auto; //todo: compile light text contrast for dark mode
+@dark-s: 0; //? 0 - 15
+@light-s: 0; //? 0 - 15
 
 //* Elements
-@base-s: 0%;
-@base-l: 10%;
-@base-fg: color; //? text | color | primary | accent
-@base-link: link; //? link | text
-@base-heading: heading; //? heading | text
-@base-strongheading: heading; //? heading | text
+@base-s: 0;
+@base-fg: auto; //? auto | text
 
-@page-s: 0%;
-@page-l: 0%;
-@page-fg: color; //? text | primary | accent
-@page-link: link; //? link | text
-@page-heading: heading; //? heading | text
-@page-strongheading: heading; //? heading | text
+@page-s: 0;
+@page-fg: auto; //? auto | text
 
-@card-s: 0%;
-@card-l: 0%;
-@card-fg: text; //? text | primary | accent
-@card-link: link; //? link | text
-@card-heading: heading; //? heading | text
-@card-strongheading: heading; //? heading | text
+@card-s: 0;
+@card-fg: auto; //? auto | text
 
-@header-s: 0%;
-@header-l: 0%;
-@header-fg: text; //? text | primary | accent
-@header-link: text; //? link | text
-@header-heading: heading; //? heading | text
-@header-strongheading: heading; //? heading | text
+@header-s: 0;
+@header-fg: text; //? auto | text
 
-@headerimg-s: 0%;
-@headerimg-l: 0%;
-@headerimg-fg: color; //? text | primary | accent
-@headerimg-link: link; //? link | text
-@headerimg-heading: heading; //? heading | text
-@headerimg-strongheading: heading; //? heading | text
+@headerimg-s: 0;
+@headerimg-fg: auto; //? auto | text
 
-@footer-s: 0%;
-@footer-l: 0%;
-@footer-fg: color; //? text | primary | accent
-@footer-link: link; //? link | text
-@footer-heading: heading; //? heading | text
-@footer-strongheading: heading; //? heading | text
+@footer-s: 0;
+@footer-fg: auto; //? auto | text
 
-@copyright-s: 0%;
-@copyright-l: 0%;
-@copyright-fg: text; //? text | primary | accent
-@copyright-link: text; //? link | text
-@copyright-heading: heading; //? heading | text
-@copyright-strongheading: heading; //? heading | text
+@copyright-s: 0;
+@copyright-fg: text; //? auto | text
 
-//* Images (optional)
+
+//! Light Theme
+@dark-v: 17; //? 0 - 49
+@light-v: 94; //? 50 - 100
+
+//* Elements
+@base-v: 10;
+@page-v: 0;
+@card-v: 0;
+@header-v: 0;
+@headerimg-v: 0;
+@footer-v: 0;
+@copyright-v: 0;
+
+
+//! Dark Theme
+@DARK_dark-v: 17; //? 0 - 49
+@DARK_light-v: 94; //? 0 - 49
+
+//* Elements
+@DARK_base-v: 10; //? 0 - 49
+@DARK_page-v: 0; //? 0 - 49
+@DARK_card-v: 0; //? 0 - 49
+@DARK_header-v: 0; //? 0 - 49
+@DARK_headerimg-v: 0; //? 0 - 49
+@DARK_footer-v: 0; //? 0 - 49
+@DARK_copyright-v: 0; //? 0 - 49
+
+
+//! Other Settings
+
+//* Images
 @base-img: url('/assets/background/beach.480p.webp');
 @base-img-size: cover; //? cover | contain
 @base-img-pos: center; //? center | top | bottom | left | right

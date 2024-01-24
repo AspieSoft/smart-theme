@@ -179,7 +179,8 @@ func compileLess(themeDir string, themeDist string){
 
 	if path, err := fs.JoinPath(themeDir, "config.less"); err == nil {
 		if file, err := os.ReadFile(path); err == nil {
-			lessConfig = compileGoLessConfig(file)
+			// lessConfig = compileGoLessConfig(file)
+			lessConfig = file
 			lessConfig = append(lessConfig, '\n')
 		}
 	}
@@ -206,20 +207,30 @@ func compileLess(themeDir string, themeDist string){
 		}
 	}
 
-	out, err := less.Render(string(append(lessConfig, res...)), map[string]interface{}{"compress": false})
+	out, err := less.Render(string(append(lessConfig, res...)), map[string]interface{}{
+		"compress": false,
+		"javascriptEnabled": true,
+	})
 	if err != nil {
 		fmt.Println(err)
 	}else{
 		res = []byte(out)
 	}
 
-	res = compileGoLess(res)
+	/* res = compileGoLess(res)
 
-	out, err = less.Render(string(append(lessConfig, res...)), map[string]interface{}{"compress": true})
+	out, err = less.Render(string(append(lessConfig, res...)), map[string]interface{}{
+		"compress": true,
+		"javascriptEnabled": true,
+	})
 	if err != nil {
 		fmt.Println(err)
 	}else{
 		res = []byte(out)
+	} */
+
+	if path, err := fs.JoinPath(themeDist, "style.css"); err == nil {
+		os.WriteFile(path, res, 0755)
 	}
 
 	m := minify.New()
@@ -227,9 +238,9 @@ func compileLess(themeDir string, themeDist string){
 	if res, err := m.Bytes("text/css", res); err == nil {
 		res = append([]byte("/*! "+config["theme_name"]+" "+config["theme_version"]+" | "+config["theme_license"]+" | "+config["theme_uri"]+" */\n"), res...)
 
-		if path, err := fs.JoinPath(themeDist, "style.css"); err == nil {
+		/* if path, err := fs.JoinPath(themeDist, "style.css"); err == nil {
 			os.WriteFile(path, res, 0755)
-		}
+		} */
 
 		if path, err := fs.JoinPath(themeDist, "style.min.css"); err == nil {
 			os.WriteFile(path, res, 0755)
