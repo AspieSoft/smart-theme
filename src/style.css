@@ -1,1 +1,1 @@
-html{background:red;---COMP_text_contrast:hsl(0,0%,0%)}
+:root{--primary-h:192;--primary-s:100%;--primary-l:40%;--primary-text:auto;---COMP_auto_contrast:hsl(192, 0%, 10%), color link heading heading;--img:var(--base-img);--img-size:var(--base-img-size);--img-pos:var(--base-img-pos);--img-att:var(--base-img-att)}@media (prefers-color-scheme:dark){:root{--primary-l:30%}}

@@ -1,4 +1,33 @@
-.text_contrast(@h, @s, @l){
+.auto_contrast(@h, @s, @l, @elm: auto){
   //!Compiled
-  ---COMP_text_contrast: hsl(@h, @s, @l);
+  ---COMP_auto_contrast: hsl(@h, @s, @l), @elm;
+}
+
+.set_color(@name){
+  @color-h: ~"@{@{name}-h}";
+  @color-s: ~"@{@{name}-s}";
+  @color-l: ~"@{@{name}-l}";
+  @color-l-dark: ~"@{@{name}-l-dark}";
+  @color-text: ~"@{@{name}-text}";
+
+  --@{name}-h: ~"@{@{name}-h}";
+  --@{name}-s: ~"@{@{name}-s}";
+  --@{name}-l: ~"@{@{name}-l}";
+  --@{name}-text: ~"@{@{name}-text}";
+
+  @media (prefers-color-scheme: dark) {
+    --@{name}-l: ~"@{@{name}-l-dark}";
+  }
+}
+
+.set_img(@name){
+  --img: ~"var(--@{name}-img)";
+  --img-size: ~"var(--@{name}-img-size)";
+  --img-pos: ~"var(--@{name}-img-pos)";
+  --img-att: ~"var(--@{name}-img-att)";
+}
+
+.set_elm(@name){
+  .auto_contrast(@color-h, ~"@{@{name}-s}", ~"@{@{name}-l}", ~"@{@{name}-fg}" ~"@{@{name}-link}" ~"@{@{name}-heading}" ~"@{@{name}-strongheading}");
+  .set_img(@name);
 }

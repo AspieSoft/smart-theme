@@ -21,6 +21,7 @@ require (
 	github.com/gobuffalo/packr/v2 v2.8.3 // indirect
 	github.com/google/pprof v0.0.0-20240117000934-35fc243c5815 // indirect
 	github.com/karrick/godirwalk v1.17.0 // indirect
+	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/markbates/errx v1.1.0 // indirect
 	github.com/markbates/oncer v1.0.0 // indirect
 	github.com/markbates/safe v1.0.1 // indirect

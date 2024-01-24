@@ -1,4 +1,145 @@
+//* Text
+@text-dark-s: 0%; //? 0 - 10
+@text-dark-l: 6%; //? 0 - 40
+
+@text-light-s: 0%; //? 0 - 10
+@text-light-l: 100%; //? 60 - 100
+
+//* Text Elements
+@link-dark: hsl(204, 77%, 45%); //? h: 180 - 260, l: 0 - 49
+@link-light: hsl(197, 81%, 58%); //? h: 180 - 260, l: 50 - 100
+
+//? optional
+@heading-dark: auto;
+@heading-light: auto;
+// @heading-dark: hsl(var(--color-fg-h), var(--text-dark-s), var(--text-dark-l));
+// @heading-light: hsl(var(--color-fg-h), var(--text-light-s), var(--text-light-l));
+
+//? optional
+@strongheading-dark: auto;
+@strongheading-light: auto;
+// @strongheading-dark: linear-gradient(45deg, hsl(calc(var(--color-fg-h) + 5), calc(var(--color-fg-s) - 10%), 30%), hsl(calc(var(--color-fg-h) - 5),  calc(var(--color-fg-s) + 10%), 40%));
+// @strongheading-light: linear-gradient(45deg, hsl(calc(var(--color-fg-h) + 5),  calc(var(--color-fg-s) - 10%), 55%), hsl(calc(var(--color-fg-h) - 5),  calc(var(--color-fg-s) + 10%), 70%));
+
+@shadow-dark: hsla(0, 0%, 0%, 0.5);
+@shadow-light: hsla(0, 0%, 29%, 0.5);
+
+@textshadow-dark: hsla(0, 0%, 0%, 0.25);
+@textshadow-light: hsla(0, 0%, 29%, 0.25);
+
 //* Colors
 @primary-h: 192;
+@primary-s: 100%; //? 15 - 100
+@primary-l: 40%;
+@primary-l-dark: 30%;
+@primary-text: auto;
+
 @accent-h: 130;
+@accent-s: 80%; //? 15 - 100
+@accent-l: 40%;
+@accent-l-dark: 30%;
+@accent-text: auto;
+
 @warn-h: 0;
+@warn-s: 76%; //? 15 - 100
+@warn-l: 45%;
+@warn-l-dark: 35%;
+@warn-text: auto;
+
+//* Background Colors
+@dark-s: 0%; //? 0 - 15
+@dark-l: 17%; //? 0 - 49
+@dark-l-dark: 17%; //? 0 - 30
+@dark-text: auto; //todo
+
+@light-s: 0%; //? 0 - 15
+@light-l: 94%; //? 50 - 100
+@light-l-dark: 45%; //? 15 - 45 (must be 15 > @dark-l-dark)
+@light-text: auto; //todo
+@light-text-dark: auto; //todo
+
+//* Elements
+@base-s: 0%;
+@base-l: 10%;
+@base-fg: color; //? text | color | primary | accent
+@base-link: link; //? link | text
+@base-heading: heading; //? heading | text
+@base-strongheading: heading; //? heading | text
+
+@page-s: 0%;
+@page-l: 0%;
+@page-fg: color; //? text | primary | accent
+@page-link: link; //? link | text
+@page-heading: heading; //? heading | text
+@page-strongheading: heading; //? heading | text
+
+@card-s: 0%;
+@card-l: 0%;
+@card-fg: text; //? text | primary | accent
+@card-link: link; //? link | text
+@card-heading: heading; //? heading | text
+@card-strongheading: heading; //? heading | text
+
+@header-s: 0%;
+@header-l: 0%;
+@header-fg: text; //? text | primary | accent
+@header-link: text; //? link | text
+@header-heading: heading; //? heading | text
+@header-strongheading: heading; //? heading | text
+
+@headerimg-s: 0%;
+@headerimg-l: 0%;
+@headerimg-fg: color; //? text | primary | accent
+@headerimg-link: link; //? link | text
+@headerimg-heading: heading; //? heading | text
+@headerimg-strongheading: heading; //? heading | text
+
+@footer-s: 0%;
+@footer-l: 0%;
+@footer-fg: color; //? text | primary | accent
+@footer-link: link; //? link | text
+@footer-heading: heading; //? heading | text
+@footer-strongheading: heading; //? heading | text
+
+@copyright-s: 0%;
+@copyright-l: 0%;
+@copyright-fg: text; //? text | primary | accent
+@copyright-link: text; //? link | text
+@copyright-heading: heading; //? heading | text
+@copyright-strongheading: heading; //? heading | text
+
+//* Images (optional)
+@base-img: url('/assets/background/beach.480p.webp');
+@base-img-size: cover; //? cover | contain
+@base-img-pos: center; //? center | top | bottom | left | right
+@base-img-att: fixed; //? fixed | scroll
+
+@page-img: none;
+@page-img-size: cover; //? cover | contain
+@page-img-pos: center; //? center | top | bottom | left | right
+@page-img-att: fixed; //? fixed | scroll
+
+@card-img: none;
+@card-img-size: cover; //? cover | contain
+@card-img-pos: center; //? center | top | bottom | left | right
+@card-img-att: fixed; //? fixed | scroll
+
+@header-img: none;
+@header-img-size: cover; //? cover | contain
+@header-img-pos: center; //? center | top | bottom | left | right
+@header-img-att: fixed; //? fixed | scroll
+
+@headerimg-img: url('/assets/background/sunset.480p.webp');
+@headerimg-img-size: cover; //? cover | contain
+@headerimg-img-pos: center; //? center | top | bottom | left | right
+@headerimg-img-att: fixed; //? fixed | scroll
+
+@footer-img: url('/assets/background/wave.webp');
+@footer-img-size: cover; //? cover | contain
+@footer-img-pos: center; //? center | top | bottom | left | right
+@footer-img-att: fixed; //? fixed | scroll
+
+@copyright-img: none;
+@copyright-img-size: cover; //? cover | contain
+@copyright-img-pos: center; //? center | top | bottom | left | right
+@copyright-img-att: fixed; //? fixed | scroll
