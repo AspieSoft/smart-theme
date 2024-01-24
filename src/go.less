@@ -35,6 +35,7 @@
   @color-v-dark: `@{tmp_v-dark} < 15 ? 15 : @{tmp_v-dark}`;
 
 
+  //todo: see if best contrast can be determined in less (or with js eval)
   @color-text: auto; //? hsl(@{color-h}deg, @{text-s}%, @{test-light-l}%)
   ---COMP_set_color-text: (@color-h, @color-s, @color-v);
 
