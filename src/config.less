@@ -1,137 +1,228 @@
+//! Theme Config
+
+//* Config
+@config: {
+  //* font
+  font-size: 1.1rem;
+  line-height: 1.5em;
+
+  //* layout
+  page-padding-inline: 1.5rem;
+  page-padding-inline-mobile: 0.5rem;
+  // page-content-max-width: 120ch;
+  // page-content-max-width: 1250px;
+  page-content-max-width: 1250px;
+  // page-breakout-max-width: 75rem;
+  page-breakout-max-width: 1320px;
+  page-hard-max-width: 1400px; //? only for page-bg mode
+
+  //* header image
+  headerimg-width: auto; //? only for side image
+  headerimg-height: 100vh;
+  headernav-justify: center; //? center | flex-start | flex-end | space-around | space-evenly | stretch
+  nav-underline-radius: 0.125em; //? default: 0.125em | cool effect: 50%
+
+  //* widget
+  widget-size: 20%;
+  widget-max-size: 320px;
+
+  //* shadow
+  shadow-size: 0.25rem;
+  textshadow-size: 0.1em;
+
+  //* other
+  border-radius: 0.5em;
+}
+
+//* Fonts
+@font: {
+  sans: 'Roboto', ui-sans-serif, system-ui, sans-serif;
+  mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  serif: Superclarendon, 'Bookman Old Style', 'URW Bookman', 'URW Bookman L', 'Georgia Pro', Georgia, serif;
+  cursive: 'Segoe Print', 'Bradley Hand', Chilanka, TSCu_Comic, casual, cursive;
+  logo: 'Varela Round', Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', source-sans-pro, sans-serif;
+}
+
+
+//! Theme Colors
+
 //* Text
-@text-s: 0; //? 0 - 10
+@text: {
+  dark: hsl(0deg, 0%, 6%);
+  light: hsl(0deg, 0%, 100%);
+}
 
-@text-dark-l: 6; //? 0 - 40
-@text-light-l: 100; //? 60 - 100
-
-//* Link
-@link-dark-h: 204; //? 180 - 260
-@link-dark-s: 77; //? 15 - 100
-@link-dark-l: 45; //? 0 - 49
-
-@link-light-h: 197; //? 180 - 260
-@link-light-s: 81; //? 15 - 100
-@link-light-l: 58; //? 50 - 100
+@link: {
+  dark: hsl(204, 77, 45);
+  light: hsl(197, 81, 58);
+}
 
 //* Heading
-@heading-dark: auto;
-@heading-light: auto;
+@heading: {
+  dark: auto;
+  light: auto;
+  dark_strong: auto;
+  light_strong: auto;
+  font: @font[serif];
+}
 
-@strongheading-dark: auto;
-@strongheading-light: auto;
+//* Input
+@input: {
+  dark: auto;
+  light: auto;
+  font: @font[sans];
+}
 
 //* Shadow
-@shadow-dark: hsla(0, 0, 0, 0.5);
-@shadow-light: hsla(0, 0, 29, 0.5);
-
-@textshadow-dark: hsla(0, 0, 0, 0.25);
-@textshadow-light: hsla(0, 0, 29, 0.25);
+@shadow: {
+  dark: hsla(0, 0, 0, 0.5);
+  light: hsla(0, 0, 29, 0.5);
+  dark_text: hsla(0, 0, 0, 0.25);
+  light_text: hsla(0, 0, 29, 0.25);
+}
 
 //* Colors
-@primary-h: 192;
-@primary-s: 100; //? 15 - 100
-@primary-v: 80;
-@primary-v-dark: 60; //? 0 - 65
+@primary: {
+  light: hsl(192, 100%, 40%);
+  dark: hsl(192deg, 100%, 30%);
+  fg: text; //? auto | text
+  font: auto;
+}
 
-@accent-h: 130; //? more than 20 away from primary
-@accent-s: 90; //? 15 - 100
-@accent-v: 72;
-@accent-v-dark: 52; //? 0 - 65
+@accent: {
+  light: hsl(130, 82%, 40%);
+  dark: hsl(130deg, 82%, 30%);
+  fg: text; //? auto | text
+  font: auto;
+}
 
-@warn-h: 0; //? red: 0 - 64 or 264 - 360, and more than 20 away from primary and accent
-@warn-s: 85; //? 15 - 100
-@warn-v: 80;
-@warn-v-dark: 60; //? 0 - 65
+@warn: {
+  light: hsl(0deg, 74%, 42%);
+  dark: hsl(0deg, 74%, 32%);
+  fg: text; //? auto | text
+  font: auto;
+}
 
-//* Background Colors
-@dark-s: 0; //? 0 - 15
-@light-s: 0; //? 0 - 15
+@dark: {
+  light: hsl(0deg, 0%, 17%);
+  dark: hsl(0deg, 0%, 17%);
+  fg: text; //? auto | text
+  font: auto;
+}
 
-//* Elements
-@base-s: 0;
-@base-fg: auto; //? auto | text
-
-@page-s: 0;
-@page-fg: auto; //? auto | text
-
-@card-s: 0;
-@card-fg: auto; //? auto | text
-
-@header-s: 0;
-@header-fg: text; //? auto | text
-
-@headerimg-s: 0;
-@headerimg-fg: auto; //? auto | text
-
-@footer-s: 0;
-@footer-fg: auto; //? auto | text
-
-@copyright-s: 0;
-@copyright-fg: text; //? auto | text
-
-
-//! Light Theme
-@dark-v: 17; //? 0 - 49
-@light-v: 94; //? 50 - 100
+@light: {
+  light: hsl(0deg, 0%, 94%);
+  dark: hsl(0, 0%, 28%);
+  fg: text; //? auto | text
+  font: auto;
+}
 
 //* Elements
-@base-v: 10;
-@page-v: 0;
-@card-v: 0;
-@header-v: 0;
-@headerimg-v: 0;
-@footer-v: 0;
-@copyright-v: 0;
+@base: {
+  light: hsl(0, 0, 10);
+  dark: hsl(0, 0, 10);
+  fg: auto; //? auto | text
+  font: @font[sans];
+}
+
+@page: {
+  light: hsl(0, 0, 0);
+  dark: hsl(0, 0, 0);
+  fg: auto; //? auto | text
+  font: auto;
+}
+
+@card: {
+  light: hsl(0, 0, 0);
+  dark: hsl(0, 0, 0);
+  fg: auto; //? auto | text
+  font: auto;
+}
+
+@header: {
+  light: hsl(0, 0, 0);
+  dark: hsl(0, 0, 0);
+  fg: text; //? auto | text
+  font: @font[sans];
+}
+
+@headerimg: {
+  light: hsl(0, 0, 0);
+  dark: hsl(0, 0, 0);
+  fg: auto; //? auto | text
+  font: @font[sans];
+}
+
+@footer: {
+  light: hsl(0, 0, 0);
+  dark: hsl(0, 0, 0);
+  fg: auto; //? auto | text
+  font: @font[sans];
+}
+
+@copyright: {
+  light: hsl(0, 0, 0);
+  dark: hsl(0, 0, 0);
+  fg: text; //? auto | text
+  font: @font[logo];
+}
 
 
-//! Dark Theme
-@DARK_dark-v: 17; //? 0 - 49
-@DARK_light-v: 94; //? 0 - 49
-
-//* Elements
-@DARK_base-v: 10; //? 0 - 49
-@DARK_page-v: 0; //? 0 - 49
-@DARK_card-v: 0; //? 0 - 49
-@DARK_header-v: 0; //? 0 - 49
-@DARK_headerimg-v: 0; //? 0 - 49
-@DARK_footer-v: 0; //? 0 - 49
-@DARK_copyright-v: 0; //? 0 - 49
-
-
-//! Other Settings
+//! Theme Images
 
 //* Images
-@base-img: url('/assets/background/beach.480p.webp');
-@base-img-size: cover; //? cover | contain
-@base-img-pos: center; //? center | top | bottom | left | right
-@base-img-att: fixed; //? fixed | scroll
+@base-img: {
+  light: url('/assets/background/beach.480p.webp');
+  dark: url('/assets/background/beach.480p.webp');
+  size: cover; //? cover | contain
+  pos: center; //? center | top | bottom | left | right
+  att: fixed; //? fixed | scroll
+}
 
-@page-img: none;
-@page-img-size: cover; //? cover | contain
-@page-img-pos: center; //? center | top | bottom | left | right
-@page-img-att: fixed; //? fixed | scroll
+@page-img: {
+  light: none;
+  dark: none;
+  size: cover; //? cover | contain
+  pos: center; //? center | top | bottom | left | right
+  att: fixed; //? fixed | scroll
+}
 
-@card-img: none;
-@card-img-size: cover; //? cover | contain
-@card-img-pos: center; //? center | top | bottom | left | right
-@card-img-att: fixed; //? fixed | scroll
+@card-img: {
+  light: none;
+  dark: none;
+  size: cover; //? cover | contain
+  pos: center; //? center | top | bottom | left | right
+  att: fixed; //? fixed | scroll
+}
 
-@header-img: none;
-@header-img-size: cover; //? cover | contain
-@header-img-pos: center; //? center | top | bottom | left | right
-@header-img-att: fixed; //? fixed | scroll
+@header-img: {
+  light: none;
+  dark: none;
+  size: cover; //? cover | contain
+  pos: center; //? center | top | bottom | left | right
+  att: fixed; //? fixed | scroll
+}
 
-@headerimg-img: url('/assets/background/sunset.480p.webp');
-@headerimg-img-size: cover; //? cover | contain
-@headerimg-img-pos: center; //? center | top | bottom | left | right
-@headerimg-img-att: fixed; //? fixed | scroll
+@headerimg-img: {
+  light: url('/assets/background/sunset.480p.webp');
+  dark: url('/assets/background/sunset.480p.webp');
+  size: cover; //? cover | contain
+  pos: center; //? center | top | bottom | left | right
+  att: fixed; //? fixed | scroll
+}
 
-@footer-img: url('/assets/background/wave.webp');
-@footer-img-size: cover; //? cover | contain
-@footer-img-pos: center; //? center | top | bottom | left | right
-@footer-img-att: fixed; //? fixed | scroll
+@footer-img: {
+  light: url('/assets/background/wave.webp');
+  dark: url('/assets/background/wave.webp');
+  size: cover; //? cover | contain
+  pos: center; //? center | top | bottom | left | right
+  att: fixed; //? fixed | scroll
+}
 
-@copyright-img: none;
-@copyright-img-size: cover; //? cover | contain
-@copyright-img-pos: center; //? center | top | bottom | left | right
-@copyright-img-att: fixed; //? fixed | scroll
+@copyright-img: {
+  light: none;
+  dark: none;
+  size: cover; //? cover | contain
+  pos: center; //? center | top | bottom | left | right
+  att: fixed; //? fixed | scroll
+}

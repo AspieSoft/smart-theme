@@ -57,22 +57,18 @@
 }
 
 .set_text(){
-  @fg-h: @color-h;
-  @fg-s: `'@{bg-fg}' === 'text' ? @{text-s} : @{color-s}`;
+  @text: contrast(hsv(@bg-h, `@{bg-s} / 100`, `@{bg-v} / 100`), hsl(@color-h, `@{text-s} / 100`, `@{text-dark-l} / 100`), hsl(@color-h, `@{text-s} / 100`, `@{text-light-l} / 100`), 45%);
 
-  @fg-v: auto; //? `'@{bg-fg}' === 'text' ? @{text-dark-l} : @{color-v}`
-  ---COMP_set_text-fg-v: (@bg-h, @bg-s, @bg-v) @bg-fg [@color-v];
+  @tmp_link: contrast(hsv(@bg-h, `@{bg-s} / 100`, `@{bg-v} / 100`), hsl(@link-dark-h, `@{link-dark-s} / 100`, `@{link-dark-l} / 100`), hsl(@link-light-h, `@{link-light-s} / 100`, `@{link-light-l} / 100`), 45%);
+  @tmp_link-hsl: `'@{bg-fg}' === 'text' ? '@{text}' : '@{tmp_link}'`;
+  @link: ~"@{tmp_link-hsl}";
 
-  @fg-text: @color-text;
-  @fg-text-dark: @color-text-dark;
-
-  @text: auto; //? hsl(@{color-h}deg, @{text-s}%, @{test-dark-l}%)
-  ---COMP_set_text-text: (@bg-h, @bg-s, @bg-v) @bg-fg [@color-h];
-
-  @link: auto; //? hsl(@{link-dark-h}deg, @{link-dark-s}%, @{link-dark-l}%) | hsl(@{color-h}deg, @{text-s}%, @{test-dark-l}%)
-  ---COMP_set_text-link: (@bg-h, @bg-s, @bg-v) @bg-fg [@color-h];
-
-  @heading: auto; //? @heading-dark | hsl(@{color-h}deg, @{text-s}%, @{test-dark-l}%)
+  @tmp_heading-auto: hsv(@fg-h, `@{fg-s} / 100`, `@{fg-v} / 100`);
+  @tmp_heading-hsl: `'@{bg-fg}' === 'text' || '@{heading-dark}' === 'text' ? '@{text}' : (
+    '@{heading-dark}' === 'auto' ? '@{tmp_heading-auto}' : '@{heading-dark}'
+  )`;
+  @heading: ~"@{tmp_heading-hsl}"; //? @heading-dark | hsl(@{color-h}deg, @{text-s}%, @{test-dark-l}%)
+  --test: @heading;
   ---COMP_set_text-heading: (@bg-h, @bg-s, @bg-v) @bg-fg [@color-h];
 
   //todo: add var reference to gradient colors for dark and light
@@ -82,4 +78,14 @@
   //! light: linear-gradient(45deg, hsl(calc(var(--color-fg-h) + 5),  calc(var(--color-fg-s) - 10%), 55%), hsl(calc(var(--color-fg-h) - 5),  calc(var(--color-fg-s) + 10%), 70%));
 
   //todo: set shadow colors
+
+
+  @fg-h: @color-h;
+  @fg-s: `'@{bg-fg}' === 'text' ? @{text-s} : @{color-s}`;
+
+  @tmp_bg-text-l: unit(lightness(@text));
+  @fg-v: `'@{bg-fg}' === 'text' ? @{tmp_bg-text-l} : @{color-v}`;
+
+  @fg-text: @color-text;
+  @fg-text-dark: @color-text-dark;
 }

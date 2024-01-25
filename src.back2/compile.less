@@ -1,0 +1,64 @@
+.set_color(@name){
+  @tmp_color-bg-h: unit(floor(hsvhue(@@name)));
+  @tmp_color-bg-s: unit(floor(hsvsaturation(@@name)));
+  @tmp_color-bg-v: unit(floor(hsvvalue(@@name)));
+
+  @tmp_color-bg-dark-name: ~"DARK_@{name}";
+  @tmp_color-bg-v-dark: unit(floor(hsvvalue(@@tmp_color-bg-dark-name)));
+
+  @tmp_color-primary-h: unit(floor(hsvhue(@primary)));
+  @tmp_color-accent-h: unit(floor(hsvhue(@accent)));
+  
+  @tmp_color-bg-h2: `'@{name}' === 'accent' ? (
+    Math.abs(@{tmp_color-bg-h} - @{tmp_color-primary-h}) < 20 ? @{tmp_color-primary-h} : @{tmp_color-bg-h}
+  ) : (
+    '@{name}' === 'warn' ? (
+      @{tmp_color-bg-h} <= 64 || @{tmp_color-bg-h} >= 264 ? @{tmp_color-bg-h} : (
+        @{tmp_color-bg-h} <= 164 - @{tmp_color-bg-h} ? 64 : 264
+      )
+    ) : @{tmp_color-bg-h}
+  )`;
+
+  @tmp_color-bg-h3: `'@{name}' === 'warn' ? (
+    /* self */
+    !((@{tmp_color-bg-h2} < @{tmp_color-primary-h} + 20 && @{tmp_color-bg-h2} > @{tmp_color-primary-h} - 20) || (@{tmp_color-primary-h} < 20 && @{tmp_color-bg-h2} > 360 - @{tmp_color-primary-h}) || (@{tmp_color-primary-h} > 340 && @{tmp_color-bg-h2} < 360 - @{tmp_color-primary-h}) || (@{tmp_color-bg-h2} < @{tmp_color-accent-h} + 20 && @{tmp_color-bg-h2} > @{tmp_color-accent-h} - 20) || (@{tmp_color-accent-h} < 20 && @{tmp_color-bg-h2} > 360 - @{tmp_color-accent-h}) || (@{tmp_color-accent-h} > 340 && @{tmp_color-bg-h2} < 360 - @{tmp_color-accent-h})) ? @{tmp_color-bg-h2} : (
+      /* red */
+      !((0< @{tmp_color-primary-h} + 20 && 0 > @{tmp_color-primary-h} - 20) || (@{tmp_color-primary-h} < 20 && 0 > 360 - @{tmp_color-primary-h}) || (@{tmp_color-primary-h} > 340 && 0 < 360 - @{tmp_color-primary-h}) || (0 < @{tmp_color-accent-h} + 20 && 0 > @{tmp_color-accent-h} - 20) || (@{tmp_color-accent-h} < 20 && 0 > 360 - @{tmp_color-accent-h}) || (@{tmp_color-accent-h} > 340 && 0 < 360 - @{tmp_color-accent-h})) ? 0 : (
+        /* purple */
+        !((270 < @{tmp_color-primary-h} + 20 && 270 > @{tmp_color-primary-h} - 20) || (@{tmp_color-primary-h} < 20 && 270 > 360 - @{tmp_color-primary-h}) || (@{tmp_color-primary-h} > 340 && 270 < 360 - @{tmp_color-primary-h}) || (270 < @{tmp_color-accent-h} + 20 && 270 > @{tmp_color-accent-h} - 20) || (@{tmp_color-accent-h} < 20 && 270 > 360 - @{tmp_color-accent-h}) || (@{tmp_color-accent-h} > 340 && 270 < 360 - @{tmp_color-accent-h})) ? 270 : (
+          /* orange */
+          !((32 < @{tmp_color-primary-h} + 20 && 32 > @{tmp_color-primary-h} - 20) || (@{tmp_color-primary-h} < 20 && 32 > 360 - @{tmp_color-primary-h}) || (@{tmp_color-primary-h} > 340 && 32 < 360 - @{tmp_color-primary-h}) || (32 < @{tmp_color-accent-h} + 20 && 32 > @{tmp_color-accent-h} - 20) || (@{tmp_color-accent-h} < 20 && 32 > 360 - @{tmp_color-accent-h}) || (@{tmp_color-accent-h} > 340 && 32 < 360 - @{tmp_color-accent-h})) ? 32 : (
+            /* pink */
+            !((330 < @{tmp_color-primary-h} + 20 && 330 > @{tmp_color-primary-h} - 20) || (@{tmp_color-primary-h} < 20 && 330 > 360 - @{tmp_color-primary-h}) || (@{tmp_color-primary-h} > 340 && 330 < 360 - @{tmp_color-primary-h}) || (330 < @{tmp_color-accent-h} + 20 && 330 > @{tmp_color-accent-h} - 20) || (@{tmp_color-accent-h} < 20 && 330 > 360 - @{tmp_color-accent-h}) || (@{tmp_color-accent-h} > 340 && 330 < 360 - @{tmp_color-accent-h})) ? 330 : (
+              /* yellow */
+              !((54 < @{tmp_color-primary-h} + 20 && 54 > @{tmp_color-primary-h} - 20) || (@{tmp_color-primary-h} < 20 && 54 > 360 - @{tmp_color-primary-h}) || (@{tmp_color-primary-h} > 340 && 54 < 360 - @{tmp_color-primary-h}) || (54 < @{tmp_color-accent-h} + 20 && 54 > @{tmp_color-accent-h} - 20) || (@{tmp_color-accent-h} < 20 && 54 > 360 - @{tmp_color-accent-h}) || (@{tmp_color-accent-h} > 340 && 54 < 360 - @{tmp_color-accent-h})) ? 54 : (
+                /* light purple */
+                !((300 < @{tmp_color-primary-h} + 20 && 300 > @{tmp_color-primary-h} - 20) || (@{tmp_color-primary-h} < 20 && 300 > 360 - @{tmp_color-primary-h}) || (@{tmp_color-primary-h} > 340 && 300 < 360 - @{tmp_color-primary-h}) || (300 < @{tmp_color-accent-h} + 20 && 300 > @{tmp_color-accent-h} - 20) || (@{tmp_color-accent-h} < 20 && 300 > 360 - @{tmp_color-accent-h}) || (@{tmp_color-accent-h} > 340 && 300 < 360 - @{tmp_color-accent-h})) ? 300 : @{tmp_color-bg-h2}
+              )
+            )
+          )
+        )
+      )
+    )
+  ) : @{tmp_color-bg-h2}`;
+
+  @tmp_color-bg-s2: `@{tmp_color-bg-s} < 15 ? 15 : @{tmp_color-bg-s}`;
+
+  @tmp_color-bg-v2: `@{tmp_color-bg-v} < 45 ? 45 : @{tmp_color-bg-v}`;
+  @tmp_color-bg-v2-dark: `@{tmp_color-bg-v-dark} > 65 ? 65 : @{tmp_color-bg-v-dark}`;
+
+  @color-bg: hsv(@tmp_color-bg-h3, `@{tmp_color-bg-s2}/100`, `@{tmp_color-bg-v2}/100`);
+  @DARK_color-bg: hsv(@tmp_color-bg-h3, `@{tmp_color-bg-s2}/100`, `@{tmp_color-bg-v2-dark}/100`);
+
+  @color-text: contrast(@color-bg, @text-dark, @text-light, 45%);
+  @DARK_color-text: contrast(@DARK_color-bg, @text-dark, @text-light, 45%);
+}
+
+.set_elm(@name){
+  @tmp_elm-name-bg: ~"@{name}-bg";
+  @tmp_elm-name-bg-dark: ~"DARK_@{name}-bg";
+  @tmp_elm-fg: ~"@{@{name}-fg}";
+
+  @bg-color: hsv(hsvhue(@color-bg), hsvsaturation(@@tmp_elm-name-bg), hsvvalue(@@tmp_elm-name-bg));
+  @DARK_bg-color: hsv(hsvhue(@color-bg), hsvsaturation(@@tmp_elm-name-bg-dark), hsvvalue(@@tmp_elm-name-bg-dark));
+}
