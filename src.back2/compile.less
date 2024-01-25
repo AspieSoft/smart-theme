@@ -8,7 +8,7 @@
 
   @tmp_color-primary-h: unit(floor(hsvhue(@primary)));
   @tmp_color-accent-h: unit(floor(hsvhue(@accent)));
-  
+
   @tmp_color-bg-h2: `'@{name}' === 'accent' ? (
     Math.abs(@{tmp_color-bg-h} - @{tmp_color-primary-h}) < 20 ? @{tmp_color-primary-h} : @{tmp_color-bg-h}
   ) : (

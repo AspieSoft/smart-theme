@@ -59,10 +59,10 @@
 
 //* Heading
 @heading: {
-  dark: auto;
-  light: auto;
-  dark_strong: auto;
-  light_strong: auto;
+  light: text; //? auto | text | primary | accent | warn
+  dark: text; //? auto | text | primary | accent | warn
+  dark-strong: auto; //? auto | custom gradient
+  light-strong: auto; //? auto | custom gradient
   font: @font[serif];
 }
 
@@ -77,50 +77,50 @@
 @shadow: {
   dark: hsla(0, 0, 0, 0.5);
   light: hsla(0, 0, 29, 0.5);
-  dark_text: hsla(0, 0, 0, 0.25);
-  light_text: hsla(0, 0, 29, 0.25);
+  dark-text: hsla(0, 0, 0, 0.25);
+  light-text: hsla(0, 0, 29, 0.25);
 }
 
 //* Colors
 @primary: {
-  light: hsl(192, 100%, 40%);
+  light: hsl(192deg, 100%, 40%);
   dark: hsl(192deg, 100%, 30%);
-  fg: text; //? auto | text
+  fg: text; //? auto | text | primary | accent | warn
   font: auto;
 }
 
 @accent: {
-  light: hsl(130, 82%, 40%);
+  light: hsl(130deg, 82%, 40%);
   dark: hsl(130deg, 82%, 30%);
-  fg: text; //? auto | text
+  fg: text; //? auto | text | primary | accent | warn
   font: auto;
 }
 
 @warn: {
   light: hsl(0deg, 74%, 42%);
   dark: hsl(0deg, 74%, 32%);
-  fg: text; //? auto | text
+  fg: text; //? auto | text | primary | accent | warn
   font: auto;
 }
 
 @dark: {
   light: hsl(0deg, 0%, 17%);
   dark: hsl(0deg, 0%, 17%);
-  fg: text; //? auto | text
+  fg: auto; //? auto | text | primary | accent | warn
   font: auto;
 }
 
 @light: {
   light: hsl(0deg, 0%, 94%);
-  dark: hsl(0, 0%, 28%);
-  fg: text; //? auto | text
+  dark: hsl(0deg, 0%, 28%);
+  fg: auto; //? auto | text | primary | accent | warn
   font: auto;
 }
 
 //* Elements
 @base: {
-  light: hsl(0, 0, 10);
-  dark: hsl(0, 0, 10);
+  light: hsl(0, 0%, 10%);
+  dark: hsl(0, 0%, 10%);
   fg: auto; //? auto | text
   font: @font[sans];
 }

@@ -559,7 +559,7 @@ func compileGoLessConfig(buf []byte) []byte {
 				}else if warn[0] >= 180 && warn[0] < 264 {
 					warn[0] = 264
 				}
-	
+
 				tryColors := []float64{
 					0, // red
 					270, // purple

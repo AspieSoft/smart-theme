@@ -1,1 +1,182 @@
 //todo: setup compile methods for new config layout
+
+.set_color(@name) {
+  @TMP_hsv: {
+    h: unit(floor(hsvhue(@@name[light])));
+    s: unit(floor(hsvsaturation(@@name[light])));
+    v: unit(floor(hsvvalue(@@name[light])));
+    v-dark: unit(floor(hsvvalue(@@name[dark])));
+  }
+
+  @TMP_primary-h: unit(floor(hsvhue(@primary[light])));
+  @TMP_accent-h: unit(floor(hsvhue(@accent[light])));
+
+  @TMP_h0: if(@name = accent, (
+    if(abs(@TMP_hsv[h] - @TMP_primary-h) < 20, @TMP_primary-h, @TMP_hsv[h])
+  ), if(@name = warn, (
+    if((@TMP_hsv[h] <= 64) or (@TMP_hsv[h] >= 264), @TMP_hsv[h], if(@TMP_hsv[h] <= 164, 64, 264))
+  ), @TMP_hsv[h]));
+
+  @TMP_warn-dist: 32;
+  @TMP_h: `'@{name}' === 'warn' ? (
+    /* self */
+    !((@{TMP_h0} < @{TMP_primary-h} + @{TMP_warn-dist} && @{TMP_h0} > @{TMP_primary-h} - @{TMP_warn-dist}) || (@{TMP_primary-h} < @{TMP_warn-dist} && @{TMP_h0} > 360 - @{TMP_primary-h}) || (@{TMP_primary-h} > (360 - @{TMP_warn-dist}) && @{TMP_h0} < 360 - @{TMP_primary-h}) || (@{TMP_h0} < @{TMP_accent-h} + @{TMP_warn-dist} && @{TMP_h0} > @{TMP_accent-h} - @{TMP_warn-dist}) || (@{TMP_accent-h} < @{TMP_warn-dist} && @{TMP_h0} > 360 - @{TMP_accent-h}) || (@{TMP_accent-h} > (360 - @{TMP_warn-dist}) && @{TMP_h0} < 360 - @{TMP_accent-h})) ? @{TMP_h0} : (
+      /* red */
+      !((0 < @{TMP_primary-h} + @{TMP_warn-dist} && 0 > @{TMP_primary-h} - @{TMP_warn-dist}) || (@{TMP_primary-h} < @{TMP_warn-dist} && 0 > 360 - @{TMP_primary-h}) || (@{TMP_primary-h} > (360 - @{TMP_warn-dist}) && 0 < 360 - @{TMP_primary-h}) || (0 < @{TMP_accent-h} + @{TMP_warn-dist} && 0 > @{TMP_accent-h} - @{TMP_warn-dist}) || (@{TMP_accent-h} < @{TMP_warn-dist} && 0 > 360 - @{TMP_accent-h}) || (@{TMP_accent-h} > (360 - @{TMP_warn-dist}) && 0 < 360 - @{TMP_accent-h})) ? 0 : (
+        /* purple */
+        !((270 < @{TMP_primary-h} + @{TMP_warn-dist} && 270 > @{TMP_primary-h} - @{TMP_warn-dist}) || (@{TMP_primary-h} < @{TMP_warn-dist} && 270 > 360 - @{TMP_primary-h}) || (@{TMP_primary-h} > (360 - @{TMP_warn-dist}) && 270 < 360 - @{TMP_primary-h}) || (270 < @{TMP_accent-h} + @{TMP_warn-dist} && 270 > @{TMP_accent-h} - @{TMP_warn-dist}) || (@{TMP_accent-h} < @{TMP_warn-dist} && 270 > 360 - @{TMP_accent-h}) || (@{TMP_accent-h} > (360 - @{TMP_warn-dist}) && 270 < 360 - @{TMP_accent-h})) ? 270 : (
+          /* light purple */
+          !((300 < @{TMP_primary-h} + @{TMP_warn-dist} && 300 > @{TMP_primary-h} - @{TMP_warn-dist}) || (@{TMP_primary-h} < @{TMP_warn-dist} && 300 > 360 - @{TMP_primary-h}) || (@{TMP_primary-h} > (360 - @{TMP_warn-dist}) && 300 < 360 - @{TMP_primary-h}) || (300 < @{TMP_accent-h} + @{TMP_warn-dist} && 300 > @{TMP_accent-h} - @{TMP_warn-dist}) || (@{TMP_accent-h} < @{TMP_warn-dist} && 300 > 360 - @{TMP_accent-h}) || (@{TMP_accent-h} > (360 - @{TMP_warn-dist}) && 300 < 360 - @{TMP_accent-h})) ? 300 : (
+            /* pink */
+            !((330 < @{TMP_primary-h} + @{TMP_warn-dist} && 330 > @{TMP_primary-h} - @{TMP_warn-dist}) || (@{TMP_primary-h} < @{TMP_warn-dist} && 330 > 360 - @{TMP_primary-h}) || (@{TMP_primary-h} > (360 - @{TMP_warn-dist}) && 330 < 360 - @{TMP_primary-h}) || (330 < @{TMP_accent-h} + @{TMP_warn-dist} && 330 > @{TMP_accent-h} - @{TMP_warn-dist}) || (@{TMP_accent-h} < @{TMP_warn-dist} && 330 > 360 - @{TMP_accent-h}) || (@{TMP_accent-h} > (360 - @{TMP_warn-dist}) && 330 < 360 - @{TMP_accent-h})) ? 330 : (
+              /* yellow */
+              !((54 < @{TMP_primary-h} + @{TMP_warn-dist} && 54 > @{TMP_primary-h} - @{TMP_warn-dist}) || (@{TMP_primary-h} < @{TMP_warn-dist} && 54 > 360 - @{TMP_primary-h}) || (@{TMP_primary-h} > (360 - @{TMP_warn-dist}) && 54 < 360 - @{TMP_primary-h}) || (54 < @{TMP_accent-h} + @{TMP_warn-dist} && 54 > @{TMP_accent-h} - @{TMP_warn-dist}) || (@{TMP_accent-h} < @{TMP_warn-dist} && 54 > 360 - @{TMP_accent-h}) || (@{TMP_accent-h} > (360 - @{TMP_warn-dist}) && 54 < 360 - @{TMP_accent-h})) ? 54 : (
+                /* orange */
+                !((32 < @{TMP_primary-h} + @{TMP_warn-dist} && 32 > @{TMP_primary-h} - @{TMP_warn-dist}) || (@{TMP_primary-h} < @{TMP_warn-dist} && 32 > 360 - @{TMP_primary-h}) || (@{TMP_primary-h} > (360 - @{TMP_warn-dist}) && 32 < 360 - @{TMP_primary-h}) || (32 < @{TMP_accent-h} + @{TMP_warn-dist} && 32 > @{TMP_accent-h} - @{TMP_warn-dist}) || (@{TMP_accent-h} < @{TMP_warn-dist} && 32 > 360 - @{TMP_accent-h}) || (@{TMP_accent-h} > (360 - @{TMP_warn-dist}) && 32 < 360 - @{TMP_accent-h})) ? 32 : @{TMP_h0}
+              )
+            )
+          )
+        )
+      )
+    )
+  ) : @{TMP_h0}`;
+
+  @TMP_s: if(@TMP_hsv[s] < 15, 15, @TMP_hsv[s]);
+  @TMP_v: if(@TMP_hsv[v] < 45, 45, @TMP_hsv[v]);
+  @TMP_v-dark: if(@TMP_hsv[v-dark] > 65, 65, @TMP_hsv[v-dark]);
+
+  @TPM_light: hsv(@TMP_h, `@{TMP_s}/100`, `@{TMP_v}/100`);
+  @TPM_dark: hsv(@TMP_h, `@{TMP_s}/100`, `@{TMP_v-dark}/100`);
+
+  @TMP_fg: @@name[fg];
+
+  @color: {
+    light: @TPM_light;
+    dark: @TPM_dark;
+    light-fg: if(@TMP_fg = auto or @TMP_fg = default or @TMP_fg = none, contrast(@TPM_light, @primary[light], @primary[dark]), contrast(@TPM_light, @@TMP_fg[light], @@TMP_fg[dark]));
+    dark-fg: if(@TMP_fg = auto or @TMP_fg = default or @TMP_fg = none, contrast(@TPM_dark, @primary[light], @primary[dark]), contrast(@TPM_dark, @@TMP_fg[light], @@TMP_fg[dark]));
+    
+    //todo: resolve if font is auto or keyword
+    font: @@name[font];
+
+    light-text: contrast(@TPM_light, @text[dark], @text[light], 45%);
+    dark-text: contrast(@TPM_dark, @text[dark], @text[light], 45%);
+  };
+}
+
+.set_elm(@name) {
+  @TMP_hsv: {
+    h: unit(floor(hsvhue(@@name[light])));
+    s: unit(floor(hsvsaturation(@@name[light])));
+    v: unit(floor(hsvvalue(@@name[light])));
+    v-dark: unit(floor(hsvvalue(@@name[dark])));
+  }
+
+  @TMP_primary-h: unit(floor(hsvhue(@primary[light])));
+  @TMP_accent-h: unit(floor(hsvhue(@accent[light])));
+
+  @TMP_h0: if(@name = accent, (
+    if(abs(@TMP_hsv[h] - @TMP_primary-h) < 20, @TMP_primary-h, @TMP_hsv[h])
+  ), if(@name = warn, (
+    if((@TMP_hsv[h] <= 64) or (@TMP_hsv[h] >= 264), @TMP_hsv[h], if(@TMP_hsv[h] <= 164, 64, 264))
+  ), @TMP_hsv[h]));
+
+  @TMP_warn-dist: 32;
+  @TMP_h1: `'@{name}' === 'warn' ? (
+    /* self */
+    !((@{TMP_h0} < @{TMP_primary-h} + @{TMP_warn-dist} && @{TMP_h0} > @{TMP_primary-h} - @{TMP_warn-dist}) || (@{TMP_primary-h} < @{TMP_warn-dist} && @{TMP_h0} > 360 - @{TMP_primary-h}) || (@{TMP_primary-h} > (360 - @{TMP_warn-dist}) && @{TMP_h0} < 360 - @{TMP_primary-h}) || (@{TMP_h0} < @{TMP_accent-h} + @{TMP_warn-dist} && @{TMP_h0} > @{TMP_accent-h} - @{TMP_warn-dist}) || (@{TMP_accent-h} < @{TMP_warn-dist} && @{TMP_h0} > 360 - @{TMP_accent-h}) || (@{TMP_accent-h} > (360 - @{TMP_warn-dist}) && @{TMP_h0} < 360 - @{TMP_accent-h})) ? @{TMP_h0} : (
+      /* red */
+      !((0 < @{TMP_primary-h} + @{TMP_warn-dist} && 0 > @{TMP_primary-h} - @{TMP_warn-dist}) || (@{TMP_primary-h} < @{TMP_warn-dist} && 0 > 360 - @{TMP_primary-h}) || (@{TMP_primary-h} > (360 - @{TMP_warn-dist}) && 0 < 360 - @{TMP_primary-h}) || (0 < @{TMP_accent-h} + @{TMP_warn-dist} && 0 > @{TMP_accent-h} - @{TMP_warn-dist}) || (@{TMP_accent-h} < @{TMP_warn-dist} && 0 > 360 - @{TMP_accent-h}) || (@{TMP_accent-h} > (360 - @{TMP_warn-dist}) && 0 < 360 - @{TMP_accent-h})) ? 0 : (
+        /* purple */
+        !((270 < @{TMP_primary-h} + @{TMP_warn-dist} && 270 > @{TMP_primary-h} - @{TMP_warn-dist}) || (@{TMP_primary-h} < @{TMP_warn-dist} && 270 > 360 - @{TMP_primary-h}) || (@{TMP_primary-h} > (360 - @{TMP_warn-dist}) && 270 < 360 - @{TMP_primary-h}) || (270 < @{TMP_accent-h} + @{TMP_warn-dist} && 270 > @{TMP_accent-h} - @{TMP_warn-dist}) || (@{TMP_accent-h} < @{TMP_warn-dist} && 270 > 360 - @{TMP_accent-h}) || (@{TMP_accent-h} > (360 - @{TMP_warn-dist}) && 270 < 360 - @{TMP_accent-h})) ? 270 : (
+          /* light purple */
+          !((300 < @{TMP_primary-h} + @{TMP_warn-dist} && 300 > @{TMP_primary-h} - @{TMP_warn-dist}) || (@{TMP_primary-h} < @{TMP_warn-dist} && 300 > 360 - @{TMP_primary-h}) || (@{TMP_primary-h} > (360 - @{TMP_warn-dist}) && 300 < 360 - @{TMP_primary-h}) || (300 < @{TMP_accent-h} + @{TMP_warn-dist} && 300 > @{TMP_accent-h} - @{TMP_warn-dist}) || (@{TMP_accent-h} < @{TMP_warn-dist} && 300 > 360 - @{TMP_accent-h}) || (@{TMP_accent-h} > (360 - @{TMP_warn-dist}) && 300 < 360 - @{TMP_accent-h})) ? 300 : (
+            /* pink */
+            !((330 < @{TMP_primary-h} + @{TMP_warn-dist} && 330 > @{TMP_primary-h} - @{TMP_warn-dist}) || (@{TMP_primary-h} < @{TMP_warn-dist} && 330 > 360 - @{TMP_primary-h}) || (@{TMP_primary-h} > (360 - @{TMP_warn-dist}) && 330 < 360 - @{TMP_primary-h}) || (330 < @{TMP_accent-h} + @{TMP_warn-dist} && 330 > @{TMP_accent-h} - @{TMP_warn-dist}) || (@{TMP_accent-h} < @{TMP_warn-dist} && 330 > 360 - @{TMP_accent-h}) || (@{TMP_accent-h} > (360 - @{TMP_warn-dist}) && 330 < 360 - @{TMP_accent-h})) ? 330 : (
+              /* yellow */
+              !((54 < @{TMP_primary-h} + @{TMP_warn-dist} && 54 > @{TMP_primary-h} - @{TMP_warn-dist}) || (@{TMP_primary-h} < @{TMP_warn-dist} && 54 > 360 - @{TMP_primary-h}) || (@{TMP_primary-h} > (360 - @{TMP_warn-dist}) && 54 < 360 - @{TMP_primary-h}) || (54 < @{TMP_accent-h} + @{TMP_warn-dist} && 54 > @{TMP_accent-h} - @{TMP_warn-dist}) || (@{TMP_accent-h} < @{TMP_warn-dist} && 54 > 360 - @{TMP_accent-h}) || (@{TMP_accent-h} > (360 - @{TMP_warn-dist}) && 54 < 360 - @{TMP_accent-h})) ? 54 : (
+                /* orange */
+                !((32 < @{TMP_primary-h} + @{TMP_warn-dist} && 32 > @{TMP_primary-h} - @{TMP_warn-dist}) || (@{TMP_primary-h} < @{TMP_warn-dist} && 32 > 360 - @{TMP_primary-h}) || (@{TMP_primary-h} > (360 - @{TMP_warn-dist}) && 32 < 360 - @{TMP_primary-h}) || (32 < @{TMP_accent-h} + @{TMP_warn-dist} && 32 > @{TMP_accent-h} - @{TMP_warn-dist}) || (@{TMP_accent-h} < @{TMP_warn-dist} && 32 > 360 - @{TMP_accent-h}) || (@{TMP_accent-h} > (360 - @{TMP_warn-dist}) && 32 < 360 - @{TMP_accent-h})) ? 32 : @{TMP_h0}
+              )
+            )
+          )
+        )
+      )
+    )
+  ) : @{TMP_h0}`;
+
+  @TMP_h: if((@name = primary) or (@name = accent) or (@name = warn), @TMP_h1, unit(floor(hsvhue(@color[light]))));
+
+  @TMP_s: if((@name = primary) or (@name = accent) or (@name = warn), if(@TMP_hsv[s] < 15, 15, @TMP_hsv[s]), @TMP_hsv[s]);
+  @TMP_v: if((@name = primary) or (@name = accent) or (@name = warn), if(@TMP_hsv[v] < 45, 45, @TMP_hsv[v]), @TMP_hsv[v]);
+  @TMP_v-dark: if((@name = primary) or (@name = accent) or (@name = warn), if(@TMP_hsv[v-dark] > 65, 65, @TMP_hsv[v-dark]), @TMP_hsv[v-dark]);
+
+  @TPM_light: hsv(@TMP_h, `@{TMP_s}/100`, `@{TMP_v}/100`);
+  @TPM_dark: hsv(@TMP_h, `@{TMP_s}/100`, `@{TMP_v-dark}/100`);
+
+  @TMP_fg: @@name[fg];
+
+  @TMP_heading0-light: @heading[light];
+  @TMP_heading0-dark: @heading[dark];
+
+  @TMP_heading-light: if((@TMP_heading0-light = auto) or (@TMP_heading0-light = default) or (@TMP_heading0-light = none), @color[light], if(iskeyword(@TMP_heading0-light), @@TMP_heading0-light[light], @TMP_heading0-light));
+  @TMP_heading-dark: if((@TMP_heading0-dark = auto) or (@TMP_heading0-dark = default) or (@TMP_heading0-dark = none), @color[dark], if(iskeyword(@TMP_heading0-dark), @@TMP_heading0-dark[dark], @TMP_heading0-dark));
+
+  @TMP_strongheading0-light: @heading[light-strong];
+  @TMP_strongheading0-dark: @heading[dark-strong];
+
+  @TMP_strongheading-light: if((@TMP_strongheading0-light = auto) or (@TMP_strongheading0-light = default) or (@TMP_strongheading0-light = none), (
+    linear-gradient(45deg, hsl(hue(spin(@color[light], 5)), saturation(desaturate(@color[light], 10%)), 55%), hsl(hue(spin(@color[light], -5)), saturation(saturate(@color[light], 10%)), 65%))
+  ), if(iskeyword(@TMP_strongheading0-light), @@TMP_strongheading0-light[light], @TMP_strongheading0-light));
+
+  @TMP_strongheading-dark: if((@TMP_strongheading0-dark = auto) or (@TMP_strongheading0-dark = default) or (@TMP_strongheading0-dark = none), (
+    linear-gradient(45deg, hsl(hue(spin(@color[dark], 5)), saturation(desaturate(@color[dark], 10%)), 30%), hsl(hue(spin(@color[dark], -5)), saturation(saturate(@color[dark], 10%)), 40%))
+  ), if(iskeyword(@TMP_strongheading0-dark), @@TMP_strongheading0-dark[dark], @TMP_strongheading0-dark));
+
+  @bg: {
+    light: @TPM_light;
+    dark: @TPM_dark;
+    light-fg: if((@TMP_fg = auto) or (@TMP_fg = default) or (@TMP_fg = none), contrast(@TPM_light, @color[light], @color[dark]), contrast(@TPM_light, @@TMP_fg[light], @@TMP_fg[dark]));
+    dark-fg: if((@TMP_fg = auto) or (@TMP_fg = default) or (@TMP_fg = none), contrast(@TPM_dark, @color[light], @color[dark]), contrast(@TPM_dark, @@TMP_fg[light], @@TMP_fg[dark]));
+
+    //todo: resolve if font is auto or keyword
+    font: @@name[font];
+
+    light-text: contrast(@TPM_light, @text[dark], @text[light], 45%);
+    dark-text: contrast(@TPM_dark, @text[dark], @text[light], 45%);
+
+    light-link: if((@TMP_fg = auto) or (@TMP_fg = default) or (@TMP_fg = none), contrast(@TPM_light, @link[light], @link[dark], 45%), contrast(@TPM_light, @@TMP_fg[light], @@TMP_fg[dark], 45%));
+    dark-link: if((@TMP_fg = auto) or (@TMP_fg = default) or (@TMP_fg = none), contrast(@TPM_dark, @link[light], @link[dark], 45%), contrast(@TPM_dark, @@TMP_fg[light], @@TMP_fg[dark], 45%));
+
+    light-heading: if((@TMP_fg = auto) or (@TMP_fg = default) or (@TMP_fg = none), (
+      if(iscolor(@TMP_heading-light) and iscolor(@TMP_heading-dark), contrast(@TPM_light, @TMP_heading-light, @TMP_heading-dark), if(contrast(@TPM_light, white, black) = white, @TMP_heading-light, @TMP_heading-dark))
+    ), contrast(@TPM_light, @@TMP_fg[light], @@TMP_fg[dark], 45%));
+
+    dark-heading: if((@TMP_fg = auto) or (@TMP_fg = default) or (@TMP_fg = none), (
+      if(iscolor(@TMP_heading-light) and iscolor(@TMP_heading-dark), contrast(@TPM_dark, @TMP_heading-light, @TMP_heading-dark), if(contrast(@TPM_dark, white, black) = white, @TMP_heading-light, @TMP_heading-dark))
+    ), contrast(@TPM_dark, @@TMP_fg[light], @@TMP_fg[dark], 45%));
+
+    light-strongheading: if((@TMP_fg = auto) or (@TMP_fg = default) or (@TMP_fg = none), (
+      if(iscolor(@TMP_strongheading-light) and iscolor(@TMP_strongheading-dark), contrast(@TPM_light, @TMP_strongheading-light, @TMP_strongheading-dark), if(contrast(@TPM_light, white, black) = white, @TMP_strongheading-light, @TMP_strongheading-dark))
+    ), if(contrast(@TPM_light, white, black) = white,
+      linear-gradient(45deg, hsl(hue(spin(@@TMP_fg[light], 5)), saturation(desaturate(@@TMP_fg[light], 10%)), 55%), hsl(hue(spin(@@TMP_fg[light], -5)), saturation(saturate(@@TMP_fg[light], 10%)), 65%)),
+      linear-gradient(45deg, hsl(hue(spin(@@TMP_fg[dark], 5)), saturation(desaturate(@@TMP_fg[dark], 10%)), 30%), hsl(hue(spin(@@TMP_fg[dark], -5)), saturation(saturate(@@TMP_fg[dark], 10%)), 40%))
+    ));
+
+    dark-strongheading: if((@TMP_fg = auto) or (@TMP_fg = default) or (@TMP_fg = none), (
+      if(iscolor(@TMP_strongheading-light) and iscolor(@TMP_strongheading-dark), contrast(@TPM_dark, @TMP_strongheading-light, @TMP_strongheading-dark), if(contrast(@TPM_dark, white, black) = white, @TMP_strongheading-light, @TMP_strongheading-dark))
+    ), if(contrast(@TPM_dark, white, black) = white,
+      linear-gradient(45deg, hsl(hue(spin(@@TMP_fg[light], 5)), saturation(desaturate(@@TMP_fg[light], 10%)), 55%), hsl(hue(spin(@@TMP_fg[light], -5)), saturation(saturate(@@TMP_fg[light], 10%)), 65%)),
+      linear-gradient(45deg, hsl(hue(spin(@@TMP_fg[dark], 5)), saturation(desaturate(@@TMP_fg[dark], 10%)), 30%), hsl(hue(spin(@@TMP_fg[dark], -5)), saturation(saturate(@@TMP_fg[dark], 10%)), 40%))
+    ));
+
+    //todo: add input and shadow colors
+  };
+}
+
+.set_font(@name: auto, @size: default, @height: default){
+  //todo: if auto font, use @bg[font] or fallback to @color[font]
+  // if auto size, use the theme size, otherwise if rem, calculate as a multiplier of config font-size
+  // if auto height, use theme line-height, otherwise if rem, calculate as a multiplier of config line-height
+  // if font @name, @size, or @heightare default, use parent settings and do not set value
+}
