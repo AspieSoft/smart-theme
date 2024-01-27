@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/AspieSoft/go-regex-re2/v2"
 	"github.com/AspieSoft/goutil/fs/v2"
@@ -72,7 +73,17 @@ func main(){
 		return
 	}
 
+	startTime := time.Now()
 	handleCompileTheme(port)
+	endTime := time.Now()
+
+	if compTime := endTime.UnixMilli() - startTime.UnixMilli(); compTime >= 1000 {
+		fmt.Println("Compiled In", float64(compTime) / 1000, "seconds")
+	}else if compTime := endTime.UnixNano() - startTime.UnixNano(); compTime >= 1000000 {
+		fmt.Println("Compiled In", float64(compTime / 1000) / 1000, "milliseconds")
+	}else{
+		fmt.Println("Compiled In", compTime, "nanoseconds")
+	}
 
 	if port == "" {
 		return
@@ -173,6 +184,19 @@ func importLessFile(themeDir string, path string, importList *[]string) []byte {
 	return []byte{}
 }
 
+/* type LessReader struct{}
+func (LessReader) ReadFile(path string) ([]byte, error) {
+	p, err := fs.JoinPath("./src", path)
+	if err != nil {
+		return nil, err
+	}
+	out, err := os.ReadFile(p)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+} */
+
 func compileLess(themeDir string, themeDist string){
 	res := []byte{}
 	lessConfig := []byte{}
@@ -206,6 +230,24 @@ func compileLess(themeDir string, themeDist string){
 			} */
 		}
 	}
+
+	//todo: find out why less.RenderFile method returns an empty string if anything is imported
+
+	/* less.SetReader(LessReader{})
+	if path, err := fs.JoinPath(themeDir, "style.less"); err == nil {
+		_ = path
+		out, err := less.RenderFile("./style.less", map[string]interface{}{
+			"rootpath": themeDir,
+			"compress": true,
+			"javascriptEnabled": true,
+		})
+		fmt.Println(out, err)
+		if err != nil {
+			fmt.Println(err)
+		}else{
+			res = []byte(out)
+		}
+	} */
 
 	out, err := less.Render(string(append(lessConfig, res...)), map[string]interface{}{
 		"compress": false,

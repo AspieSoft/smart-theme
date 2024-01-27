@@ -63,14 +63,14 @@
   dark: text; //? auto | text | primary | accent | warn
   dark-strong: auto; //? auto | custom gradient
   light-strong: auto; //? auto | custom gradient
-  font: @font[serif];
+  font: serif; //? auto | @font[keyword] | 'custom font'
 }
 
 //* Input
 @input: {
   dark: auto;
   light: auto;
-  font: @font[sans];
+  font: sans; //? auto | @font[keyword] | 'custom font'
 }
 
 //* Shadow
@@ -86,35 +86,35 @@
   light: hsl(192deg, 100%, 40%);
   dark: hsl(192deg, 100%, 30%);
   fg: text; //? auto | text | primary | accent | warn
-  font: auto;
+  font: auto; //? auto | @font[keyword] | 'custom font'
 }
 
 @accent: {
   light: hsl(130deg, 82%, 40%);
   dark: hsl(130deg, 82%, 30%);
   fg: text; //? auto | text | primary | accent | warn
-  font: auto;
+  font: auto; //? auto | @font[keyword] | 'custom font'
 }
 
 @warn: {
   light: hsl(0deg, 74%, 42%);
   dark: hsl(0deg, 74%, 32%);
   fg: text; //? auto | text | primary | accent | warn
-  font: auto;
+  font: auto; //? auto | @font[keyword] | 'custom font'
 }
 
 @dark: {
   light: hsl(0deg, 0%, 17%);
   dark: hsl(0deg, 0%, 17%);
   fg: auto; //? auto | text | primary | accent | warn
-  font: auto;
+  font: auto; //? auto | @font[keyword] | 'custom font'
 }
 
 @light: {
   light: hsl(0deg, 0%, 94%);
   dark: hsl(0deg, 0%, 28%);
   fg: auto; //? auto | text | primary | accent | warn
-  font: auto;
+  font: auto; //? auto | @font[keyword] | 'custom font'
 }
 
 //* Elements
@@ -122,49 +122,49 @@
   light: hsl(0, 0%, 10%);
   dark: hsl(0, 0%, 10%);
   fg: auto; //? auto | text
-  font: @font[sans];
+  font: sans; //? auto | @font[keyword] | 'custom font'
 }
 
 @page: {
   light: hsl(0, 0, 0);
   dark: hsl(0, 0, 0);
   fg: auto; //? auto | text
-  font: auto;
+  font: auto; //? auto | @font[keyword] | 'custom font'
 }
 
 @card: {
   light: hsl(0, 0, 0);
   dark: hsl(0, 0, 0);
   fg: auto; //? auto | text
-  font: auto;
+  font: auto; //? auto | @font[keyword] | 'custom font'
 }
 
 @header: {
   light: hsl(0, 0, 0);
   dark: hsl(0, 0, 0);
   fg: text; //? auto | text
-  font: @font[sans];
+  font: sans; //? auto | @font[keyword] | 'custom font'
 }
 
 @headerimg: {
   light: hsl(0, 0, 0);
   dark: hsl(0, 0, 0);
   fg: auto; //? auto | text
-  font: @font[sans];
+  font: sans; //? auto | @font[keyword] | 'custom font'
 }
 
 @footer: {
   light: hsl(0, 0, 0);
   dark: hsl(0, 0, 0);
   fg: auto; //? auto | text
-  font: @font[sans];
+  font: sans; //? auto | @font[keyword] | 'custom font'
 }
 
 @copyright: {
   light: hsl(0, 0, 0);
   dark: hsl(0, 0, 0);
   fg: text; //? auto | text
-  font: @font[logo];
+  font: logo; //? auto | @font[keyword] | 'custom font'
 }
 
 
