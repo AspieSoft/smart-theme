@@ -1,0 +1,12 @@
+header .header-top {
+  --bg-a: 0.75;
+}
+
+.page-bg, .card-bg {
+  --bg-a: 0.75;
+  /* backdrop-filter: blur(2rem); */
+}
+
+footer .copyright {
+  --bg-a: 0.75;
+}

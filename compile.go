@@ -5,24 +5,23 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/AspieSoft/go-regex-re2/v2"
+	"github.com/AspieSoft/go-regex/v8"
 	"github.com/AspieSoft/goutil/fs/v2"
 	"github.com/AspieSoft/goutil/v7"
 	"github.com/lucasb-eyer/go-colorful"
 	"github.com/tdewolff/minify/v2"
 	"github.com/tdewolff/minify/v2/css"
 	"github.com/tdewolff/minify/v2/js"
-	"github.com/tystuyfzand/less-go"
+	"gopkg.in/yaml.v3"
 )
-
 
 var config = map[string]string{
 	"theme_name": "Smart Theme",
@@ -53,6 +52,101 @@ var validExtList []string = []string{
 	"woff",
 }
 
+type ThemeConfigData struct {
+	Theme string
+	DefaultDarkMode bool
+
+	Config map[string]string
+
+	Layout struct {
+		PagePaddingInline string
+		PagePaddingInlineMobile string
+		PageContentMaxWidth string
+		PageBreakoutMaxWidth string
+		PageHardMaxWidth string
+
+		HeaderimgWidth string
+		HeaderimgHeight string
+		HeadernavJustify string
+		NavUnderlineRadius string
+
+		WidgetSize string
+		WidgetMaxSize string
+
+  	ShadowSize string
+  	TextshadowSize string
+
+		BorderRadius string
+	}
+
+	Topography struct {
+		FontSize string
+		LineHeight string
+		Font map[string]string
+		ImportFonts []ThemeConfigImportFont
+	}
+
+	Text struct {
+		Light string
+		Dark string
+		LightLink string
+		DarkLink string
+	}
+
+	Heading struct {
+		Light string
+		Dark string
+		LightStrong string
+		DarkStrong string
+		Font string
+	}
+
+	Input struct {
+		Light string
+		Dark string
+		Font string
+	}
+
+	Shadow struct {
+		Light string
+		Dark string
+		LightText string
+		DarkText string
+	}
+
+	Color map[string]ThemeConfigColor
+	Element map[string]ThemeConfigElement
+}
+
+type ThemeConfigColor struct {
+	Light string
+	Dark string
+	FG string
+	Font string
+}
+
+type ThemeConfigElement struct {
+	Light string
+	Dark string
+	FG string
+	Font string
+	Img struct {
+		Light string
+		Dark string
+		Size string
+		Pos string
+		Att string
+		Blend string
+	}
+}
+
+type ThemeConfigImportFont struct {
+	Name string
+	Local string
+	Src string
+	Format string
+	Display string
+}
 
 func main(){
 	port := ""
@@ -62,27 +156,16 @@ func main(){
 		}
 	}
 
-	regExt, err := regexp.Compile(`\.[\w_-]+$`)
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-	regClean, err := regexp.Compile(`[^\w_\-\/\.]+`)
-	if err != nil {
-		log.Fatal(err)
-		return
-	}
-
 	startTime := time.Now()
 	handleCompileTheme(port)
 	endTime := time.Now()
 
 	if compTime := endTime.UnixMilli() - startTime.UnixMilli(); compTime >= 1000 {
-		fmt.Println("Compiled In", float64(compTime) / 1000, "seconds")
-	}else if compTime := endTime.UnixNano() - startTime.UnixNano(); compTime >= 1000000 {
-		fmt.Println("Compiled In", float64(compTime / 1000) / 1000, "milliseconds")
+		fmt.Println("\x1b[1;36mCompiled In\x1b[35m", float64(compTime) / 1000, "\x1b[36mseconds\x1b[0m")
+	}else if compTime := endTime.UnixNano() - startTime.UnixNano(); compTime >= 1000 {
+		fmt.Println("\x1b[1;36mCompiled In\x1b[35m", float64(compTime / 1000) / 1000, "\x1b[36mmilliseconds\x1b[0m")
 	}else{
-		fmt.Println("Compiled In", compTime, "nanoseconds")
+		fmt.Println("\x1b[1;36mCompiled In\x1b[35m", compTime, "\x1b[36mnanoseconds\x1b[0m")
 	}
 
 	if port == "" {
@@ -90,847 +173,1900 @@ func main(){
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		url := strings.Trim(r.URL.Path, "/")
+		url := string(regex.Comp(`[^\w_\-\/\.]+`).RepStrLit([]byte(strings.Trim(r.URL.Path, "/")), []byte{}))
 		if url == "" {
 			http.ServeFile(w, r, "./test/html/index.html")
 			return
-		}else{
-			cUrl := string(regClean.ReplaceAll(regExt.ReplaceAll([]byte(url), []byte{}), []byte{}))
-
+		}else if strings.HasPrefix(url, "theme/") || strings.HasPrefix(url, "assets/") {
 			for _, ext := range validExtList {
 				if strings.HasSuffix(url, "."+ext) {
-					if strings.HasPrefix(cUrl, "theme/") {
-						if stat, err := os.Stat("./dist/"+strings.Replace(cUrl, "theme/", "", 1)+"."+ext); err == nil && !stat.IsDir() {
-							http.ServeFile(w, r, "./dist/"+strings.Replace(cUrl, "theme/", "", 1)+"."+ext)
+					if strings.HasPrefix(url, "theme/") {
+						if path, err := fs.JoinPath("./dist", strings.Replace(url, "theme/", "", 1)); err == nil {
+							http.ServeFile(w, r, path)
+							return
+						}
+					}else if strings.HasPrefix(url, "assets/") {
+						if path, err := fs.JoinPath("./test/assets", strings.Replace(url, "assets/", "", 1)); err == nil {
+							http.ServeFile(w, r, path)
 							return
 						}
 					}
+				}
+			}
+		}else{
+			url = string(regex.Comp(`\.[\w_-]+$`).RepStrLit([]byte(url), []byte{}))
 
-					if stat, err := os.Stat("./test/"+cUrl+"."+ext); err == nil && !stat.IsDir() {
-						http.ServeFile(w, r, "./test/"+cUrl+"."+ext)
-						return
-					}
-
-					w.WriteHeader(404)
-					w.Write([]byte("error 404"))
+			if path, err := fs.JoinPath("./test/html", url+".html"); err == nil {
+				if stat, err := os.Stat(path); err == nil && !stat.IsDir() {
+					http.ServeFile(w, r, path)
 					return
 				}
 			}
 
-			if stat, err := os.Stat("./test/html/"+cUrl[2:]+".html"); err == nil && !stat.IsDir() {
-				http.ServeFile(w, r, "./test/html/"+cUrl[2:]+".html")
-				return
-			}
-
-			for _, ext := range validExtList {
-				if stat, err := os.Stat("./test/"+cUrl+"."+ext); err == nil && !stat.IsDir() {
-					http.ServeFile(w, r, "./test/"+cUrl+"."+ext)
+			if path, err := fs.JoinPath("./test/html", url, "index.html"); err == nil {
+				if stat, err := os.Stat(path); err == nil && !stat.IsDir() {
+					http.ServeFile(w, r, path)
 					return
 				}
 			}
 		}
-		
+
 		w.WriteHeader(404)
 		w.Write([]byte("error 404"))
 	})
 
-	fmt.Println("Running Server On Port "+port)
+	fmt.Println("\x1b[1;36mRunning Server On Port \x1b[35m"+port, "\x1b[0m")
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
 func handleCompileTheme(port string){
-	if themeDir, err := filepath.Abs("./src"); err == nil {
-		themeDist, err := filepath.Abs("./dist")
-		if err != nil {
-			return
-		}
+	themeDir, err := filepath.Abs("./src")
+	if err != nil {
+		compileConfig()
+		return
+	}
 
-		compileLess(themeDir, themeDist)
-		// compileCSS(themeDir, themeDist)
-		compileJS(themeDir, themeDist)
+	if stat, err := os.Stat("./src"); err == nil && stat.IsDir() {
+		os.RemoveAll("./dist")
+		os.Mkdir("./dist", 0755)
+	}
 
-		if port == "" {
-			return
-		}
+	subThemePath, defaultDarkMode, _ := compileConfig()
 
-		watcher := fs.Watcher()
-		watcher.OnAny = func(path, op string) {
-			path = string(regex.Comp(`^%1[\\/]?`, themeDir).RepStrLit([]byte(path), []byte{}))
-			if strings.HasSuffix(path, ".less") && !strings.HasSuffix(path, ".min.less") {
-				compileLess(themeDir, themeDist)
-			}else if strings.HasSuffix(path, ".css") && !strings.HasSuffix(path, ".min.css") {
-				// compileCSS(themeDir, themeDist)
-			}else if strings.HasSuffix(path, ".js") && !strings.HasSuffix(path, ".min.js") {
-				compileJS(themeDir, themeDist)
+	if stat, err := os.Stat("./src"); err != nil || !stat.IsDir() {
+		return
+	}
+
+	compileCSS(themeDir, "style", true, subThemePath, defaultDarkMode)
+	compileJS(themeDir, "script", true, subThemePath)
+
+	if port == "" {
+		return
+	}
+
+	watcher := fs.Watcher()
+	watcher.OnAny = func(path, op string) {
+		path = string(regex.Comp(`^%1[\\/]?`, themeDir).RepStrLit([]byte(path), []byte{}))
+
+		if strings.HasSuffix(path, ".yml") || strings.HasSuffix(path, ".yaml") {
+			if path, darkMode, err := compileConfig(); err == nil {
+				if path != subThemePath || darkMode != defaultDarkMode {
+					compileCSS(themeDir, "style", true, subThemePath, defaultDarkMode)
+					compileJS(themeDir, "script", true, subThemePath)
+				}
+				subThemePath = path
+				defaultDarkMode = darkMode
+			}
+		}else if strings.HasSuffix(path, ".css") && !strings.HasSuffix(path, ".min.css") {
+			if strings.HasPrefix(path, "themes/") || strings.HasPrefix(path, "theme/") {
+				compileCSS(themeDir, "style", false, subThemePath, defaultDarkMode)
+			}else if strings.ContainsRune(path, '/') {
+				reg := regex.Comp(`^(.*)/([^/\\]+)\.css$`)
+				name := string(reg.RepStr([]byte(path), []byte("$2")))
+
+				if name == "config" {
+					name = "theme.config"
+				}else if name == "style" {
+					name = "theme.style"
+				}else if name == "script" {
+					name = "theme.script"
+				}
+
+				if filePath, err := fs.JoinPath(themeDir, string(reg.RepStr([]byte(path), []byte("$1")))); err == nil {
+					compileCSS(filePath, name, false, "", defaultDarkMode)
+				}
+			}else{
+				compileCSS(themeDir, "style", false, subThemePath, defaultDarkMode)
+			}
+		}else if strings.HasSuffix(path, ".js") && !strings.HasSuffix(path, ".min.js") {
+			if strings.HasPrefix(path, "themes/") || strings.HasPrefix(path, "theme/") {
+				compileJS(themeDir, "script", false, subThemePath)
+			}else if strings.ContainsRune(path, '/') {
+				reg := regex.Comp(`^(.*)/([^/\\]+)\.css$`)
+				name := string(reg.RepStr([]byte(path), []byte("$2")))
+
+				if name == "config" {
+					name = "theme.config"
+				}else if name == "style" {
+					name = "theme.style"
+				}else if name == "script" {
+					name = "theme.script"
+				}
+
+				if filePath, err := fs.JoinPath(themeDir, string(reg.RepStr([]byte(path), []byte("$1")))); err == nil {
+					compileJS(filePath, name, false, "")
+				}
+			}else{
+				compileJS(themeDir, "script", false, subThemePath)
 			}
 		}
-		watcher.WatchDir(themeDir)
 	}
+	watcher.OnRemove = func(path, op string) (removeWatcher bool) {
+		path = string(regex.Comp(`^%1[\\/]?`, themeDir).RepStrLit([]byte(path), []byte{}))
+
+		if !strings.HasSuffix(path, ".yml") && !strings.HasSuffix(path, ".yaml") && !strings.HasSuffix(path, ".css") && !strings.HasSuffix(path, ".js") {
+			reg := regex.Comp(`^(.*)/([^/\\]+)\.css$`)
+			name := string(reg.RepStr([]byte(path), []byte("$2")))
+			if name == "config" {
+				name = "theme.config"
+			}else if name == "style" {
+				name = "theme.style"
+			}else if name == "script" {
+				name = "theme.script"
+			}
+
+			if filePath, err := fs.JoinPath("./dist", name+".css"); err == nil {
+				os.Remove(filePath)
+			}
+			if filePath, err := fs.JoinPath("./dist", name+".min.css"); err == nil {
+				os.Remove(filePath)
+			}
+
+			if filePath, err := fs.JoinPath("./dist", name+".js"); err == nil {
+				os.Remove(filePath)
+			}
+			if filePath, err := fs.JoinPath("./dist", name+".min.js"); err == nil {
+				os.Remove(filePath)
+			}
+		}
+
+		return true
+	}
+	watcher.WatchDir(themeDir)
 }
 
 
-func importLessFile(themeDir string, path string, importList *[]string) []byte {
-	if path, err := fs.JoinPath(themeDir, path); err == nil {
-		if file, err := os.ReadFile(path); err == nil {
-			return regex.Comp(`@import\s*(["'\'])([^"'\']+\.less)(["'\']);`).RepFunc(file, func(data func(int) []byte) []byte {
-				if filePath := string(data(2)); !goutil.Contains(*importList, filePath) {
-					*importList = append(*importList, filePath)
-					return importLessFile(themeDir, filePath, importList)
-				}
-				return []byte{}
-			})
-		}
-	}
-	return []byte{}
-}
-
-/* type LessReader struct{}
-func (LessReader) ReadFile(path string) ([]byte, error) {
-	p, err := fs.JoinPath("./src", path)
+func compileConfig() (string, bool, error) {
+	buf, err := os.ReadFile("./src/config.yml")
+	dist := "./dist/config.min.css"
+	inDistFolder := true
 	if err != nil {
-		return nil, err
+		buf, err = os.ReadFile("./theme.yml")
+		dist = "./theme.min.css"
+		inDistFolder = false
 	}
-	out, err := os.ReadFile(p)
 	if err != nil {
-		return nil, err
+		buf, err = os.ReadFile("./config.yml")
+		dist = "./config.min.css"
+		inDistFolder = false
 	}
-	return out, nil
-} */
+	if err != nil {
+		return "", false, err
+	}
 
-func compileLess(themeDir string, themeDist string){
-	res := []byte{}
-	lessConfig := []byte{}
+	buf = regex.Comp(`(?m)^(\s*\w+)([_-][\w_-]+|):`).RepFunc(buf, func(data func(int) []byte) []byte {
+		b := bytes.Split(bytes.ReplaceAll(data(2), []byte{'_'}, []byte{'-'}), []byte{'-'})
+		return bytes.ToLower(regex.JoinBytes(data(1), bytes.Join(b, []byte{}), ':'))
+	})
 
-	if path, err := fs.JoinPath(themeDir, "config.less"); err == nil {
-		if file, err := os.ReadFile(path); err == nil {
-			// lessConfig = compileGoLessConfig(file)
-			lessConfig = file
-			lessConfig = append(lessConfig, '\n')
+	buf = regex.Comp(`(?m)^\s*\w+:\s*none(?:\s*#.*?|)$`).RepStrLit(buf, []byte{})
+
+	themeConfig := ThemeConfigData{}
+	err = yaml.Unmarshal(buf, &themeConfig)
+	if err != nil {
+		return "", false, err
+	}
+
+	var themePath string
+	if themeConfig.Theme != "" && themeConfig.Theme != "none" {
+		var buf []byte
+		if themePath, err = fs.JoinPath("./src/themes", themeConfig.Theme, "config.yml"); err == nil {
+			buf, err = os.ReadFile(themePath)
 		}
-	}
-
-	if path, err := fs.JoinPath(themeDir, "style.less"); err == nil {
-		if file, err := os.ReadFile(path); err == nil {
-			importList := []string{"style.less", "config.less"}
-			file = regex.Comp(`@import\s*(["'\'])([^"'\']+\.less)(["'\']);`).RepFunc(file, func(data func(int) []byte) []byte {
-				if filePath := string(data(2)); !goutil.Contains(importList, filePath) {
-					importList = append(importList, filePath)
-					return importLessFile(themeDir, filePath, &importList)
-				}
-				return []byte{}
-			})
-
-			res = append(res, file...)
-
-			/* out, err := less.Render(string(append(lessConfig, file...)), map[string]interface{}{"compress": true})
-			if err != nil {
-				fmt.Println(err)
-			}else{
-				res = append(res, []byte(out)...)
-			} */
-		}
-	}
-
-	//todo: find out why less.RenderFile method returns an empty string if anything is imported
-
-	/* less.SetReader(LessReader{})
-	if path, err := fs.JoinPath(themeDir, "style.less"); err == nil {
-		_ = path
-		out, err := less.RenderFile("./style.less", map[string]interface{}{
-			"rootpath": themeDir,
-			"compress": true,
-			"javascriptEnabled": true,
-		})
-		fmt.Println(out, err)
 		if err != nil {
-			fmt.Println(err)
-		}else{
-			res = []byte(out)
+			if themePath, err = fs.JoinPath("./src/theme", themeConfig.Theme, "config.yml"); err == nil {
+				buf, err = os.ReadFile(themePath)
+			}
 		}
-	} */
+		if err != nil {
+			themePath = ""
+		}else{
+			buf = regex.Comp(`(?m)^(\s*\w+)([_-][\w_-]+|):`).RepFunc(buf, func(data func(int) []byte) []byte {
+				b := bytes.Split(bytes.ReplaceAll(data(2), []byte{'_'}, []byte{'-'}), []byte{'-'})
+				return bytes.ToLower(regex.JoinBytes(data(1), bytes.Join(b, []byte{}), ':'))
+			})
+		
+			buf = regex.Comp(`(?m)^\s*\w+:\s*none(?:\s*#.*?|)$`).RepStrLit(buf, []byte{})
 
-	out, err := less.Render(string(append(lessConfig, res...)), map[string]interface{}{
-		"compress": false,
-		"javascriptEnabled": true,
-	})
-	if err != nil {
-		fmt.Println(err)
-	}else{
-		res = []byte(out)
+			err = yaml.Unmarshal(buf, &themeConfig)
+			if err != nil {
+				return "", false, err
+			}
+		}
 	}
 
-	/* res = compileGoLess(res)
+	if themePath != "" {
+		themePath = string(regex.Comp(`[/\\]+config\.yml$`).RepStrLit([]byte(themePath), []byte{}))
+	}
 
-	out, err = less.Render(string(append(lessConfig, res...)), map[string]interface{}{
-		"compress": true,
-		"javascriptEnabled": true,
-	})
-	if err != nil {
-		fmt.Println(err)
-	}else{
-		res = []byte(out)
-	} */
+	res := []byte(":root {\n")
 
-	if path, err := fs.JoinPath(themeDist, "style.css"); err == nil {
-		os.WriteFile(path, res, 0755)
+	res = append(res, regex.JoinBytes(
+		//* layout
+		`  --page-padding-inline: `, themeConfig.Layout.PagePaddingInline, ";\n",
+		`  --page-padding-inline-mobile: `, themeConfig.Layout.PagePaddingInlineMobile, ";\n",
+		`  --page-content-max-width: `, themeConfig.Layout.PageContentMaxWidth, ";\n",
+		`  --page-breakout-max-width: `, themeConfig.Layout.PageBreakoutMaxWidth, ";\n",
+		`  --page-hard-max-width: `, themeConfig.Layout.PageHardMaxWidth, ";\n",
+
+		`  --widget-size: `, themeConfig.Layout.WidgetSize, ";\n",
+		`  --widget-max-size: `, themeConfig.Layout.WidgetMaxSize, ";\n",
+
+		`  --headerimg-width: `, themeConfig.Layout.HeaderimgWidth, ";\n",
+		`  --headerimg-height: `, themeConfig.Layout.HeaderimgHeight, ";\n",
+		`  --headernav-justify: `, themeConfig.Layout.HeadernavJustify, ";\n",
+		`  --nav-underline-radius: `, themeConfig.Layout.NavUnderlineRadius, ";\n",
+
+		`  --shadow-size: `, themeConfig.Layout.ShadowSize, ";\n",
+		`  --textshadow-size: `, themeConfig.Layout.TextshadowSize, ";\n",
+
+		`  --border-radius: `, themeConfig.Layout.BorderRadius, ";\n",
+
+		//* topography
+		`  --font-size: `, themeConfig.Topography.FontSize, ";\n",
+		`  --line-height: `, themeConfig.Topography.LineHeight, ";\n",
+
+		`  --ff-sans: `, themeConfig.Topography.Font["sans"], ";\n",
+		`  --ff-serif: `, themeConfig.Topography.Font["serif"], ";\n",
+		`  --ff-mono: `, themeConfig.Topography.Font["mono"], ";\n",
+		`  --ff-cursive: `, themeConfig.Topography.Font["cursive"], ";\n",
+		`  --ff-logo: `, themeConfig.Topography.Font["logo"], ";\n",
+
+		//* shadow
+		`  --shadow-light: `, themeConfig.Shadow.Light, ";\n",
+		`  --shadow-dark: `, themeConfig.Shadow.Dark, ";\n",
+		`  --textshadow-light: `, themeConfig.Shadow.LightText, ";\n",
+		`  --textshadow-dark: `, themeConfig.Shadow.DarkText, ";\n",
+	)...)
+
+	for key, val := range themeConfig.Config {
+		res = append(res, []byte("  --"+key+": "+val+";\n")...)
+	}
+
+	var colorTextLight colorful.Color
+	var colorTextDark colorful.Color
+	{ //* text
+		lightText := colorToHsl(colorFromString(themeConfig.Text.Light, "#ffffff"))
+		darkText := colorToHsl(colorFromString(themeConfig.Text.Dark, "#0f0f0f"))
+
+		if lightText[1] > 0.1 {
+			lightText[1] = 0.1
+		}
+		if darkText[1] > 0.1 {
+			darkText[1] = 0.1
+		}
+
+		if lightText[2] < 0.6 {
+			lightText[2] = 0.6
+		}
+		if darkText[2] > 0.4 {
+			darkText[2] = 0.4
+		}
+
+		res = append(res, regex.JoinBytes(
+			`  --text-light: hsl(var(--text-light-h), var(--text-light-s), var(--text-light-l)); `,
+				`--text-light-h: var(--fg-h); `,
+				`--text-light-s: `, hslStringPart(lightText[1], "%"), "; ",
+				`--text-light-l: `, hslStringPart(lightText[2], "%"), ";\n",
+
+			`  --text-dark: hsl(var(--text-dark-h), var(--text-dark-s), var(--text-dark-l)); `,
+				`--text-dark-h: var(--fg-h); `,
+				`--text-dark-s: `, hslStringPart(darkText[1], "%"), "; ",
+				`--text-dark-l: `, hslStringPart(darkText[2], "%"), ";\n",
+		)...)
+
+		colorTextLight = colorful.Hsl(lightText[0], lightText[1], lightText[2])
+		colorTextDark = colorful.Hsl(darkText[0], darkText[1], darkText[2])
+	}
+
+	{ //* link
+		lightLink := colorToHsl(colorFromString(themeConfig.Text.LightLink, "#3db9eb"))
+		darkLink := colorToHsl(colorFromString(themeConfig.Text.DarkLink, "#1a84cb"))
+
+		if lightLink[0] < 180 {
+			lightLink[0] = 180
+		}else if lightLink[0] > 260 {
+			lightLink[0] = 260
+		}
+
+		if darkLink[0] < 180 {
+			darkLink[0] = 180
+		}else if darkLink[0] > 260 {
+			darkLink[0] = 260
+		}
+
+		if lightLink[1] < 0.15 {
+			lightLink[1] = 0.15
+		}
+		if darkLink[1] < 0.15 {
+			darkLink[1] = 0.15
+		}
+
+		if lightLink[2] < 0.5 {
+			lightLink[2] = 0.5
+		}
+		if darkLink[2] > 0.49 {
+			darkLink[2] = 0.49
+		}
+
+		res = append(res, regex.JoinBytes(
+			`  --link-light: hsl(var(--link-light-h), var(--link-light-s), var(--link-light-l)); `,
+				`--link-light-h: `, hslStringPart(lightLink[0], "deg"), "; ",
+				`--link-light-s: `, hslStringPart(lightLink[1], "%"), "; ",
+				`--link-light-l: `, hslStringPart(lightLink[2], "%"), ";\n",
+
+			`  --link-dark: hsl(var(--link-dark-h), var(--link-dark-s), var(--link-dark-l)); `,
+				`--link-dark-h: `, hslStringPart(darkLink[0], "deg"), "; ",
+				`--link-dark-s: `, hslStringPart(darkLink[1], "%"), "; ",
+				`--link-dark-l: `, hslStringPart(darkLink[2], "%"), ";\n",
+		)...)
+	}
+
+	{ //* heading
+		if themeConfig.Heading.Light == "auto" {
+			res = append(res, []byte(
+				`  --heading-light: hsl(var(--fg-h), var(--fg-s), 0.65);`+"\n",
+			)...)
+		}else if themeConfig.Heading.Light == "text" {
+			res = append(res, []byte(
+				`  --heading-light: hsl(var(--text-light-h), var(--text-light-s), var(--text-light-l));`+"\n",
+			)...)
+		}else if _, ok := themeConfig.Color[themeConfig.Heading.Light]; ok {
+			res = append(res, []byte(
+				`  --heading-light: hsl(var(--`+themeConfig.Heading.Light+`-light-h), var(--`+themeConfig.Heading.Light+`-light-s), 0.65);`+"\n",
+			)...)
+		}else{
+			res = append(res, []byte(
+				`  --heading-light: hsl(var(--text-light-h), var(--text-light-s), var(--text-light-l));`+"\n",
+			)...)
+		}
+
+		if themeConfig.Heading.Dark == "auto" {
+			res = append(res, []byte(
+				`  --heading-dark: hsl(var(--fg-h), var(--fg-s), 0.35);`+"\n",
+			)...)
+		}else if themeConfig.Heading.Dark == "text" {
+			res = append(res, []byte(
+				`  --heading-dark: hsl(var(--text-dark-h), var(--text-dark-s), var(--text-dark-l));`+"\n",
+			)...)
+		}else if _, ok := themeConfig.Color[themeConfig.Heading.Dark]; ok {
+			res = append(res, []byte(
+				`  --heading-dark: hsl(var(--`+themeConfig.Heading.Dark+`-dark-h), var(--`+themeConfig.Heading.Dark+`-Dark-s), 0.35);`+"\n",
+			)...)
+		}else{
+			res = append(res, []byte(
+				`  --heading-dark: hsl(var(--text-dark-h), var(--text-dark-s), var(--text-dark-l));`+"\n",
+			)...)
+		}
+
+		if themeConfig.Heading.LightStrong == "auto" {
+			res = append(res, []byte(
+				`  --strongheading-light: linear-gradient(45deg, hsl(calc(var(--fg-h) + 5), calc(var(--fg-s) - 0.1), 0.55), hsl(calc(var(--fg-h) - 5), calc(var(--fg-s) + 0.1), 0.7));`+"\n",
+			)...)
+		}else if themeConfig.Heading.LightStrong == "text" {
+			res = append(res, []byte(
+				`  --strongheading-light: linear-gradient(45deg, hsl(calc(var(--text-light-h) + 5), calc(var(--text-light-s) - 0.1), 0.55), hsl(calc(var(--text-light-h) - 5), calc(var(--text-light-s) + 0.1), 0.7));`+"\n",
+			)...)
+		}else if _, ok := themeConfig.Color[themeConfig.Heading.LightStrong]; ok {
+			res = append(res, []byte(
+				`  --strongheading-light: linear-gradient(45deg, hsl(calc(var(--`+themeConfig.Heading.LightStrong+`-light-h) + 5), calc(var(--`+themeConfig.Heading.LightStrong+`-light-s) - 0.1), 0.55), hsl(calc(var(--`+themeConfig.Heading.LightStrong+`-light-h) - 5), calc(var(--`+themeConfig.Heading.LightStrong+`-light-s) + 0.1), 0.7));`+"\n",
+			)...)
+		}else if strings.Contains(themeConfig.Heading.LightStrong, "gradient(") || strings.Contains(themeConfig.Heading.LightStrong, "url(") {
+			res = append(res, []byte(
+				`  --strongheading-light: `+themeConfig.Heading.LightStrong+`;`+"\n",
+			)...)
+		}else{
+			res = append(res, []byte(
+				`  --strongheading-light: linear-gradient(45deg, hsl(calc(var(--fg-h) + 5), calc(var(--fg-s) - 0.1), 0.55), hsl(calc(var(--fg-h) - 5), calc(var(--fg-s) + 0.1), 0.7));`+"\n",
+			)...)
+		}
+
+		if themeConfig.Heading.DarkStrong == "auto" {
+			res = append(res, []byte(
+				`  --strongheading-dark: linear-gradient(45deg, hsl(calc(var(--fg-h) + 5), calc(var(--fg-s) - 0.1), 0.3), hsl(calc(var(--fg-h) - 5), calc(var(--fg-s) + 0.1), 0.4));`+"\n",
+			)...)
+		}else if themeConfig.Heading.DarkStrong == "text" {
+			res = append(res, []byte(
+				`  --strongheading-dark: linear-gradient(45deg, hsl(calc(var(--text-dark-h) + 5), calc(var(--text-dark-s) - 0.1), 0.3), hsl(calc(var(--text-dark-h) - 5), calc(var(--text-dark-s) + 0.1), 0.4));`+"\n",
+			)...)
+		}else if _, ok := themeConfig.Color[themeConfig.Heading.DarkStrong]; ok {
+			res = append(res, []byte(
+				`  --strongheading-dark: linear-gradient(45deg, hsl(calc(var(--`+themeConfig.Heading.DarkStrong+`-dark-h) + 5), calc(var(--`+themeConfig.Heading.DarkStrong+`-dark-s) - 0.1), 0.3), hsl(calc(var(--`+themeConfig.Heading.DarkStrong+`-dark-h) - 5), calc(var(--`+themeConfig.Heading.DarkStrong+`-dark-s) + 0.1), 0.4));`+"\n",
+			)...)
+		}else if strings.Contains(themeConfig.Heading.DarkStrong, "gradient(") || strings.Contains(themeConfig.Heading.DarkStrong, "url(") {
+			res = append(res, []byte(
+				`  --strongheading-dark: `+themeConfig.Heading.DarkStrong+`;`+"\n",
+			)...)
+		}else{
+			res = append(res, []byte(
+				`  --strongheading-dark: linear-gradient(45deg, hsl(calc(var(--fg-h) + 5), calc(var(--fg-s) - 0.1), 0.3), hsl(calc(var(--fg-h) - 5), calc(var(--fg-s) + 0.1), 0.4));`+"\n",
+			)...)
+		}
+
+		if themeConfig.Heading.Font != "auto" {
+			if _, ok := themeConfig.Topography.Font[themeConfig.Heading.Font]; ok {
+				res = append(res, []byte(
+					`  --heading-font: var(--ff-`+themeConfig.Heading.Font+`);`+"\n",
+				)...)
+			}else{
+				res = append(res, []byte(
+					`  --heading-font: `+themeConfig.Heading.Font+`;`+"\n",
+				)...)
+			}
+		}
+	}
+
+	{ //* input
+		if themeConfig.Input.Light == "auto" {
+			res = append(res, []byte(
+				`  --input-light: hsl(var(--fg-h), var(--fg-s), var(--fg-l));`+"\n",
+			)...)
+		}else if themeConfig.Input.Light == "text" {
+			res = append(res, []byte(
+				`  --input-light: hsl(var(--text-light-h), var(--text-light-s), var(--text-light-l));`+"\n",
+			)...)
+		}else if _, ok := themeConfig.Color[themeConfig.Input.Light]; ok {
+			res = append(res, []byte(
+				`  --input-light: hsl(var(--`+themeConfig.Input.Light+`-light-h), var(--`+themeConfig.Input.Light+`-light-s), var(--`+themeConfig.Input.Light+`-light-l));`+"\n",
+			)...)
+		}else{
+			res = append(res, []byte(
+				`  --input-light: hsl(var(--fg-h), var(--fg-s), var(--fg-l));`+"\n",
+			)...)
+		}
+
+		if themeConfig.Input.Dark == "auto" {
+			res = append(res, []byte(
+				`  --input-dark: hsl(var(--fg-h), var(--fg-s), var(--fg-l));`+"\n",
+			)...)
+		}else if themeConfig.Input.Dark == "text" {
+			res = append(res, []byte(
+				`  --input-dark: hsl(var(--text-dark-h), var(--text-dark-s), var(--text-dark-l));`+"\n",
+			)...)
+		}else if _, ok := themeConfig.Color[themeConfig.Input.Dark]; ok {
+			res = append(res, []byte(
+				`  --input-dark: hsl(var(--`+themeConfig.Input.Dark+`-dark-h), var(--`+themeConfig.Input.Dark+`-dark-s), var(--`+themeConfig.Input.Dark+`-dark-l));`+"\n",
+			)...)
+		}else{
+			res = append(res, []byte(
+				`  --input-dark: hsl(var(--fg-h), var(--fg-s), var(--fg-l));`+"\n",
+			)...)
+		}
+
+		if themeConfig.Input.Font != "auto" {
+			if _, ok := themeConfig.Topography.Font[themeConfig.Input.Font]; ok {
+				res = append(res, []byte(
+					`  --input-font: var(--ff-`+themeConfig.Input.Font+`);`+"\n",
+				)...)
+			}else{
+				res = append(res, []byte(
+					`  --input-font: `+themeConfig.Input.Font+`;`+"\n",
+				)...)
+			}
+		}
+	}
+
+
+	{ //* color
+		var colorPrimaryLight [3]float64
+		var colorPrimaryDark [3]float64
+		if color, ok := themeConfig.Color["primary"]; ok {
+			colorPrimaryLight = colorToHsl(colorFromString(color.Light, "#00a3cc"))
+			colorPrimaryDark = colorToHsl(colorFromString(color.Dark, "#007a99"))
+		}else{
+			colorPrimaryLight = colorToHsl(colorFromString("#00a3cc", ""))
+			colorPrimaryDark = colorToHsl(colorFromString("#007a99", ""))
+		}
+
+		var colorAccentLight [3]float64
+		var colorAccentDark [3]float64
+		if color, ok := themeConfig.Color["accent"]; ok {
+			colorAccentLight = colorToHsl(colorFromString(color.Light, "#12ba2e"))
+			colorAccentDark = colorToHsl(colorFromString(color.Dark, "#0e8b23"))
+		}else{
+			colorAccentLight = colorToHsl(colorFromString("#12ba2e", ""))
+			colorAccentDark = colorToHsl(colorFromString("#0e8b23", ""))
+		}
+
+		var colorWarnLight [3]float64
+		var colorWarnDark [3]float64
+		if color, ok := themeConfig.Color["warn"]; ok {
+			colorWarnLight = colorToHsl(colorFromString(color.Light, "#ba1c1c"))
+			colorWarnDark = colorToHsl(colorFromString(color.Dark, "#8e1515"))
+		}else{
+			colorWarnLight = colorToHsl(colorFromString("#ba1c1c", ""))
+			colorWarnDark = colorToHsl(colorFromString("#8e1515", ""))
+		}
+
+		commonColors := []string{
+			"primary",
+			"accent",
+			"warn",
+			"dark",
+			"light",
+		}
+
+		for _, name := range commonColors {
+			if color, ok := themeConfig.Color[name]; ok {
+				if name == "primary" {
+					color.Light = colorful.Hsl(colorPrimaryLight[0], colorPrimaryLight[1], colorPrimaryLight[2]).Hex()
+					color.Dark = colorful.Hsl(colorPrimaryLight[0], colorPrimaryDark[1], colorPrimaryDark[2]).Hex()
+
+					res = append(res, regex.JoinBytes(
+						`  --primary--light: hsl(var(--primary--light-h), var(--primary--light-s), var(--primary--light-l)); `,
+							`--primary--light-h: `, hslStringPart(colorPrimaryLight[0], "deg"), "; ",
+							`--primary--light-s: `, hslStringPart(colorPrimaryLight[1], "%"), "; ",
+							`--primary--light-l: `, hslStringPart(colorPrimaryLight[2], "%"), ";\n",
+
+						`  --primary--dark: hsl(var(--primary--dark-h), var(--primary--dark-s), var(--primary--dark-l)); `,
+							`--primary--dark-h: `, hslStringPart(colorPrimaryLight[0], "deg"), "; ",
+							`--primary--dark-s: `, hslStringPart(colorPrimaryDark[1], "%"), "; ",
+							`--primary--dark-l: `, hslStringPart(colorPrimaryDark[2], "%"), ";\n",
+					)...)
+				}else if name == "accent" {
+					var h float64
+					if colorful.Hsl(colorAccentLight[0], 100, 100).AlmostEqualRgb(colorful.Hsl(colorPrimaryLight[0], 100, 100)) {
+						h = colorPrimaryLight[0]
+					}else{
+						h = colorAccentLight[0]
+					}
+
+					color.Light = colorful.Hsl(h, colorAccentLight[1], colorAccentLight[2]).Hex()
+					color.Dark = colorful.Hsl(h, colorAccentDark[1], colorAccentDark[2]).Hex()
+
+					res = append(res, regex.JoinBytes(
+						`  --accent--light: hsl(var(--accent--light-h), var(--accent--light-s), var(--accent--light-l)); `,
+							`--accent--light-h: `, hslStringPart(h, "deg"), "; ",
+							`--accent--light-s: `, hslStringPart(colorAccentLight[1], "%"), "; ",
+							`--accent--light-l: `, hslStringPart(colorAccentLight[2], "%"), ";\n",
+
+						`  --accent--dark: hsl(var(--accent--dark-h), var(--accent--dark-s), var(--accent--dark-l)); `,
+							`--accent--dark-h: `, hslStringPart(h, "deg"), "; ",
+							`--accent--dark-s: `, hslStringPart(colorAccentDark[1], "%"), "; ",
+							`--accent--dark-l: `, hslStringPart(colorAccentDark[2], "%"), ";\n",
+					)...)
+				}else if name == "warn" {
+					if colorWarnLight[0] > 64 && colorWarnLight[0] < 264 {
+						if colorWarnLight[0] <= 164 {
+							colorWarnLight[0] = 64
+						}else{
+							colorWarnLight[0] = 264
+						}
+					}
+
+					if colorful.Hsl(colorWarnLight[0], 100, 100).AlmostEqualRgb(colorful.Hsl(colorPrimaryLight[0], 100, 100)) || colorful.Hsl(colorWarnLight[0], 100, 100).AlmostEqualRgb(colorful.Hsl(colorAccentLight[0], 100, 100)) {
+						colorHueTryList := []float64{
+							0, // red
+							270, // purple
+							300, // light purple
+							330, // pink
+							54, // yellow
+							32, // orange
+							colorWarnLight[0],
+						}
+
+						for _, hue := range colorHueTryList {
+							if !(colorful.Hsl(colorWarnLight[0], 100, 100).AlmostEqualRgb(colorful.Hsl(colorPrimaryLight[0], 100, 100)) || colorful.Hsl(colorWarnLight[0], 100, 100).AlmostEqualRgb(colorful.Hsl(colorAccentLight[0], 100, 100))) {
+								break
+							}
+							colorWarnLight[0] = hue
+						}
+					}
+
+					color.Light = colorful.Hsl(colorWarnLight[0], colorWarnLight[1], colorWarnLight[2]).Hex()
+					color.Dark = colorful.Hsl(colorWarnLight[0], colorWarnDark[1], colorWarnDark[2]).Hex()
+
+					res = append(res, regex.JoinBytes(
+						`  --warn--light: hsl(var(--warn--light-h), var(--warn--light-s), var(--warn--light-l)); `,
+							`--warn--light-h: `, hslStringPart(colorWarnLight[0], "deg"), "; ",
+							`--warn--light-s: `, hslStringPart(colorWarnLight[1], "%"), "; ",
+							`--warn--light-l: `, hslStringPart(colorWarnLight[2], "%"), ";\n",
+
+						`  --warn--dark: hsl(var(--warn--dark-h), var(--warn--dark-s), var(--warn--dark-l)); `,
+							`--warn--dark-h: `, hslStringPart(colorWarnLight[0], "deg"), "; ",
+							`--warn--dark-s: `, hslStringPart(colorWarnDark[1], "%"), "; ",
+							`--warn--dark-l: `, hslStringPart(colorWarnDark[2], "%"), ";\n",
+					)...)
+				}else if name == "dark" {
+					colorLight := colorToHsl(colorFromString(color.Light, "#2b2b2b"))
+					colorDark := colorToHsl(colorFromString(color.Dark, "#2b2b2b"))
+
+					if colorLight[1] > 15 {
+						colorLight[1] = 15
+					}
+					if colorDark[1] > 15 {
+						colorDark[1] = 15
+					}
+
+					if colorLight[2] > 49 {
+						colorLight[2] = 49
+					}
+					if colorDark[2] > 49 {
+						colorDark[2] = 49
+					}
+
+					color.Light = colorful.Hsl(colorLight[0], colorLight[1], colorLight[2]).Hex()
+					color.Dark = colorful.Hsl(colorLight[0], colorDark[1], colorDark[2]).Hex()
+
+					res = append(res, regex.JoinBytes(
+						`  --dark--light: hsl(var(--dark--light-h), var(--dark--light-s), var(--dark--light-l)); `,
+							`--dark--light-h: var(--fg-h); `,
+							`--dark--light-s: `, hslStringPart(colorLight[1], "%"), "; ",
+							`--dark--light-l: `, hslStringPart(colorLight[2], "%"), ";\n",
+
+						`  --dark--dark: hsl(var(--dark--dark-h), var(--dark--dark-s), var(--dark--dark-l)); `,
+							`--dark--dark-h: var(--fg-h); `,
+							`--dark--dark-s: `, hslStringPart(colorDark[1], "%"), "; ",
+							`--dark--dark-l: `, hslStringPart(colorDark[2], "%"), ";\n",
+					)...)
+				}else if name == "light" {
+					colorLight := colorToHsl(colorFromString(color.Light, "#f0f0f0"))
+					colorDark := colorToHsl(colorFromString(color.Dark, "#474747"))
+
+					if colorLight[1] > 15 {
+						colorLight[1] = 15
+					}
+					if colorDark[1] > 15 {
+						colorDark[1] = 15
+					}
+
+					if colorLight[2] < 50 {
+						colorLight[2] = 50
+					}
+					if colorDark[2] > 49 {
+						colorDark[2] = 49
+					}
+
+					color.Light = colorful.Hsl(colorLight[0], colorLight[1], colorLight[2]).Hex()
+					color.Dark = colorful.Hsl(colorLight[0], colorDark[1], colorDark[2]).Hex()
+
+					res = append(res, regex.JoinBytes(
+						`  --light--light: hsl(var(--light--light-h), var(--light--light-s), var(--light--light-l)); `,
+							`--light--light-h: var(--fg-h); `,
+							`--light--light-s: `, hslStringPart(colorLight[1], "%"), "; ",
+							`--light--light-l: `, hslStringPart(colorLight[2], "%"), ";\n",
+
+						`  --light--dark: hsl(var(--light--dark-h), var(--light--dark-s), var(--light--dark-l)); `,
+							`--light--dark-h: var(--fg-h); `,
+							`--light--dark-s: `, hslStringPart(colorDark[1], "%"), "; ",
+							`--light--dark-l: `, hslStringPart(colorDark[2], "%"), ";\n",
+					)...)
+				}
+
+				themeConfig.Color[name] = color
+
+				// add text
+				var light, dark, lightCont, darkCont string
+				if contrastRatio(colorTextLight, colorFromString(color.Light, "#fff")) >= contrastRatio(colorTextDark, colorFromString(color.Light, "#fff")) {
+					light = "light"
+					lightCont = "dark"
+				}else{
+					light = "dark"
+					lightCont = "light"
+				}
+
+				if contrastRatio(colorTextLight, colorFromString(color.Dark, "#000")) >= contrastRatio(colorTextDark, colorFromString(color.Dark, "#000")) {
+					dark = "light"
+					darkCont = "dark"
+				}else{
+					dark = "dark"
+					darkCont = "light"
+				}
+
+				res = append(res, regex.JoinBytes(
+					//* text
+					`  --`, name, `--light-text: hsl(var(--`, name, `--light-text-h), var(--`, name, `--light-text-s), var(--`, name, `--light-text-l)); `,
+						`--`, name, `--light-text-h: var(--text-`, light, `-h)`, "; ",
+						`--`, name, `--light-text-s: var(--text-`, light, `-s)`, "; ",
+						`--`, name, `--light-text-l: var(--text-`, light, `-l)`, ";\n",
+
+					`  --`, name, `--dark-text: hsl(var(--`, name, `--dark-text-h), var(--`, name, `--dark-text-s), var(--`, name, `--dark-text-l)); `,
+						`--`, name, `--dark-text-h: var(--text-`, dark, `-h)`, "; ",
+						`--`, name, `--dark-text-s: var(--text-`, dark, `-s)`, "; ",
+						`--`, name, `--dark-text-l: var(--text-`, dark, `-l)`, ";\n",
+
+					//* link
+					`  --`, name, `--light-link: hsl(var(--`, name, `--light-link-h), var(--`, name, `--light-link-s), var(--`, name, `--light-link-l)); `,
+						`--`, name, `--light-link-h: var(--link-`, light, `-h)`, "; ",
+						`--`, name, `--light-link-s: var(--link-`, light, `-s)`, "; ",
+						`--`, name, `--light-link-l: var(--link-`, light, `-l)`, ";\n",
+
+					`  --`, name, `--dark-link: hsl(var(--`, name, `--dark-link-h), var(--`, name, `--dark-link-s), var(--`, name, `--dark-link-l)); `,
+						`--`, name, `--dark-link-h: var(--link-`, dark, `-h)`, "; ",
+						`--`, name, `--dark-link-s: var(--link-`, dark, `-s)`, "; ",
+						`--`, name, `--dark-link-l: var(--link-`, dark, `-l)`, ";\n",
+
+					//* heading
+					`  --`, name, `--light-heading: var(--heading-`, light, `)`, "; ",
+						`--`, name, `--light-strongheading: var(--strongheading-`, light, `)`, ";\n",
+
+					`  --`, name, `--dark-heading: var(--heading-`, dark, `)`, "; ",
+						`--`, name, `--dark-strongheading: var(--strongheading-`, dark, `)`, ";\n",
+
+					//* input
+					`  --`, name, `--light-input: var(--input-`, light, `)`, ";\n",
+					`  --`, name, `--dark-input: var(--input-`, dark, `)`, ";\n",
+
+					//* shadow
+					`  --`, name, `--light-shadow: var(--shadow-`, light, `)`, "; ",
+						`--`, name, `--light-textshadow: var(--textshadow-`, light, `)`, ";\n",
+
+					`  --`, name, `--dark-shadow: var(--shadow-`, dark, `)`, "; ",
+						`--`, name, `--dark-textshadow: var(--textshadow-`, dark, `)`, ";\n",
+				)...)
+
+				if color.FG == "text" {
+					res = append(res, regex.JoinBytes(
+						`  --`, name, `--light-fg: hsl(var(--`, name, `--light-fg-h), var(--`, name, `--light-fg-s), var(--`, name, `--light-fg-l)); `,
+							`--`, name, `--light-fg-h: var(--`, name, `--light-text-h)`, "; ",
+							`--`, name, `--light-fg-s: var(--`, name, `--light-text-s)`, "; ",
+							`--`, name, `--light-fg-l: var(--`, name, `--light-text-l)`, "; ",
+							`--`, name, `--light-fg-text: var(--text-`, lightCont, `)`, ";\n",
+
+						`  --`, name, `--dark-fg: hsl(var(--`, name, `--dark-fg-h), var(--`, name, `--dark-fg-s), var(--`, name, `--dark-fg-l)); `,
+							`--`, name, `--dark-fg-h: var(--`, name, `--dark-text-h)`, "; ",
+							`--`, name, `--dark-fg-s: var(--`, name, `--dark-text-s)`, "; ",
+							`--`, name, `--dark-fg-l: var(--`, name, `--dark-text-l)`, "; ",
+							`--`, name, `--dark-fg-text: var(--text-`, darkCont, `)`, ";\n",
+					)...)
+				}else if color.FG == "auto" {
+					res = append(res, regex.JoinBytes(
+						`  --`, name, `--light-fg: hsl(var(--`, name, `--light-fg-h), var(--`, name, `--light-fg-s), var(--`, name, `--light-fg-l)); `,
+							`--`, name, `--light-fg-h: var(--fg--`, light, `-h)`, "; ",
+							`--`, name, `--light-fg-s: var(--fg--`, light, `-s)`, "; ",
+							`--`, name, `--light-fg-l: var(--fg--`, light, `-l)`, "; ",
+	
+						`  --`, name, `--dark-fg: hsl(var(--`, name, `--dark-fg-h), var(--`, name, `--dark-fg-s), var(--`, name, `--dark-fg-l)); `,
+							`--`, name, `--dark-fg-h: var(--fg--`, dark, `-h)`, "; ",
+							`--`, name, `--dark-fg-s: var(--fg--`, dark, `-s)`, "; ",
+							`--`, name, `--dark-fg-l: var(--fg--`, dark, `-l)`, "; ",
+					)...)
+				}else{
+					if fgColor, ok := themeConfig.Color[color.FG]; ok {
+						var light, dark string
+						if contrastRatio(colorFromString(fgColor.Light, "#fff"), colorFromString(color.Light, "#fff")) >= contrastRatio(colorFromString(fgColor.Dark, "#000"), colorFromString(color.Light, "#fff")) {
+							light = "light"
+						}else{
+							light = "dark"
+						}
+
+						if contrastRatio(colorFromString(fgColor.Light, "#fff"), colorFromString(color.Dark, "#000")) >= contrastRatio(colorFromString(fgColor.Dark, "#000"), colorFromString(color.Dark, "#000")) {
+							dark = "light"
+						}else{
+							dark = "dark"
+						}
+
+						res = append(res, regex.JoinBytes(
+							`  --`, name, `--light-fg: hsl(var(--`, name, `--light-fg-h), var(--`, name, `--light-fg-s), var(--`, name, `--light-fg-l)); `,
+								`--`, name, `--light-fg-h: var(--`, color.FG, `--`, light, `-h)`, "; ",
+								`--`, name, `--light-fg-s: var(--`, color.FG, `--`, light, `-s)`, "; ",
+								`--`, name, `--light-fg-l: var(--`, color.FG, `--`, light, `-l)`, ";\n",
+
+							`  --`, name, `--dark-fg: hsl(var(--`, name, `--dark-fg-h), var(--`, name, `--dark-fg-s), var(--`, name, `--dark-fg-l)); `,
+								`--`, name, `--dark-fg-h: var(--`, color.FG, `--`, dark, `-h)`, "; ",
+								`--`, name, `--dark-fg-s: var(--`, color.FG, `--`, dark, `-s)`, "; ",
+								`--`, name, `--dark-fg-l: var(--`, color.FG, `--`, dark, `-l)`, ";\n",
+						)...)
+					}
+				}
+
+				if color.Font != "auto" {
+					if _, ok := themeConfig.Topography.Font[color.Font]; ok {
+						res = append(res, []byte(
+							`  --`+name+`-font: var(--ff-`+color.Font+`);`+"\n",
+						)...)
+					}else{
+						res = append(res, []byte(
+							`  --`+name+`-font: `+color.Font+`;`+"\n",
+						)...)
+					}
+				}
+			}
+		}
+
+		for name, color := range themeConfig.Color {
+			if goutil.Contains(commonColors, name) {
+				continue
+			}
+
+			colorLight := colorToHsl(colorFromString(color.Light, "#fff"))
+			colorDark := colorToHsl(colorFromString(color.Dark, "#000"))
+
+			var h float64
+			if colorful.Hsl(colorLight[0], 100, 100).AlmostEqualRgb(colorful.Hsl(colorAccentLight[0], 100, 100)) {
+				h = colorAccentLight[0]
+			}else if colorful.Hsl(colorLight[0], 100, 100).AlmostEqualRgb(colorful.Hsl(colorPrimaryLight[0], 100, 100)) {
+				h = colorPrimaryLight[0]
+			}else if colorful.Hsl(colorLight[0], 100, 100).AlmostEqualRgb(colorful.Hsl(colorWarnLight[0], 100, 100)) {
+				h = colorAccentLight[0]
+			}else{
+				h = colorLight[0]
+			}
+
+			color.Light = colorful.Hsl(h, colorLight[1], colorLight[2]).Hex()
+			color.Dark = colorful.Hsl(h, colorDark[1], colorDark[2]).Hex()
+
+			res = append(res, regex.JoinBytes(
+				`  --`, name, `--light: hsl(var(--`, name, `--light-h), var(--`, name, `--light-s), var(--`, name, `--light-l)); `,
+					`--`, name, `--light-h: `, hslStringPart(h, "deg"), "; ",
+					`--`, name, `--light-s: `, hslStringPart(colorLight[1], "%"), "; ",
+					`--`, name, `--light-l: `, hslStringPart(colorLight[2], "%"), ";\n",
+
+				`  --`, name, `--dark: hsl(var(--`, name, `--dark-h), var(--`, name, `--dark-s), var(--`, name, `--dark-l)); `,
+					`--`, name, `--dark-h: `, hslStringPart(h, "deg"), "; ",
+					`--`, name, `--dark-s: `, hslStringPart(colorDark[1], "%"), "; ",
+					`--`, name, `--dark-l: `, hslStringPart(colorDark[2], "%"), ";\n",
+			)...)
+
+			themeConfig.Color[name] = color
+
+			// add text
+			var light, dark, lightCont, darkCont string
+			if contrastRatio(colorTextLight, colorFromString(color.Light, "#fff")) >= contrastRatio(colorTextDark, colorFromString(color.Light, "#fff")) {
+				light = "light"
+				lightCont = "dark"
+			}else{
+				light = "dark"
+				lightCont = "light"
+			}
+
+			if contrastRatio(colorTextLight, colorFromString(color.Dark, "#000")) >= contrastRatio(colorTextDark, colorFromString(color.Dark, "#000")) {
+				dark = "light"
+				darkCont = "dark"
+			}else{
+				dark = "dark"
+				darkCont = "light"
+			}
+
+			res = append(res, regex.JoinBytes(
+				//* text
+				`  --`, name, `--light-text: hsl(var(--`, name, `--light-text-h), var(--`, name, `--light-text-s), var(--`, name, `--light-text-l)); `,
+					`--`, name, `--light-text-h: var(--text-`, light, `-h)`, "; ",
+					`--`, name, `--light-text-s: var(--text-`, light, `-s)`, "; ",
+					`--`, name, `--light-text-l: var(--text-`, light, `-l)`, ";\n",
+
+				`  --`, name, `--dark-text: hsl(var(--`, name, `--dark-text-h), var(--`, name, `--dark-text-s), var(--`, name, `--dark-text-l)); `,
+					`--`, name, `--dark-text-h: var(--text-`, dark, `-h)`, "; ",
+					`--`, name, `--dark-text-s: var(--text-`, dark, `-s)`, "; ",
+					`--`, name, `--dark-text-l: var(--text-`, dark, `-l)`, ";\n",
+
+				//* link
+				`  --`, name, `--light-link: hsl(var(--`, name, `--light-link-h), var(--`, name, `--light-link-s), var(--`, name, `--light-link-l)); `,
+					`--`, name, `--light-link-h: var(--link-`, light, `-h)`, "; ",
+					`--`, name, `--light-link-s: var(--link-`, light, `-s)`, "; ",
+					`--`, name, `--light-link-l: var(--link-`, light, `-l)`, ";\n",
+
+				`  --`, name, `--dark-link: hsl(var(--`, name, `--dark-link-h), var(--`, name, `--dark-link-s), var(--`, name, `--dark-link-l)); `,
+					`--`, name, `--dark-link-h: var(--link-`, dark, `-h)`, "; ",
+					`--`, name, `--dark-link-s: var(--link-`, dark, `-s)`, "; ",
+					`--`, name, `--dark-link-l: var(--link-`, dark, `-l)`, ";\n",
+
+				//* heading
+				`  --`, name, `--light-heading: var(--heading-`, light, `)`, "; ",
+					`--`, name, `--light-strongheading: var(--strongheading-`, light, `)`, ";\n",
+
+				`  --`, name, `--dark-heading: var(--heading-`, dark, `)`, "; ",
+					`--`, name, `--dark-strongheading: var(--strongheading-`, dark, `)`, ";\n",
+
+				//* input
+				`  --`, name, `--light-input: var(--input-`, light, `)`, ";\n",
+				`  --`, name, `--dark-input: var(--input-`, dark, `)`, ";\n",
+
+				//* shadow
+				`  --`, name, `--light-shadow: var(--shadow-`, light, `)`, "; ",
+					`--`, name, `--light-textshadow: var(--textshadow-`, light, `)`, ";\n",
+
+				`  --`, name, `--dark-shadow: var(--shadow-`, dark, `)`, "; ",
+					`--`, name, `--dark-textshadow: var(--textshadow-`, dark, `)`, ";\n",
+			)...)
+
+			if color.FG == "text" {
+				res = append(res, regex.JoinBytes(
+					`  --`, name, `--light-fg: hsl(var(--`, name, `--light-fg-h), var(--`, name, `--light-fg-s), var(--`, name, `--light-fg-l)); `,
+						`--`, name, `--light-fg-h: var(--`, name, `--light-text-h)`, "; ",
+						`--`, name, `--light-fg-s: var(--`, name, `--light-text-s)`, "; ",
+						`--`, name, `--light-fg-l: var(--`, name, `--light-text-l)`, "; ",
+						`--`, name, `--light-fg-text: var(--text-`, lightCont, `)`, ";\n",
+
+					`  --`, name, `--dark-fg: hsl(var(--`, name, `--dark-fg-h), var(--`, name, `--dark-fg-s), var(--`, name, `--dark-fg-l)); `,
+						`--`, name, `--dark-fg-h: var(--`, name, `--dark-text-h)`, "; ",
+						`--`, name, `--dark-fg-s: var(--`, name, `--dark-text-s)`, "; ",
+						`--`, name, `--dark-fg-l: var(--`, name, `--dark-text-l)`, "; ",
+						`--`, name, `--dark-fg-text: var(--text-`, darkCont, `)`, ";\n",
+				)...)
+			}else if color.FG == "auto" {
+				res = append(res, regex.JoinBytes(
+					`  --`, name, `--light-fg: hsl(var(--`, name, `--light-fg-h), var(--`, name, `--light-fg-s), var(--`, name, `--light-fg-l)); `,
+						`--`, name, `--light-fg-h: var(--fg--`, light, `-h)`, "; ",
+						`--`, name, `--light-fg-s: var(--fg--`, light, `-s)`, "; ",
+						`--`, name, `--light-fg-l: var(--fg--`, light, `-l)`, "; ",
+						`--`, name, `--light-fg-text: var(--fg--`, light, `-text)`, ";\n",
+
+					`  --`, name, `--dark-fg: hsl(var(--`, name, `--dark-fg-h), var(--`, name, `--dark-fg-s), var(--`, name, `--dark-fg-l)); `,
+						`--`, name, `--dark-fg-h: var(--fg--`, dark, `-h)`, "; ",
+						`--`, name, `--dark-fg-s: var(--fg--`, dark, `-s)`, "; ",
+						`--`, name, `--dark-fg-l: var(--fg--`, dark, `-l)`, "; ",
+						`--`, name, `--dark-fg-text: var(--fg--`, dark, `-text)`, ";\n",
+				)...)
+			}else{
+				if fgColor, ok := themeConfig.Color[color.FG]; ok {
+					var light, dark string
+					if contrastRatio(colorFromString(fgColor.Light, "#fff"), colorFromString(color.Light, "#fff")) >= contrastRatio(colorFromString(fgColor.Dark, "#000"), colorFromString(color.Light, "#fff")) {
+						light = "light"
+					}else{
+						light = "dark"
+					}
+
+					if contrastRatio(colorFromString(fgColor.Light, "#fff"), colorFromString(color.Dark, "#000")) >= contrastRatio(colorFromString(fgColor.Dark, "#000"), colorFromString(color.Dark, "#000")) {
+						dark = "light"
+					}else{
+						dark = "dark"
+					}
+
+					res = append(res, regex.JoinBytes(
+						`  --`, name, `--light-fg: hsl(var(--`, name, `--light-fg-h), var(--`, name, `--light-fg-s), var(--`, name, `--light-fg-l)); `,
+							`--`, name, `--light-fg-h: var(--`, color.FG, `--`, light, `-h)`, "; ",
+							`--`, name, `--light-fg-s: var(--`, color.FG, `--`, light, `-s)`, "; ",
+							`--`, name, `--light-fg-l: var(--`, color.FG, `--`, light, `-l)`, "; ",
+							`--`, name, `--light-fg-text: var(--`, color.FG, `--`, light, `-text)`, ";\n",
+
+						`  --`, name, `--dark-fg: hsl(var(--`, name, `--dark-fg-h), var(--`, name, `--dark-fg-s), var(--`, name, `--dark-fg-l)); `,
+							`--`, name, `--dark-fg-h: var(--`, color.FG, `--`, dark, `-h)`, "; ",
+							`--`, name, `--dark-fg-s: var(--`, color.FG, `--`, dark, `-s)`, "; ",
+							`--`, name, `--dark-fg-l: var(--`, color.FG, `--`, dark, `-l)`, "; ",
+							`--`, name, `--dark-fg-text: var(--`, color.FG, `--`, dark, `-text)`, ";\n",
+					)...)
+				}
+			}
+
+			if color.Font != "auto" {
+				if _, ok := themeConfig.Topography.Font[color.Font]; ok {
+					res = append(res, []byte(
+						`  --`+name+`-font: var(--ff-`+color.Font+`);`+"\n",
+					)...)
+				}else{
+					res = append(res, []byte(
+						`  --`+name+`-font: `+color.Font+`;`+"\n",
+					)...)
+				}
+			}
+		}
+	}
+
+
+	{ //* element
+		for name, color := range themeConfig.Element {
+			colorLight := colorToHsl(colorFromString(color.Light, "#fff"))
+			colorDark := colorToHsl(colorFromString(color.Dark, "#000"))
+
+			// text contrast
+			var light, dark, lightCont, darkCont string
+			if contrastRatio(colorTextLight, colorFromString(color.Light, "#fff")) >= contrastRatio(colorTextDark, colorFromString(color.Light, "#fff")) {
+				light = "light"
+				lightCont = "dark"
+			}else{
+				light = "dark"
+				lightCont = "light"
+			}
+
+			if contrastRatio(colorTextLight, colorFromString(color.Dark, "#000")) >= contrastRatio(colorTextDark, colorFromString(color.Dark, "#000")) {
+				dark = "light"
+				darkCont = "dark"
+			}else{
+				dark = "dark"
+				darkCont = "light"
+			}
+
+			res = append(res, regex.JoinBytes(
+				//* color
+				`  --`, name, `--light: hsl(var(--`, name, `--light-h), var(--`, name, `--light-s), var(--`, name, `--light-l))`, "; ",
+					`--`, name, `--light-h: var(--fg-h)`, "; ",
+					`--`, name, `--light-s: `, hslStringPart(colorLight[1], "%"), "; ",
+					`--`, name, `--light-l: `, hslStringPart(colorLight[2], "%"), ";\n",
+
+				`  --`, name, `--dark: hsl(var(--`, name, `--dark-h), var(--`, name, `--dark-s), var(--`, name, `--dark-l))`, "; ",
+					`--`, name, `--dark-h: var(--fg-h)`, "; ",
+					`--`, name, `--dark-s: `, hslStringPart(colorDark[1], "%"), "; ",
+					`--`, name, `--dark-l: `, hslStringPart(colorDark[2], "%"), ";\n",
+
+				//* text
+				`  --`, name, `--light-text: hsl(var(--`, name, `--light-text-h), var(--`, name, `--light-text-s), var(--`, name, `--light-text-l)); `,
+					`--`, name, `--light-text-h: var(--text-`, light, `-h)`, "; ",
+					`--`, name, `--light-text-s: var(--text-`, light, `-s)`, "; ",
+					`--`, name, `--light-text-l: var(--text-`, light, `-l)`, ";\n",
+
+				`  --`, name, `--dark-text: hsl(var(--`, name, `--dark-text-h), var(--`, name, `--dark-text-s), var(--`, name, `--dark-text-l)); `,
+					`--`, name, `--dark-text-h: var(--text-`, dark, `-h)`, "; ",
+					`--`, name, `--dark-text-s: var(--text-`, dark, `-s)`, "; ",
+					`--`, name, `--dark-text-l: var(--text-`, dark, `-l)`, ";\n",
+
+				//* link
+				`  --`, name, `--light-link: hsl(var(--`, name, `--light-link-h), var(--`, name, `--light-link-s), var(--`, name, `--light-link-l)); `,
+					`--`, name, `--light-link-h: var(--link-`, light, `-h)`, "; ",
+					`--`, name, `--light-link-s: var(--link-`, light, `-s)`, "; ",
+					`--`, name, `--light-link-l: var(--link-`, light, `-l)`, ";\n",
+
+				`  --`, name, `--dark-link: hsl(var(--`, name, `--dark-link-h), var(--`, name, `--dark-link-s), var(--`, name, `--dark-link-l)); `,
+					`--`, name, `--dark-link-h: var(--link-`, dark, `-h)`, "; ",
+					`--`, name, `--dark-link-s: var(--link-`, dark, `-s)`, "; ",
+					`--`, name, `--dark-link-l: var(--link-`, dark, `-l)`, ";\n",
+
+				//* heading
+				`  --`, name, `--light-heading: var(--heading-`, light, `)`, "; ",
+					`--`, name, `--light-strongheading: var(--strongheading-`, light, `)`, ";\n",
+
+				`  --`, name, `--dark-heading: var(--heading-`, dark, `)`, "; ",
+					`--`, name, `--dark-strongheading: var(--strongheading-`, dark, `)`, ";\n",
+
+				//* input
+				`  --`, name, `--light-input: var(--input-`, light, `)`, ";\n",
+				`  --`, name, `--dark-input: var(--input-`, dark, `)`, ";\n",
+
+				//* shadow
+				`  --`, name, `--light-shadow: var(--shadow-`, light, `)`, "; ",
+					`--`, name, `--light-textshadow: var(--textshadow-`, light, `)`, ";\n",
+
+				`  --`, name, `--dark-shadow: var(--shadow-`, dark, `)`, "; ",
+					`--`, name, `--dark-textshadow: var(--textshadow-`, dark, `)`, ";\n",
+			)...)
+
+			if color.FG == "text" {
+				res = append(res, regex.JoinBytes(
+					`  --`, name, `--light-fg: hsl(var(--`, name, `--light-fg-h), var(--`, name, `--light-fg-s), var(--`, name, `--light-fg-l)); `,
+						`--`, name, `--light-fg-h: var(--`, name, `--light-text-h)`, "; ",
+						`--`, name, `--light-fg-s: var(--`, name, `--light-text-s)`, "; ",
+						`--`, name, `--light-fg-l: var(--`, name, `--light-text-l)`, "; ",
+						`--`, name, `--light-fg-text: var(--text-`, lightCont, `)`, ";\n",
+
+					`  --`, name, `--dark-fg: hsl(var(--`, name, `--dark-fg-h), var(--`, name, `--dark-fg-s), var(--`, name, `--dark-fg-l)); `,
+						`--`, name, `--dark-fg-h: var(--`, name, `--dark-text-h)`, "; ",
+						`--`, name, `--dark-fg-s: var(--`, name, `--dark-text-s)`, "; ",
+						`--`, name, `--dark-fg-l: var(--`, name, `--dark-text-l)`, "; ",
+						`--`, name, `--dark-fg-text: var(--text-`, darkCont, `)`, ";\n",
+				)...)
+			}else if color.FG == "auto" {
+				res = append(res, regex.JoinBytes(
+					`  --`, name, `--light-fg: hsl(var(--`, name, `--light-fg-h), var(--`, name, `--light-fg-s), var(--`, name, `--light-fg-l)); `,
+						`--`, name, `--light-fg-h: var(--fg--`, light, `-h)`, "; ",
+						`--`, name, `--light-fg-s: var(--fg--`, light, `-s)`, "; ",
+						`--`, name, `--light-fg-l: var(--fg--`, light, `-l)`, "; ",
+						`--`, name, `--light-fg-text: var(--fg--`, light, `-text)`, ";\n",
+
+					`  --`, name, `--dark-fg: hsl(var(--`, name, `--dark-fg-h), var(--`, name, `--dark-fg-s), var(--`, name, `--dark-fg-l)); `,
+						`--`, name, `--dark-fg-h: var(--fg--`, dark, `-h)`, "; ",
+						`--`, name, `--dark-fg-s: var(--fg--`, dark, `-s)`, "; ",
+						`--`, name, `--dark-fg-l: var(--fg--`, dark, `-l)`, "; ",
+						`--`, name, `--dark-fg-text: var(--fg--`, dark, `-text)`, ";\n",
+				)...)
+			}else{
+				if fgColor, ok := themeConfig.Color[color.FG]; ok {
+					var light, dark string
+					if contrastRatio(colorFromString(fgColor.Light, "#fff"), colorFromString(color.Light, "#fff")) >= contrastRatio(colorFromString(fgColor.Dark, "#000"), colorFromString(color.Light, "#fff")) {
+						light = "light"
+					}else{
+						light = "dark"
+					}
+
+					if contrastRatio(colorFromString(fgColor.Light, "#fff"), colorFromString(color.Dark, "#000")) >= contrastRatio(colorFromString(fgColor.Dark, "#000"), colorFromString(color.Dark, "#000")) {
+						dark = "light"
+					}else{
+						dark = "dark"
+					}
+
+					res = append(res, regex.JoinBytes(
+						`  --`, name, `--light-fg: hsl(var(--`, name, `--light-fg-h), var(--`, name, `--light-fg-s), var(--`, name, `--light-fg-l)); `,
+							`--`, name, `--light-fg-h: var(--`, color.FG, `--`, light, `-h)`, "; ",
+							`--`, name, `--light-fg-s: var(--`, color.FG, `--`, light, `-s)`, "; ",
+							`--`, name, `--light-fg-l: var(--`, color.FG, `--`, light, `-l)`, "; ",
+							`--`, name, `--light-fg-text: var(--`, color.FG, `--`, light, `-text)`, ";\n",
+
+						`  --`, name, `--dark-fg: hsl(var(--`, name, `--dark-fg-h), var(--`, name, `--dark-fg-s), var(--`, name, `--dark-fg-l)); `,
+							`--`, name, `--dark-fg-h: var(--`, color.FG, `--`, dark, `-h)`, "; ",
+							`--`, name, `--dark-fg-s: var(--`, color.FG, `--`, dark, `-s)`, "; ",
+							`--`, name, `--dark-fg-l: var(--`, color.FG, `--`, dark, `-l)`, "; ",
+							`--`, name, `--dark-fg-text: var(--`, color.FG, `--`, dark, `-text)`, ";\n",
+					)...)
+				}
+			}
+
+			if color.Font != "auto" {
+				if _, ok := themeConfig.Topography.Font[color.Font]; ok {
+					res = append(res, []byte(
+						`  --`+name+`-font: var(--ff-`+color.Font+`);`+"\n",
+					)...)
+				}else{
+					res = append(res, []byte(
+						`  --`+name+`-font: `+color.Font+`;`+"\n",
+					)...)
+				}
+			}
+
+			if !goutil.IsZeroOfUnderlyingType(color.Img) && (color.Img.Light != "" || color.Img.Dark != "") {
+				if color.Img.Light == "" {
+					color.Img.Light = color.Img.Dark
+				}else if color.Img.Dark == "" {
+					color.Img.Dark = color.Img.Light
+				}
+
+				res = append(res, regex.JoinBytes(
+					`  --`, name, `--img-light: `, color.Img.Light, "; ",
+						`--`, name, `--img-dark: `, color.Img.Dark, "; ",
+						`--`, name, `--img-size: `, color.Img.Size, "; ",
+						`--`, name, `--img-pos: `, color.Img.Pos, "; ",
+						`--`, name, `--img-att: `, color.Img.Att, "; ",
+						`--`, name, `--img-blend: `, color.Img.Blend, ";\n",
+				)...)
+			}
+		}
+	}
+
+
+	res = append(res, '}', '\n')
+
+	res = append(res, regex.JoinBytes(
+		"\n:root {\n",
+
+		`  --bg-a: 1`, "; ",
+			`--fg-a: 1`, ";\n",
+
+			compileConfigFG("primary"),
+			compileConfigElm("base", themeConfig.DefaultDarkMode),
+
+			"\n  @media(prefers-color-scheme: light){color-scheme: light;}\n",
+				"  @media(prefers-color-scheme: dark){color-scheme: dark;}\n",
+
+		"}\n",
+	)...)
+
+	if len(themeConfig.Topography.ImportFonts) != 0 {
+		res = append(res, '\n')
+		res = append(res, compileConfigFonts(themeConfig.Topography.ImportFonts)...)
+	}
+
+	if inDistFolder {
+		os.WriteFile("./dist/config.css", res, 0755)
 	}
 
 	m := minify.New()
 	m.AddFunc("text/css", css.Minify)
 	if res, err := m.Bytes("text/css", res); err == nil {
-		res = append([]byte("/*! "+config["theme_name"]+" "+config["theme_version"]+" | "+config["theme_license"]+" | "+config["theme_uri"]+" */\n"), res...)
+		os.WriteFile(dist, res, 0755)
+	}else{
+		os.WriteFile(dist, res, 0755)
+	}
 
-		/* if path, err := fs.JoinPath(themeDist, "style.css"); err == nil {
-			os.WriteFile(path, res, 0755)
-		} */
+	return themePath, themeConfig.DefaultDarkMode, nil
+}
 
-		if path, err := fs.JoinPath(themeDist, "style.min.css"); err == nil {
+func compileConfigFonts(importFonts []ThemeConfigImportFont) []byte {
+	res := []byte{}
+	for _, font := range importFonts {
+		if font.Name == "" && font.Local == "" {
+			continue
+		}else if font.Local == "" {
+			font.Local = font.Name
+		}else if font.Name == "" {
+			font.Name = font.Local
+		}
+
+		if font.Format == "" {
+			font.Format = "truetype"
+		}
+
+		if font.Display == "" {
+			font.Display = "auto"
+		}
+
+		fontSrc := regex.Comp(`{(.*?)}`).Split([]byte(font.Src))
+		if len(fontSrc) == 3 {
+			fontSrcData := bytes.Split(fontSrc[1], []byte{'|'})
+			for _, srcData := range fontSrcData {
+				var fontWeight []byte
+				srcList := [][]byte{}
+				if i := bytes.IndexByte(srcData, ':'); i != -1 && i < len(srcData)-1 {
+					fontWeight = srcData[:i]
+					srcList = bytes.Split(srcData[i+1:], []byte{','})
+				}else if !bytes.Contains(srcData, []byte{':'}) {
+					srcList = bytes.Split(srcData, []byte{','})
+				}
+
+				if len(srcList) == 0 {
+					continue
+				}
+
+				for i, src := range srcList {
+					fontStyle := []byte{}
+					if i == 1 {
+						fontStyle = []byte(` font-style: italic;`)
+					}else if i == 2 {
+						fontStyle = []byte(` font-style: oblique;`)
+					}else if i > 0 {
+						break
+					}
+
+					css := regex.JoinBytes(
+						`@font-face {`,
+							`font-family: '`, font.Name, `';`,
+							` src: local('`, font.Local, `'),`,
+								` url('`, fontSrc[0], src, fontSrc[2], `') format('`, font.Format, `');`,
+							` font-display: `, font.Display, ';',
+							fontStyle,
+					)
+					if len(fontWeight) != 0 {
+						css = regex.JoinBytes(css, 
+							` font-weight: `, fontWeight, ';',
+						)
+					}
+					css = append(css, '}', '\n')
+					res = append(res, css...)
+				}
+			}
+		}else if len(fontSrc) == 1 {
+			res = append(res, regex.JoinBytes(
+				`@font-face {`,
+					`font-family: '`, font.Name, `';`,
+					` src: local('`, font.Local, `'),`,
+						` url('`, fontSrc[0], `') format('`, font.Format, `');`,
+					` font-display: `, font.Display, ';',
+				'}', '\n',
+			)...)
+		}
+	}
+	return res
+}
+
+
+func compileConfigElm(name string, defaultDarkMode bool) []byte {
+	var main, alt string
+	if defaultDarkMode {
+		main = "dark"
+		alt = "light"
+	}else{
+		main = "light"
+		alt = "dark"
+	}
+
+	return regex.JoinBytes(
+		`  --bg: hsla(var(--bg-h), var(--bg-s), var(--bg-l), var(--bg-a))`, "; ",
+			`--bg-h: var(--`, name, `--`, main, `-h)`, "; ",
+			`--bg-s: var(--`, name, `--`, main, `-s)`, "; ",
+			`--bg-l: var(--`, name, `--`, main, `-l)`, ";\n",
+
+		`  --fg: hsla(var(--fg-h), var(--fg-s), var(--fg-l), var(--fg-a))`, "; ",
+			`--fg-h: var(--`, name, `--`, main, `-fg-h)`, "; ",
+			`--fg-s: var(--`, name, `--`, main, `-fg-s)`, "; ",
+			`--fg-l: var(--`, name, `--`, main, `-fg-l)`, "; ",
+			`--fg-text: var(--`, name, `--`, main, `-fg-text)`, ";\n",
+
+		`  --text: var(--`, name, `--`, main, `-text)`, "; ",
+			`--text-h: var(--`, name, `--`, main, `-text-h)`, "; ",
+			`--text-s: var(--`, name, `--`, main, `-text-s)`, "; ",
+			`--text-l: var(--`, name, `--`, main, `-text-l)`, "; ",
+			`--link: var(--`, name, `--`, main, `-link)`, "; ",
+			`--link-h: var(--`, name, `--`, main, `-link-h)`, "; ",
+			`--link-s: var(--`, name, `--`, main, `-link-s)`, "; ",
+			`--link-l: var(--`, name, `--`, main, `-link-l)`, "; ",
+			`--heading: var(--`, name, `--`, main, `-heading)`, "; ",
+			`--stringheading: var(--`, name, `--`, main, `-strongheading)`, "; ",
+			`--input: var(--`, name, `--`, main, `-input)`, "; ",
+			// `--shadow: var(--`, name, `--`, main, `-shadow)`, "; ",
+			`--textshadow: var(--`, name, `--`, main, `-textshadow)`, "; ",
+			`--font: var(--`, name, `--`, main, `-font, var(--ff-sans))`, ";\n",
+
+		`  --img: var(--`, name, `--img-`, main, `, none)`, "; ",
+			`--img-size: var(--`, name, `--img-size, cover)`, "; ",
+			`--img-pos: var(--`, name, `--img-pos, center)`, "; ",
+			`--img-att: var(--`, name, `--img-att, fixed)`, "; ",
+			`--img-blend: var(--`, name, `--img-blend, fixed)`, ";\n",
+
+		"\n  @media (prefers-color-scheme: ", alt, ") {\n",
+
+		`    --bg-h: var(--`, name, `--`, alt, `-h)`, "; ",
+				`--bg-s: var(--`, name, `--`, alt, `-s)`, "; ",
+				`--bg-l: var(--`, name, `--`, alt, `-l)`, ";\n",
+
+		`    --fg-h: var(--`, name, `--`, alt, `-fg-h)`, "; ",
+				`--fg-s: var(--`, name, `--`, alt, `-fg-s)`, "; ",
+				`--fg-l: var(--`, name, `--`, alt, `-fg-l)`, "; ",
+				`--fg-text: var(--`, name, `--`, alt, `-fg-text)`, ";\n",
+
+		`    --text: var(--`, name, `--`, alt, `-text)`, "; ",
+				`--text-h: var(--`, name, `--`, alt, `-text-h)`, "; ",
+				`--text-s: var(--`, name, `--`, alt, `-text-s)`, "; ",
+				`--text-l: var(--`, name, `--`, alt, `-text-l)`, "; ",
+				`--link: var(--`, name, `--`, alt, `-link)`, "; ",
+				`--link-h: var(--`, name, `--`, alt, `-link-h)`, "; ",
+				`--link-s: var(--`, name, `--`, alt, `-link-s)`, "; ",
+				`--link-l: var(--`, name, `--`, alt, `-link-l)`, "; ",
+				`--heading: var(--`, name, `--`, alt, `-heading)`, "; ",
+				`--stringheading: var(--`, name, `--`, alt, `-strongheading)`, "; ",
+				`--input: var(--`, name, `--`, alt, `-input)`, "; ",
+				// `--shadow: var(--`, name, `--`, alt, `-shadow)`, "; ",
+				`--textshadow: var(--`, name, `--`, alt, `-textshadow)`, "; ",
+				`--font: var(--`, name, `--`, alt, `-font, var(--ff-sans))`, ";\n",
+
+		`    --img: var(--`, name, `--img-`, alt, `, none)`, ";\n",
+
+		"  }\n",
+
+		"  & > * {\n",
+		`    --shadow: var(--`, name, `--`, main, `-shadow)`, ";\n",
+		`    @media(prefers-color-scheme: ", alt, "){--shadow: var(--`, name, `--`, alt, `-shadow)`, ";}\n",
+		"  }\n",
+	)
+}
+
+func compileConfigColor(name string, defaultDarkMode bool) []byte {
+	var main, alt string
+	if defaultDarkMode {
+		main = "dark"
+		alt = "light"
+	}else{
+		main = "light"
+		alt = "dark"
+	}
+
+	return regex.JoinBytes(
+		`  --bg: hsla(var(--bg-h), var(--bg-s), var(--bg-l), var(--bg-a))`, "; ",
+			`--bg-h: var(--`, name, `--`, main, `-h)`, "; ",
+			`--bg-s: var(--`, name, `--`, main, `-s)`, "; ",
+			`--bg-l: var(--`, name, `--`, main, `-l)`, ";\n",
+
+		`  --fg: hsla(var(--fg-h), var(--fg-s), var(--fg-l), var(--fg-a))`, "; ",
+			`--fg-h: var(--`, name, `--`, main, `-fg-h)`, "; ",
+			`--fg-s: var(--`, name, `--`, main, `-fg-s)`, "; ",
+			`--fg-l: var(--`, name, `--`, main, `-fg-l)`, "; ",
+			`--fg-text: var(--`, name, `--`, main, `-fg-text)`, ";\n",
+
+		`  --text: var(--`, name, `--`, main, `-text)`, "; ",
+			`--text-h: var(--`, name, `--`, main, `-text-h)`, "; ",
+			`--text-s: var(--`, name, `--`, main, `-text-s)`, "; ",
+			`--text-l: var(--`, name, `--`, main, `-text-l)`, "; ",
+			`--link: var(--`, name, `--`, main, `-link)`, "; ",
+			`--link-h: var(--`, name, `--`, main, `-link-h)`, "; ",
+			`--link-s: var(--`, name, `--`, main, `-link-s)`, "; ",
+			`--link-l: var(--`, name, `--`, main, `-link-l)`, "; ",
+			`--heading: var(--`, name, `--`, main, `-heading)`, "; ",
+			`--stringheading: var(--`, name, `--`, main, `-strongheading)`, "; ",
+			`--input: var(--`, name, `--`, main, `-input)`, "; ",
+			// `--shadow: var(--`, name, `--`, main, `-shadow)`, "; ",
+			`--textshadow: var(--`, name, `--`, main, `-textshadow)`, "; ",
+			`--font: var(--`, name, `--`, main, `-font, var(--ff-sans))`, ";\n",
+
+		`  --img: none`, ";\n",
+
+		"\n  @media (prefers-color-scheme: ", alt, ") {\n",
+
+		`    --bg-h: var(--`, name, `--`, alt, `-h)`, "; ",
+				`--bg-s: var(--`, name, `--`, alt, `-s)`, "; ",
+				`--bg-l: var(--`, name, `--`, alt, `-l)`, ";\n",
+
+		`    --fg-h: var(--`, name, `--`, alt, `-fg-h)`, "; ",
+				`--fg-s: var(--`, name, `--`, alt, `-fg-s)`, "; ",
+				`--fg-l: var(--`, name, `--`, alt, `-fg-l)`, "; ",
+				`--fg-text: var(--`, name, `--`, alt, `-fg-text)`, ";\n",
+
+		`    --text: var(--`, name, `--`, alt, `-text)`, "; ",
+				`--text-h: var(--`, name, `--`, alt, `-text-h)`, "; ",
+				`--text-s: var(--`, name, `--`, alt, `-text-s)`, "; ",
+				`--text-l: var(--`, name, `--`, alt, `-text-l)`, "; ",
+				`--link: var(--`, name, `--`, alt, `-link)`, "; ",
+				`--link-h: var(--`, name, `--`, alt, `-link-h)`, "; ",
+				`--link-s: var(--`, name, `--`, alt, `-link-s)`, "; ",
+				`--link-l: var(--`, name, `--`, alt, `-link-l)`, "; ",
+				`--heading: var(--`, name, `--`, alt, `-heading)`, "; ",
+				`--stringheading: var(--`, name, `--`, alt, `-strongheading)`, "; ",
+				`--input: var(--`, name, `--`, alt, `-input)`, "; ",
+				// `--shadow: var(--`, name, `--`, alt, `-shadow)`, "; ",
+				`--textshadow: var(--`, name, `--`, alt, `-textshadow)`, "; ",
+				`--font: var(--`, name, `--`, alt, `-font, var(--ff-sans))`, ";\n",
+
+		"  }\n",
+
+		"  & > * {\n",
+		`    --shadow: var(--`, name, `--`, main, `-shadow)`, ";\n",
+		`    @media(prefers-color-scheme: ", alt, "){--shadow: var(--`, name, `--`, alt, `-shadow)`, ";}\n",
+		"  }\n",
+	)
+}
+
+func compileConfigFG(name string) []byte {
+	return regex.JoinBytes(
+		`  --fg--light-h: var(--`, name, `--light-h)`, "; ",
+			`--fg--light-s: var(--`, name, `--light-s)`, "; ",
+			`--fg--light-l: var(--`, name, `--light-l)`, "; ",
+			`--fg--light-text: var(--`, name, `--light-text)`, ";\n",
+
+		`  --fg--dark-h: var(--`, name, `--dark-h)`, "; ",
+			`--fg--dark-s: var(--`, name, `--dark-s)`, "; ",
+			`--fg--dark-l: var(--`, name, `--dark-l)`, "; ",
+			`--fg--dark-text: var(--`, name, `--dark-text)`, ";\n",
+	)
+}
+
+
+func compileCSS(inDir string, outName string, init bool, subThemePath string, defaultDarkMode bool){
+	if stat, err := os.Stat("./dist"); err != nil || !stat.IsDir() {
+		return
+	}
+
+	res := []byte{}
+
+	if files, err := os.ReadDir(inDir); err == nil {
+		for _, file := range files {
+			if file.IsDir() {
+				if init {
+					name := file.Name()
+					if name == "themes" || name == "theme" {
+						continue
+					}
+
+					if name == "config" {
+						name = "theme.config"
+					}else if name == "style" {
+						name = "theme.style"
+					}else if name == "script" {
+						name = "theme.script"
+					}
+
+					if filePath, err := fs.JoinPath(inDir, name); err == nil {
+						compileCSS(filePath, name, init, "", defaultDarkMode)
+					}
+				}
+			}else if strings.HasSuffix(file.Name(), ".css") && !strings.HasSuffix(file.Name(), ".min.css") {
+				if filePath, err := fs.JoinPath(inDir, file.Name()); err == nil {
+					if buf, err := os.ReadFile(filePath); err == nil {
+						res = append(res, '\n')
+						res = append(res, buf...)
+					}
+				}
+			}
+		}
+	}
+
+	if outName == "style" && subThemePath != "" {
+		if files, err := os.ReadDir(subThemePath); err == nil {
+			for _, file := range files {
+				if file.IsDir() {
+					if init {
+						name := file.Name()
+						if name == "config" {
+							name = "theme.config"
+						}else if name == "style" {
+							name = "theme.style"
+						}else if name == "script" {
+							name = "theme.script"
+						}
+	
+						if filePath, err := fs.JoinPath(subThemePath, name); err == nil {
+							compileCSS(filePath, name, init, "", defaultDarkMode)
+						}
+					}
+				}else if strings.HasSuffix(file.Name(), ".css") && !strings.HasSuffix(file.Name(), ".min.css") {
+					if filePath, err := fs.JoinPath(subThemePath, file.Name()); err == nil {
+						if buf, err := os.ReadFile(filePath); err == nil {
+							res = append(res, '\n')
+							res = append(res, buf...)
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if len(res) == 0 {
+		return
+	}
+
+	res = compileMethodsCSS(res, defaultDarkMode)
+
+	if path, err := fs.JoinPath("./dist", outName+".css"); err == nil {
+		os.WriteFile(path, regex.JoinBytes(`/*! `, config["theme_name"], ' ', config["theme_version"], ` | `, config["theme_license"], ` | `, config["theme_uri"], ` */`, '\n', res), 0755)
+	}
+
+	m := minify.New()
+	m.AddFunc("text/css", css.Minify)
+	if res, err := m.Bytes("text/css", res); err == nil {
+		res = regex.JoinBytes(`/*! `, config["theme_name"], ' ', config["theme_version"], ` | `, config["theme_license"], ` | `, config["theme_uri"], ` */`, '\n', res)
+
+		if path, err := fs.JoinPath("./dist", outName+".min.css"); err == nil {
 			os.WriteFile(path, res, 0755)
 		}
 
-		if path, err := fs.JoinPath(themeDir, "normalize.min.css"); err == nil {
-			if buf, err := os.ReadFile(path); err == nil {
-				res = append(buf, res...)
+		if outName == "style" {
+			if path, err := fs.JoinPath(inDir, "normalize.min.css"); err == nil {
+				if buf, err := os.ReadFile(path); err == nil {
+					res = append([]byte{'\n'}, res...)
+					res = append(buf, res...)
+				}
+			}
+
+			if path, err := fs.JoinPath("./dist", outName+".norm.min.css"); err == nil {
+				os.WriteFile(path, res, 0755)
 			}
 		}
 
-		if path, err := fs.JoinPath(themeDist, "style.norm.min.css"); err == nil {
+	}else{
+		res = regex.JoinBytes(`/*! `, config["theme_name"], ' ', config["theme_version"], ` | `, config["theme_license"], ` | `, config["theme_uri"], ` */`, '\n', res)
+
+		if path, err := fs.JoinPath("./dist", outName+".min.css"); err == nil {
+			os.WriteFile(path, res, 0755)
+		}
+
+		if outName == "style" {
+			if path, err := fs.JoinPath(inDir, "normalize.min.css"); err == nil {
+				if buf, err := os.ReadFile(path); err == nil {
+					res = append([]byte{'\n'}, res...)
+					res = append(buf, res...)
+				}
+			}
+	
+			if path, err := fs.JoinPath("./dist", outName+".norm.min.css"); err == nil {
+				os.WriteFile(path, res, 0755)
+			}
+		}
+	}
+}
+
+func compileJS(inDir string, outName string, init bool, themePath string){
+	if stat, err := os.Stat("./dist"); err != nil || !stat.IsDir() {
+		return
+	}
+
+	res := []byte{}
+
+	if files, err := os.ReadDir(inDir); err == nil {
+		for _, file := range files {
+			if file.IsDir() {
+				if init {
+					name := file.Name()
+					if name == "themes" || name == "theme" {
+						continue
+					}
+
+					if name == "config" {
+						name = "theme.config"
+					}else if name == "style" {
+						name = "theme.style"
+					}else if name == "script" {
+						name = "theme.script"
+					}
+
+					if filePath, err := fs.JoinPath(inDir, name); err == nil {
+						compileJS(filePath, name, init, "")
+					}
+				}
+			}else if strings.HasSuffix(file.Name(), ".js") && !strings.HasSuffix(file.Name(), ".min.js") {
+				if filePath, err := fs.JoinPath(inDir, file.Name()); err == nil {
+					if buf, err := os.ReadFile(filePath); err == nil {
+						res = append(res, '\n')
+						res = append(res, buf...)
+					}
+				}
+			}
+		}
+	}
+
+	if outName == "script" && themePath != "" {
+		if files, err := os.ReadDir(themePath); err == nil {
+			for _, file := range files {
+				if file.IsDir() {
+					if init {
+						name := file.Name()
+						if name == "themes" || name == "theme" {
+							continue
+						}
+	
+						if name == "config" {
+							name = "theme.config"
+						}else if name == "style" {
+							name = "theme.style"
+						}else if name == "script" {
+							name = "theme.script"
+						}
+	
+						if filePath, err := fs.JoinPath(themePath, name); err == nil {
+							compileJS(filePath, name, init, "")
+						}
+					}
+				}else if strings.HasSuffix(file.Name(), ".js") && !strings.HasSuffix(file.Name(), ".min.js") {
+					if filePath, err := fs.JoinPath(themePath, file.Name()); err == nil {
+						if buf, err := os.ReadFile(filePath); err == nil {
+							res = append(res, '\n')
+							res = append(res, buf...)
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if len(res) == 0 {
+		return
+	}
+
+	if path, err := fs.JoinPath("./dist", outName+".js"); err == nil {
+		os.WriteFile(path, regex.JoinBytes(`/*! `, config["theme_name"], ' ', config["theme_version"], ` | `, config["theme_license"], ` | `, config["theme_uri"], ` */`, '\n', res), 0755)
+	}
+
+	m := minify.New()
+	m.AddFunc("text/javascript", js.Minify)
+	if res, err := m.Bytes("text/javascript", res); err == nil {
+		res = regex.JoinBytes(`/*! `, config["theme_name"], ' ', config["theme_version"], ` | `, config["theme_license"], ` | `, config["theme_uri"], ` */`, '\n', ';', res, ';')
+
+		if path, err := fs.JoinPath("./dist", outName+".min.js"); err == nil {
+			os.WriteFile(path, res, 0755)
+		}
+	}else{
+		res = regex.JoinBytes(`/*! `, config["theme_name"], ' ', config["theme_version"], ` | `, config["theme_license"], ` | `, config["theme_uri"], ` */`, '\n', res)
+
+		if path, err := fs.JoinPath("./dist", outName+".min.js"); err == nil {
 			os.WriteFile(path, res, 0755)
 		}
 	}
 }
 
-// Compile special functions from go.less
-func compileGoLess(buf []byte) []byte {
-	buf = regex.Comp(`---COMP_auto_contrast:\s*hsl\(([0-9]+)(?:deg|),\s*([0-9]+(?:%|\.[0-9]+|)),\s*([0-9]+(?:%|\.[0-9]+|))\)(,\s*[\w_\- ]+);?`).RepFunc(buf, func(data func(int) []byte) []byte {
-		hsl := [3]float64{}
+func compileMethodsCSS(buf []byte, defaultDarkMode bool) []byte {
+	// encode bracket indexes
+	buf = regex.Comp(`\%!([\w]+)!\%`).RepFunc(buf, func(data func(int) []byte) []byte {
+		return regex.JoinBytes(`%!o!%`, data(1), `%!c!%`)
+	})
 
-		// get hsl value
-		{
-			if h, err := strconv.ParseFloat(string(data(1)), 32); err == nil {
-				for h < 0 {
-					h += 360
-				}
-				for h > 360 {
-					h -= 360
-				}
-				if h < 0 {
-					h = 0
-				}
+	ind := 0
+	buf = regex.Comp(`\{|\}`).RepFunc(buf, func(data func(int) []byte) []byte {
+		if data(0)[0] == '}' && ind > 0 {
+			ind--
+			return regex.JoinBytes(`%!`, ind, `!%}`)
+		}
+		r := regex.JoinBytes(`{%!`, ind, `!%`)
+		ind++
+		return r
+	})
 
-				hsl[0] = h
-			}
-	
-			if bytes.HasSuffix(data(2), []byte{'%'}) {
-				if s, err := strconv.ParseFloat(string(bytes.TrimRight(data(2), "%")), 32); err == nil {
-					hsl[1] = s / 100
-				}
-			}else if s, err := strconv.ParseFloat(string(data(2)), 32); err == nil {
-				hsl[1] = s
-			}
-	
-			if bytes.HasSuffix(data(3), []byte{'%'}) {
-				if l, err := strconv.ParseFloat(string(bytes.TrimRight(data(3), "%")), 32); err == nil {
-					hsl[2] = l / 100
-				}
-			}else if l, err := strconv.ParseFloat(string(data(3)), 32); err == nil {
-				hsl[2] = l
+
+	// compile for loop
+	buf = regex.Comp(`(?s)@for\s*\((.*?)\)\s*\{(\%![0-9]+!\%)(.*?)\2\}`).RepFunc(buf, func(data func(int) []byte) []byte {
+		argsB := regex.Comp(`,\s*`).Split(data(1))
+		args := []int{}
+		var varName string
+		for _, b := range argsB {
+			if n, err := strconv.Atoi(string(b)); err == nil {
+				args = append(args, n)
+			}else{
+				varName = string(b)
 			}
 		}
 
-		var elm string
-		if len(data(4)) != 0 {
-			elm = string(bytes.TrimLeft(data(4), ", "))
+		for len(args) < 3 {
+			args = append(args, 0)
 		}
 
-		res := regex.JoinBytes(
-			`--bg-h: `, hslStringPart(hsl[0], "deg"), `;`,
-			`--bg-s: `, hslStringPart(hsl[1], "%"), `;`,
-			`--bg-l: `, hslStringPart(hsl[2], "%"), `;`,
-		)
-
-		elmList := strings.Split(elm, " ")
-		for len(elmList) < 4 {
-			elmList = append(elmList, "")
+		if args[0] == args[1] {
+			return []byte{}
 		}
 
-		if contrastRatio([3]float64{0, 1, 1}, hsl) > contrastRatio([3]float64{0, 0, 0}, hsl) {
-			if elmList[0] == "text" {
-				res = append(res, regex.JoinBytes(
-					`--fg-h: var(--color-h);`,
-					`--fg-s: @text-light-s;`,
-					`--fg-l: @text-light-l;`,
-					`--fg-text: var(--text-dark);`,
-				)...)
-			}else{
-				res = append(res, regex.JoinBytes(
-					`--fg-h: var(--color-h);`,
-					`--fg-s: var(--color-s);`,
-					`--fg-l: var(--color-l);`,
-					`--fg-text: var(--color-text);`,
-				)...)
+		if args[0] > args[1] {
+			t := args[0]
+			args[0] = args[1]
+			args[1] = t
+		}
+
+		if args[2] == 0 {
+			args[2] = 1
+		}else if args[2] < 0 {
+			if args[0] < args[1] {
+				t := args[0]
+				args[0] = args[1]
+				args[1] = t
 			}
+		}
 
-			res = append(res, regex.JoinBytes(`--text: var(--text-light);`)...)
-
-			if elmList[1] == "text" {
-				res = append(res, regex.JoinBytes(`--link: var(--text-light);`)...)
-			}else{
-				res = append(res, regex.JoinBytes(`--link: var(--link-light);`)...)
+		res := []byte{}
+		if args[2] > 0 {
+			for i := args[0]; i <= args[1]; i += args[2] {
+				if varName != "" {
+					res = append(res, regex.Comp(`\{(\%![0-9]+!\%)%1\1\}`, varName).RepFunc(data(3), func(data func(int) []byte) []byte {
+						return []byte(strconv.Itoa(i))
+					})...)
+				}else{
+					res = append(res, data(3)...)
+				}
 			}
-
-			if elmList[2] == "text" {
-				res = append(res, regex.JoinBytes(`--heading: var(--text-light);`)...)
-			}else{
-				res = append(res, regex.JoinBytes(`--heading: var(--heading-light, var(--text-light));`)...)
+		}else if args[2] < 0 {
+			for i := args[0]; i >= args[1]; i += args[2] {
+				if varName != "" {
+					res = append(res, regex.Comp(`\{(\%![0-9]+!\%)%1\1\}`, varName).RepFunc(data(3), func(data func(int) []byte) []byte {
+						return []byte(strconv.Itoa(i))
+					})...)
+				}else{
+					res = append(res, data(3)...)
+				}
 			}
-
-			if elmList[3] == "text" {
-				res = append(res, regex.JoinBytes(`--strongheading: linear-gradient(45deg, hsl(calc(var(--fg-h) + 5), calc(var(--fg-s) - 10%), 55%), hsl(calc(var(--fg-h) - 5), calc(var(--fg-s) + 10%), 70%));`)...)
-			}else{
-				res = append(res, regex.JoinBytes(`--strongheading: var(--strongheading-light, linear-gradient(45deg, hsl(calc(var(--fg-h) + 5), calc(var(--fg-s) - 10%), 55%), hsl(calc(var(--fg-h) - 5), calc(var(--fg-s) + 10%), 70%)));`)...)
-			}
-
-			res = append(res, regex.JoinBytes(
-				`&>*{--shadow: var(--shadow-light);}`,
-				`--textshadow: var(--textshadow-light);`,
-			)...)
-		}else{
-			if elmList[0] == "text" {
-				res = append(res, regex.JoinBytes(
-					`--fg-h: var(--color-h);`,
-					`--fg-s: @text-dark-s;`,
-					`--fg-l: @text-dark-l;`,
-					`--fg-text: var(--text-light);`,
-				)...)
-			}else{
-				res = append(res, regex.JoinBytes(
-					`--fg-h: var(--color-h);`,
-					`--fg-s: var(--color-s);`,
-					`--fg-l: var(--color-l);`,
-					`--fg-text: var(--color-text);`,
-				)...)
-			}
-
-			res = append(res, regex.JoinBytes(`--text: var(--text-dark);`)...)
-
-			if elmList[1] == "text" {
-				res = append(res, regex.JoinBytes(`--link: var(--text-dark);`)...)
-			}else{
-				res = append(res, regex.JoinBytes(`--link: var(--link-dark);`)...)
-			}
-
-			if elmList[2] == "text" {
-				res = append(res, regex.JoinBytes(`--heading: var(--text-dark);`)...)
-			}else{
-				res = append(res, regex.JoinBytes(`--heading: var(--heading-dark, var(--text-dark));`)...)
-			}
-
-			if elmList[3] == "text" {
-				res = append(res, regex.JoinBytes(`--strongheading: linear-gradient(45deg, hsl(calc(var(--fg-h) + 5), calc(var(--fg-s) - 10%), 30%), hsl(calc(var(--fg-h) - 5), calc(var(--fg-s) + 10%), 40%));`)...)
-			}else{
-				res = append(res, regex.JoinBytes(`--strongheading: var(--strongheading-dark, linear-gradient(45deg, hsl(calc(var(--fg-h) + 5), calc(var(--fg-s) - 10%), 30%), hsl(calc(var(--fg-h) - 5), calc(var(--fg-s) + 10%), 40%)));`)...)
-			}
-
-			res = append(res, regex.JoinBytes(
-				`&>*{--shadow: var(--shadow-dark);}`,
-				`--textshadow: var(--textshadow-dark);`,
-			)...)
 		}
 
 		return res
 	})
 
-	//todo: may be able to replace this method with compile config method and go.less file
-	// setting text contrast in the config
 
-	return buf
-}
-
-// Auto compile config file contrasts
-func compileGoLessConfig(buf []byte) []byte {
-	// remove deg from numbered vars
-	buf = regex.Comp(`:([0-9]+)deg;`).RepStr(buf, []byte(":$1;"))
-
-	primary := [3]float64{}
-	accent := [3]float64{}
-	warn := [3]float64{}
-
-	// fix color hue distances
-	{
-		var colorPrimary colorful.Color
-		buf = regex.Comp(`@primary-h:\s*([0-9]+);`).RepFunc(buf, func(data func(int) []byte) []byte {
-			if f, err := strconv.ParseFloat(string(data(1)), 32); err == nil {
-				primary[0] = f
-			}else{
-				return data(0)
-			}
-	
-			for primary[0] < 0 {
-				primary[0] += 360
-			}
-			for primary[0] > 360 {
-				primary[0] -= 360
-			}
-			if primary[0] < 0 {
-				primary[0] = 0
-			}
-	
-			colorPrimary = colorful.Hsl(float64(primary[0]), 100, 100)
-	
-			return regex.JoinBytes(`@primary-h: `, hslStringPart(primary[0], "deg"), ';')
-		})
-	
-		var colorAccent colorful.Color
-		buf = regex.Comp(`@accent-h:\s*([0-9]+)(?:deg|);`).RepFunc(buf, func(data func(int) []byte) []byte {
-			if f, err := strconv.ParseFloat(string(data(1)), 32); err == nil {
-				accent[0] = f
-			}else{
-				return data(0)
-			}
-	
-			for accent[0] < 0 {
-				accent[0] += 360
-			}
-			for accent[0] > 360 {
-				accent[0] -= 360
-			}
-			if accent[0] < 0 {
-				accent[0] = 0
-			}
-	
-			colorAccent = colorful.Hsl(float64(accent[0]), 100, 100)
-	
-			if !goutil.IsZeroOfUnderlyingType(colorPrimary) {
-				if colorPrimary.AlmostEqualRgb(colorAccent) {
-					accent[0] = primary[0]
-					colorAccent = colorPrimary
-				}
-			}
-	
-			return regex.JoinBytes(`@accent-h: `, hslStringPart(accent[0], "deg"), ';')
-		})
-	
-		buf = regex.Comp(`@warn-h:\s*([0-9]+)(?:deg|);`).RepFunc(buf, func(data func(int) []byte) []byte {
-			if f, err := strconv.ParseFloat(string(data(1)), 32); err == nil {
-				warn[0] = f
-			}else{
-				return data(0)
-			}
-	
-			for warn[0] < 0 {
-				warn[0] += 360
-			}
-			for warn[0] > 360 {
-				warn[0] -= 360
-			}
-			if warn[0] < 0 {
-				warn[0] = 0
-			}
-	
-			if !goutil.IsZeroOfUnderlyingType(colorPrimary) || !goutil.IsZeroOfUnderlyingType(colorAccent) {
-				if goutil.IsZeroOfUnderlyingType(colorPrimary) {
-					colorPrimary = colorAccent
-				}else if goutil.IsZeroOfUnderlyingType(colorAccent) {
-					colorAccent = colorPrimary
-				}
-	
-				// fix warn distance from primary
-				warnFix := float64(0)
-				for colorful.Hsl(float64(warn[0]), 100, 100).AlmostEqualRgb(colorPrimary) {
-					if warnFix == 0 {
-						if accent[0] < primary[0] {
-							warnFix = 20
-						}else if accent[0] > primary[0] {
-							warnFix = -20
-						}else if warn[0] > primary[0] {
-							warnFix = 20
-						}else{
-							warnFix = -20
-						}
-					}
-					warn[0] += warnFix
-				}
-	
-				// ensure warn color is between 0-360
-				for warn[0] > 360 {
-					warn[0] -= 360
-				}
-				for warn[0] < 0 {
-					warn[0] += 360
-				}
-				if warn[0] < 0 {
-					warn[0] = 0
-				}else if warn[0] > 360 {
-					warn[0] = 360
-				}
-	
-				if accent[0] != primary[0] {
-					for colorful.Hsl(float64(warn[0]), 100, 100).AlmostEqualRgb(colorAccent) {
-						if warnFix == 0 {
-							if primary[0] < accent[0] {
-								warnFix = 20
-							}else if primary[0] > accent[0] {
-								warnFix = -20
-							}else if warn[0] > accent[0] {
-								warnFix = 20
-							}else{
-								warnFix = -20
-							}
-						}
-						warn[0] += warnFix
-					}
-	
-					// ensure warn color is between 0-360
-					for warn[0] > 360 {
-						warn[0] -= 360
-					}
-					for warn[0] < 0 {
-						warn[0] += 360
-					}
-					if warn[0] < 0 {
-						warn[0] = 0
-					}else if warn[0] > 360 {
-						warn[0] = 360
-					}
-				}
-	
-				// ensure warn is between 0-64 or 264-360 (red)
-				if warn[0] < 180 && warn[0] > 64 {
-					warn[0] = 64
-				}else if warn[0] >= 180 && warn[0] < 264 {
-					warn[0] = 264
-				}
-
-				tryColors := []float64{
-					0, // red
-					270, // purple
-					32, // orange
-					330, // pink
-					54, // yellow
-					300, // light purple
-					0, // red
-				}
-				tryColorsIndex := 0
-				for colorful.Hsl(float64(warn[0]), 100, 100).AlmostEqualRgb(colorPrimary) || colorful.Hsl(float64(warn[0]), 100, 100).AlmostEqualRgb(colorAccent) {
-					warn[0] = tryColors[tryColorsIndex]
-					tryColorsIndex++
-					if tryColorsIndex >= len(tryColors) {
-						break
-					}
-				}
-			}
-	
-			return regex.JoinBytes(`@warn-h: `, hslStringPart(warn[0], "deg"), ';')
-		})
-	}
-
-	// get other color hsl values
-	{
-		buf = regex.Comp(`@primary-([sl]):\s*([0-9]+(?:%|\.[0-9]+|));`).RepFunc(buf, func(data func(int) []byte) []byte {
-			pf := 's'
-			i := 1
-			if len(data(1)) != 0 && data(1)[0] == 'l' {
-				pf = 'l'
-				i = 2
-			}
-	
-			if bytes.HasSuffix(data(2), []byte{'%'}) {
-				if f, err := strconv.ParseFloat(string(bytes.TrimRight(data(2), "%")), 32); err == nil {
-					primary[i] = f / 100
-				}
-			}else if f, err := strconv.ParseFloat(string(data(2)), 32); err == nil {
-				primary[i] = f
-			}
-	
-			if pf == 's' {
-				if primary[1] < 0.15 {
-					primary[1] = 0.15
-				}
-			}
-	
-			return regex.JoinBytes(`@primary-`, pf, `: `, hslStringPart(primary[i], "%"), ';')
-		})
-	
-		buf = regex.Comp(`@accent-([sl]):\s*([0-9]+(?:%|\.[0-9]+|));`).RepFunc(buf, func(data func(int) []byte) []byte {
-			pf := 's'
-			i := 1
-			if len(data(1)) != 0 && data(1)[0] == 'l' {
-				pf = 'l'
-				i = 2
-			}
-	
-			if bytes.HasSuffix(data(2), []byte{'%'}) {
-				if f, err := strconv.ParseFloat(string(bytes.TrimRight(data(2), "%")), 32); err == nil {
-					accent[i] = f / 100
-				}
-			}else if f, err := strconv.ParseFloat(string(data(2)), 32); err == nil {
-				accent[i] = f
-			}
-	
-			if pf == 's' {
-				if accent[1] < 0.15 {
-					accent[1] = 0.15
-				}
-			}
-	
-			return regex.JoinBytes(`@accent-`, pf, `: `, hslStringPart(accent[i], "%"), ';')
-		})
-	
-		buf = regex.Comp(`@warn-([sl]):\s*([0-9]+(?:%|\.[0-9]+|));`).RepFunc(buf, func(data func(int) []byte) []byte {
-			pf := 's'
-			i := 1
-			if len(data(1)) != 0 && data(1)[0] == 'l' {
-				pf = 'l'
-				i = 2
-			}
-	
-			if bytes.HasSuffix(data(2), []byte{'%'}) {
-				if f, err := strconv.ParseFloat(string(bytes.TrimRight(data(2), "%")), 32); err == nil {
-					warn[i] = f / 100
-				}
-			}else if f, err := strconv.ParseFloat(string(data(2)), 32); err == nil {
-				warn[i] = f
-			}
-	
-			if pf == 's' {
-				if warn[1] < 0.15 {
-					warn[1] = 0.15
-				}
-			}
-	
-			return regex.JoinBytes(`@warn-`, pf, `: `, hslStringPart(warn[i], "%"), ';')
-		})
-	}
-
-	// get best color text contrast
-	{
-		buf = regex.Comp(`@primary-text:.*?;`).RepFunc(buf, func(data func(int) []byte) []byte {
-			if contrastRatio([3]float64{0, 1, 1}, primary) > contrastRatio([3]float64{0, 0, 0}, primary) {
-				return []byte(`@primary-text: var(--text-light);`)
-			}
-			return []byte(`@primary-text: var(--text-dark);`)
-		})
-	
-		buf = regex.Comp(`@accent-text:.*?;`).RepFunc(buf, func(data func(int) []byte) []byte {
-			if contrastRatio([3]float64{0, 1, 1}, accent) > contrastRatio([3]float64{0, 0, 0}, accent) {
-				return []byte(`@accent-text: var(--text-light);`)
-			}
-			return []byte(`@accent-text: var(--text-dark);`)
-		})
-	
-		buf = regex.Comp(`@warn-text:.*?;`).RepFunc(buf, func(data func(int) []byte) []byte {
-			if contrastRatio([3]float64{0, 1, 1}, warn) > contrastRatio([3]float64{0, 0, 0}, warn) {
-				return []byte(`@warn-text: var(--text-light);`)
-			}
-			return []byte(`@warn-text: var(--text-dark);`)
-		})
-	}
-
-	// fix dark and light colors
-	{
-		var darkL float64
-		var lightL float64
-		var darkLdark float64
-		var lightLdark float64
-		buf = regex.Comp(`@(dark|light)-([sl])(-dark|):\s*([0-9]+(?:%|\.[0-9]+|));`).RepFunc(buf, func(data func(int) []byte) []byte {
-			pf := 's'
-			if len(data(2)) != 0 && data(2)[0] == 'l' {
-				pf = 'l'
-			}
-			
-			sl := float64(-1)
-			if bytes.HasSuffix(data(4), []byte{'%'}) {
-				if f, err := strconv.ParseFloat(string(bytes.TrimRight(data(4), "%")), 32); err == nil {
-					sl = f / 100
-				}
-			}else if f, err := strconv.ParseFloat(string(data(4)), 32); err == nil {
-				sl = f
-			}
-	
-			if sl == -1 {
-				return data(0)
-			}
-	
-			if pf == 's' && sl > 0.15 {
-				sl = 0.15
-			}else if bytes.Equal(data(1), []byte("dark")) && sl > 0.49 {
-				sl = 0.49
-				if len(data(3)) != 0 {
-					if sl > 0.3 {
-						sl = 0.3
-					}
-					darkLdark = sl
-				}else{
-					darkL = sl
-				}
-			}else if bytes.Equal(data(1), []byte("light")) && sl < 0.5 {
-				sl = 0.5
-				if len(data(3)) != 0 {
-					if sl < 0.15 {
-						sl = 0.15
-					}else if sl > 0.45 {
-						sl = 0.45
-					}
-					lightLdark = sl
-				}else{
-					lightL = sl
-				}
-			}
-	
-			return regex.JoinBytes(`@`, data(1), `-`, pf, data(3), `: `, hslStringPart(sl, "%"), ';')
-		})
-	
-		if lightL - darkL < 0.15 {
-			buf = regex.Comp(`@light-l:\s*([0-9]+(?:%|\.[0-9]+|));`).RepFunc(buf, func(data func(int) []byte) []byte {
-				l := float64(-1)
-				if bytes.HasSuffix(data(1), []byte{'%'}) {
-					if f, err := strconv.ParseFloat(string(bytes.TrimRight(data(1), "%")), 32); err == nil {
-						l = f / 100
-					}
-				}else if f, err := strconv.ParseFloat(string(data(1)), 32); err == nil {
-					l = f
-				}
-	
-				if l == -1 {
-					return data(0)
-				}
-	
-				return regex.JoinBytes(`@light-l: `, hslStringPart(l + (lightL - darkL), "%"), ';')
-			})
+	// decode bracket indexes
+	buf = regex.Comp(`\%!([\w]+)!\%`).RepFunc(buf, func(data func(int) []byte) []byte {
+		if data(0)[0] == 'o' {
+			return []byte(`%!`)
+		}else if data(0)[0] == 'c' {
+			return []byte(`!%`)
 		}
-	
-		if lightLdark - darkLdark < 0.15 {
-			buf = regex.Comp(`@light-l-dark:\s*([0-9]+(?:%|\.[0-9]+|));`).RepFunc(buf, func(data func(int) []byte) []byte {
-				l := float64(-1)
-				if bytes.HasSuffix(data(1), []byte{'%'}) {
-					if f, err := strconv.ParseFloat(string(bytes.TrimRight(data(1), "%")), 32); err == nil {
-						l = f / 100
-					}
-				}else if f, err := strconv.ParseFloat(string(data(1)), 32); err == nil {
-					l = f
-				}
-	
-				if l == -1 {
-					return data(0)
-				}
-	
-				return regex.JoinBytes(`@light-l-dark: `, hslStringPart(l + (lightLdark - darkLdark), "%"), ';')
-			})
+		return []byte{}
+	})
+
+
+	// compile element and color vars
+	buf = regex.Comp(`(?s)@(elm|color|fg)\s*\(([\w_-]+)\)\s*;`).RepFunc(buf, func(data func(int) []byte) []byte {
+		tag := string(data(1))
+		val := string(data(2))
+		if tag == "elm" {
+			return compileConfigElm(val, defaultDarkMode)
+		}else if tag == "color" {
+			return compileConfigColor(val, defaultDarkMode)
+		}else if tag == "fg" {
+			return compileConfigFG(val)
 		}
-	}
+		return []byte{}
+	})
+
+
+	// compile mobile and desktop width
+	buf = regex.Comp(`mobile-width`).RepStrLit(buf, []byte("800px"))
+	buf = regex.Comp(`desktop-width`).RepStrLit(buf, []byte("1400px"))
+
+
+	// compile random number (int) method
+	buf = regex.Comp(`\.rand\((-?[0-9]+|)(,\s*-?[0-9]+|)\)`).RepFunc(buf, func(data func(int) []byte) []byte {
+		var n1, n2 int
+
+		if n, err := strconv.Atoi(string(data(1))); err == nil {
+			n1 = n
+		}
+
+		if n, err := strconv.Atoi(string(regex.Comp(`,\s*`).RepStrLit(data(2), []byte{}))); err == nil {
+			n2 = n
+		}
+
+		if n1 == 0 && n2 == 0 {
+			return []byte(strconv.Itoa(rand.Intn(100)))
+		}
+
+		if n1 == n2 {
+			return []byte(strconv.Itoa(n1))
+		}else if n1 > n2 {
+			t := n2
+			n2 = n1
+			n1 = t
+		}
+
+		return []byte(strconv.Itoa(rand.Intn(n2 - n1) + n1))
+	})
 
 	return buf
 }
 
 
-func compileCSS(themeDir string, themeDist string){
-	res := []byte{}
+func colorFromString(str string, defHex string) colorful.Color {
+	if reg := regex.Comp(`(?i)^\s*(hs[lv]|rgb|hcl)a?\s*\(\s*([0-9]+(?:deg|))\s*,\s*([0-9]+(?:%|\.[0-9]+|))\s*,\s*([0-9]+(?:%|\.[0-9]+|))(?:\s*,.*?|)\)\s*$`); reg.Match([]byte(str)) {
+		var color colorful.Color
+		hasCol := false
+		reg.RepFunc([]byte(str), func(data func(int) []byte) []byte {
+			col := [3]float64{}
 
-	if files, err := os.ReadDir(themeDir); err == nil {
-		for _, file := range files {
-			if strings.HasSuffix(file.Name(), ".less") && !strings.Contains(file.Name(), "config") {
-				if filePath, err := fs.JoinPath(themeDir, string(regex.Comp(`\.less$`).RepStrLit([]byte(file.Name()), []byte(".css")))); err == nil {
-					if buf, err := os.ReadFile(filePath); err == nil {
-						res = append(res, buf...)
-					}
+			if bytes.HasSuffix(data(2), []byte("deg")) {
+				if n, err := strconv.ParseFloat(string(data(2)[:len(data(2))-3]), 64); err == nil {
+					col[0] = n
 				}
-			}else if strings.Contains(file.Name(), "config") || strings.Contains(file.Name(), "fonts") {
-				if srcPath, err := fs.JoinPath(themeDir, file.Name()); err == nil {
-					if distPath, err := fs.JoinPath(themeDist, file.Name()); err == nil {
-						fs.Copy(srcPath, distPath)
-					}
+			}else{
+				if n, err := strconv.ParseFloat(string(data(2)), 64); err == nil {
+					col[0] = n
 				}
 			}
-		}
-	}
 
-	/* if path, err := fs.JoinPath(themeDir, "style.css"); err == nil {
-		if buf, err := os.ReadFile(path); err == nil {
-			res = append(res, buf...)
-		}
-	} */
-
-	if path, err := fs.JoinPath(themeDist, "style.css"); err == nil {
-		os.WriteFile(path, res, 0755)
-	}
-
-	m := minify.New()
-	m.AddFunc("text/css", css.Minify)
-	if res, err := m.Bytes("text/css", res); err == nil {
-		res = append([]byte("/*! "+config["theme_name"]+" "+config["theme_version"]+" | "+config["theme_license"]+" | "+config["theme_uri"]+" */\n"), res...)
-
-		if path, err := fs.JoinPath(themeDist, "style.min.css"); err == nil {
-			os.WriteFile(path, res, 0755)
-		}
-
-		if path, err := fs.JoinPath(themeDir, "normalize.min.css"); err == nil {
-			if buf, err := os.ReadFile(path); err == nil {
-				res = append(append(buf), res...)
+			if bytes.HasSuffix(data(3), []byte("%")) {
+				if n, err := strconv.ParseFloat(string(data(3)[:len(data(3))-1]), 64); err == nil {
+					col[1] = n / 100
+				}
+			}else{
+				if n, err := strconv.ParseFloat(string(data(3)), 64); err == nil {
+					col[1] = n
+				}
 			}
-		}
 
-		if path, err := fs.JoinPath(themeDist, "style.norm.min.css"); err == nil {
-			os.WriteFile(path, res, 0755)
+			if bytes.HasSuffix(data(4), []byte("%")) {
+				if n, err := strconv.ParseFloat(string(data(4)[:len(data(4))-1]), 64); err == nil {
+					col[2] = n / 100
+				}
+			}else{
+				if n, err := strconv.ParseFloat(string(data(4)), 64); err == nil {
+					col[2] = n
+				}
+			}
+
+			switch string(bytes.ToLower(data(1))) {
+			case "hsl":
+				color = colorful.Hsl(col[0], col[1], col[2])
+				hasCol = true
+			case "hsv":
+				color = colorful.Hsv(col[0], col[1], col[2])
+				hasCol = true
+			case "rgb":
+				color = colorful.LinearRgb(col[0], col[1], col[2])
+				hasCol = true
+			case "hcl":
+				color = colorful.Hcl(col[0], col[1], col[2])
+				hasCol = true
+			default:
+				hasCol = false
+			}
+			return nil
+		}, true)
+
+		if hasCol {
+			return color
+		}else if color, err := colorful.Hex(defHex); err == nil {
+			return color
+		}else{
+			return colorful.Color{}
 		}
 	}
+
+	if strings.HasPrefix(str, "#") {
+		if color, err := colorful.Hex(str); err == nil {
+			return color
+		}else if color, err := colorful.Hex(defHex); err == nil {
+			return color
+		}
+	}
+
+	return colorful.Color{}
 }
 
-
-func compileJS(themeDir string, themeDist string){
-	res := []byte{}
-
-	if files, err := os.ReadDir(themeDir); err == nil {
-		for _, file := range files {
-			if strings.HasSuffix(file.Name(), ".js") && !strings.HasSuffix(file.Name(), ".min.js") {
-				if filePath, err := fs.JoinPath(themeDir, file.Name()); err == nil {
-					if buf, err := os.ReadFile(filePath); err == nil {
-						res = append(res, buf...)
-						res = append(res)
-					}
-				}
-			}
-		}
-	}
-
-	/* if path, err := fs.JoinPath(themeDir, "script.js"); err == nil {
-		if buf, err := os.ReadFile(path); err == nil {
-			res = append(res, buf...)
-			res = append(res)
-		}
-	} */
-
-	res = append([]byte{';'}, res...)
-	res = append(res, ';')
-
-	if path, err := fs.JoinPath(themeDist, "script.js"); err == nil {
-		os.WriteFile(path, res, 0755)
-	}
-
-	//todo: fix js minify returning error
-	m := minify.New()
-	m.AddFunc("text/javascript", js.Minify)
-	if res, err := m.Bytes("text/javascript", res); err == nil {
-		if path, err := fs.JoinPath(themeDist, "script.min.js"); err == nil {
-			os.WriteFile(path, res, 0755)
-		}
-	}else if path, err := fs.JoinPath(themeDist, "script.min.js"); err == nil {
-		os.WriteFile(path, res, 0755)
-	}
+func colorToHsl(color colorful.Color) [3]float64 {
+	h, s, l := color.Hsl()
+	return [3]float64{h, s, l}
 }
 
+func contrastRatio(fg colorful.Color, bg colorful.Color) int16 {
+	return int16(math.Max(fg.DistanceRgb(bg), fg.DistanceLuv(bg)) * 100)
+}
 
-func contrastRatio(fg [3]float64, bg [3]float64) int16 {
-	fgColor := colorful.Hsl(fg[0], fg[1] / 100, fg[2] / 100)
-	bgColor := colorful.Hsl(bg[0], bg[1] / 100, bg[2] / 100)
-	return int16(math.Max(fgColor.DistanceRgb(bgColor), fgColor.DistanceLuv(bgColor)) * 100)
+func roundColorVal(f float64, decimal bool) float64 {
+	if decimal {
+		return math.Round(f * 100) / 100
+	}
+	return math.Round(f)
 }
 
 func hslStringPart(f float64, t string) string {
 	if t == "deg" {
-		return strconv.FormatFloat(f, 'f', 0, 32) + "deg"
+		return strconv.FormatFloat(math.Round(f), 'f', 0, 32) + "deg"
 	}else if t == "%" {
-		return strconv.FormatFloat(f*100, 'f', 0, 32) + "%"
+		return strconv.FormatFloat(math.Round(f*100), 'f', 0, 32) + "%"
 	}
 
 	return strconv.FormatFloat(f, 'f', 2, 32)

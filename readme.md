@@ -8,21 +8,15 @@ A simple theme that adjusts easily to a users preferences.
 
 ## Installation
 
-```html
-<!-- Config -->
-<!-- Note: You should replace these stylesheets with a local copy that you can modify to your preferences -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AspieSoft/smart-theme@0.0.1/theme/fonts.swap.css"/>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AspieSoft/smart-theme@0.0.1/theme/config.css"/>
-
-<!-- Theme Style -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AspieSoft/smart-theme@0.0.1/theme/style.norm.min.css"/>
-<!-- or for a lighter version without normalize.css -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/AspieSoft/smart-theme@0.0.1/theme/style.min.css"/>
-
-<!-- Theme Script -->
-<!-- notice: script.min.js is not currently compiling from script.js (minification error) -->
-<script src="https://cdn.jsdelivr.net/gh/AspieSoft/smart-theme@0.0.1/theme/script.js" defer></script>
+```shell
+git clone https://github.com/AspieSoft/smart-theme.git
 ```
+
+## Config
+
+In the src directory, you will find a config.yml file that you can modify.
+Run ./compile to compile the config.yml file and to compile scripts and stylesheets for the theme, into the dist directory.
+In the themes directory, you can add custom styles and scripts to add to the existing base theme. You can even override settings from the config.yml file to make theme specific configurations.
 
 ## Setup
 
@@ -32,20 +26,13 @@ A simple theme that adjusts easily to a users preferences.
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0"/>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 
   <meta name="description" content="Your Description"/>
   <title>Your Title</title>
 
-  <link rel="stylesheet" href="/theme/fonts.swap.css"/>
-  <link rel="stylesheet" href="/theme/config.css"/>
-
+  <link rel="stylesheet" href="/theme/config.min.css"/>
   <link rel="stylesheet" href="/theme/style.norm.min.css"/>
-
-  <!-- notice: script.min.js is not currently compiling from script.js (minification error) -->
-  <script src="/theme/script.js" defer></script>
+  <script src="/theme/script.min.js" defer></script>
 
   <!--? optional: tailwind and htmx recommended -->
   <script src="https://cdn.tailwindcss.com"></script>
