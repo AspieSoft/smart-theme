@@ -1,4 +1,4 @@
-/*! Smart Theme v0.0.1 | MIT License | github.com/AspieSoft/smart-theme */
+/*! Smart Theme v0.1.1 | MIT License | github.com/AspieSoft/smart-theme */
 
 function sleep(ms){return new Promise(resolve => setTimeout(resolve, ms));}
 

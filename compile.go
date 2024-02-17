@@ -26,7 +26,7 @@ import (
 
 var config = map[string]string{
 	"theme_name": "Smart Theme",
-	"theme_version": "v0.0.1",
+	"theme_version": "v0.1.1",
 	"theme_uri": "github.com/AspieSoft/smart-theme",
 	"theme_license": "MIT License",
 }
@@ -1432,7 +1432,7 @@ func getThemeConfig() (ThemeConfigData, string, string, bool, error) {
 	}
 
 
-	//todo: test if this changes, or needs a different map cloning method
+	// separate overriding root settings (subthemes should only set defaults for these settings)
 	themeConfigColor := map[string]ThemeConfigColor{}
 	for key, val := range themeConfig.Color {
 		themeConfigColor[key] = val
@@ -2238,13 +2238,6 @@ func colorToHsl(color colorful.Color) [3]float64 {
 
 func contrastRatio(fg colorful.Color, bg colorful.Color) int16 {
 	return int16(math.Max(fg.DistanceRgb(bg), fg.DistanceLuv(bg)) * 100)
-}
-
-func roundColorVal(f float64, decimal bool) float64 {
-	if decimal {
-		return math.Round(f * 100) / 100
-	}
-	return math.Round(f)
 }
 
 func hslStringPart(f float64, t string) string {
