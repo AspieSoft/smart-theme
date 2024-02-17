@@ -24,10 +24,10 @@
   --shadow-dark: hsla(0, 0, 0, 0.5);
   --textshadow-light: hsla(0, 0, 29, 0.25);
   --textshadow-dark: hsla(0, 0, 0, 0.25);
+  --header-a-top: 0;
   --header-a: 0.75;
   --page-a: 0.75;
   --copyright-a: 0.75;
-  --header-a-top: 0;
   --text-light: hsl(var(--text-light-h), var(--text-light-s), var(--text-light-l)); --text-light-h: var(--fg-h); --text-light-s: 0%; --text-light-l: 100%;
   --text-dark: hsl(var(--text-dark-h), var(--text-dark-s), var(--text-dark-l)); --text-dark-h: var(--fg-h); --text-dark-s: 0%; --text-dark-l: 6%;
   --link-light: hsl(var(--link-light-h), var(--link-light-s), var(--link-light-l)); --link-light-h: 197deg; --link-light-s: 81%; --link-light-l: 58%;
@@ -238,6 +238,19 @@
   @media(prefers-color-scheme: dark){color-scheme: dark;}
 }
 
+@font-face {font-family: 'Varela Round'; src: local('Varela Round'), url('/assets/fonts/Varela_Round/VarelaRound-Regular.ttf') format('truetype'); font-display: swap;}
+@font-face {font-family: 'Roboto'; src: local('Roboto'), url('/assets/fonts/Roboto/Roboto-Thin.ttf') format('truetype'); font-display: optional; font-weight: 100;}
+@font-face {font-family: 'Roboto'; src: local('Roboto'), url('/assets/fonts/Roboto/Roboto-ThinItalic.ttf') format('truetype'); font-display: optional; font-style: italic; font-weight: 100;}
+@font-face {font-family: 'Roboto'; src: local('Roboto'), url('/assets/fonts/Roboto/Roboto-Light.ttf') format('truetype'); font-display: optional; font-weight: 300;}
+@font-face {font-family: 'Roboto'; src: local('Roboto'), url('/assets/fonts/Roboto/Roboto-LightItalic.ttf') format('truetype'); font-display: optional; font-style: italic; font-weight: 300;}
+@font-face {font-family: 'Roboto'; src: local('Roboto'), url('/assets/fonts/Roboto/Roboto-Regular.ttf') format('truetype'); font-display: optional; font-weight: 400;}
+@font-face {font-family: 'Roboto'; src: local('Roboto'), url('/assets/fonts/Roboto/Roboto-Italic.ttf') format('truetype'); font-display: optional; font-style: italic; font-weight: 400;}
+@font-face {font-family: 'Roboto'; src: local('Roboto'), url('/assets/fonts/Roboto/Roboto-Medium.ttf') format('truetype'); font-display: optional; font-weight: 500;}
+@font-face {font-family: 'Roboto'; src: local('Roboto'), url('/assets/fonts/Roboto/Roboto-MediumItalic.ttf') format('truetype'); font-display: optional; font-style: italic; font-weight: 500;}
+@font-face {font-family: 'Roboto'; src: local('Roboto'), url('/assets/fonts/Roboto/Roboto-Bold.ttf') format('truetype'); font-display: optional; font-weight: 700;}
+@font-face {font-family: 'Roboto'; src: local('Roboto'), url('/assets/fonts/Roboto/Roboto-BoldItalic.ttf') format('truetype'); font-display: optional; font-style: italic; font-weight: 700;}
+@font-face {font-family: 'Roboto'; src: local('Roboto'), url('/assets/fonts/Roboto/Roboto-Black.ttf') format('truetype'); font-display: optional; font-weight: 900;}
+@font-face {font-family: 'Roboto'; src: local('Roboto'), url('/assets/fonts/Roboto/Roboto-BlackItalic.ttf') format('truetype'); font-display: optional; font-style: italic; font-weight: 900;}
 @font-face {font-family: 'Varela Round'; src: local('Varela Round'), url('/assets/fonts/Varela_Round/VarelaRound-Regular.ttf') format('truetype'); font-display: swap;}
 @font-face {font-family: 'Roboto'; src: local('Roboto'), url('/assets/fonts/Roboto/Roboto-Thin.ttf') format('truetype'); font-display: optional; font-weight: 100;}
 @font-face {font-family: 'Roboto'; src: local('Roboto'), url('/assets/fonts/Roboto/Roboto-ThinItalic.ttf') format('truetype'); font-display: optional; font-style: italic; font-weight: 100;}
