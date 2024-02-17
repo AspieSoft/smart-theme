@@ -30,11 +30,6 @@ async function onReady(cb){
 }
 
 onReady(async function(){
-
-  //todo: see if its possible to detect user browser width server side
-  // or just use js to lazy load images to a good scale based on the page width
-  // may need to detect if js is enabled (server side)
-
   function onInterval(){
     document.querySelectorAll('.widget > *, .sidebar > *').forEach(function(elm) {
       if(elm.clientHeight < window.innerHeight - 150) {
@@ -43,7 +38,53 @@ onReady(async function(){
         elm.classList.remove('widget-smaller-than-vh');
       }
     });
+  }
+  onInterval();
+  setInterval(onInterval, 1000);
 
+  //todo: add other imidiatelly visible header elements to list
+  document.querySelectorAll('html, header .header-img, header .header-top').forEach(function(elm){
+    const css = window.getComputedStyle(elm);
+    let src = css.getPropertyValue('--img');
+    if(src.startsWith('url')){
+      src = src.replace(/^\s*[\w_-]+\s*\(\s*(["'`])(.*?)\1\s*\)\s*$/, '$2');
+
+      if(!src.match(/\.[0-9]+p\.([\w_-]+)$/)){
+        return;
+      }
+
+      if(window.innerWidth <= 800){
+        src = src.replace(/\.[0-9]+p\.([\w_-]+)$/, '.720p.$1');
+      }else if(window.innerWidth <= 2000){
+        src = src.replace(/\.[0-9]+p\.([\w_-]+)$/, '.1080p.$1');
+      }else{
+        src = src.replace(/\.[0-9]+p\.([\w_-]+)$/, '.$1');
+      }
+
+      const img = new Image();
+      img.onload = function(){
+        elm.style.setProperty('--img', `url('${src.replace(/(\\*)([\\'])/g, function(_, s, q){
+          if(s.length % 0 === 0){
+            return s+'\\'+q;
+          }else{
+            return s+q;
+          }
+        })}')`);
+      };
+      img.onerror = function(){
+        if(src.match(/\.[0-9]+p\.([\w_-]+)$/)){
+          src = src.replace(/\.[0-9]+p\.([\w_-]+)$/, '.$1');
+          img.src = src;
+        }
+      };
+      img.src = src;
+    }
+  });
+
+});
+
+onReady(async function(){
+  function onInterval(){
     document.querySelectorAll('header .header-img, footer').forEach(function(elm){
       if(elm.clientHeight < 300){
         elm.classList.remove('background-size-w', 'background-size-h');
@@ -123,44 +164,5 @@ onReady(async function(){
   }
   onResize();
   window.addEventListener('resize', onResize, {passive: true});
-
-  //todo: add other imidiatelly visible header elements to list
-  document.querySelectorAll('html, header .header-img, header .header-top').forEach(function(elm){
-    const css = window.getComputedStyle(elm);
-    let src = css.getPropertyValue('--img');
-    if(src.startsWith('url')){
-      src = src.replace(/^\s*[\w_-]+\s*\(\s*(["'`])(.*?)\1\s*\)\s*$/, '$2');
-
-      if(!src.match(/\.[0-9]+p\.([\w_-]+)$/)){
-        return;
-      }
-
-      if(window.innerWidth <= 800){
-        src = src.replace(/\.[0-9]+p\.([\w_-]+)$/, '.720p.$1');
-      }else if(window.innerWidth <= 2000){
-        src = src.replace(/\.[0-9]+p\.([\w_-]+)$/, '.1080p.$1');
-      }else{
-        src = src.replace(/\.[0-9]+p\.([\w_-]+)$/, '.$1');
-      }
-
-      const img = new Image();
-      img.onload = function(){
-        elm.style.setProperty('--img', `url('${src.replace(/(\\*)([\\'])/g, function(_, s, q){
-          if(s.length % 0 === 0){
-            return s+'\\'+q;
-          }else{
-            return s+q;
-          }
-        })}')`);
-      };
-      img.onerror = function(){
-        if(src.match(/\.[0-9]+p\.([\w_-]+)$/)){
-          src = src.replace(/\.[0-9]+p\.([\w_-]+)$/, '.$1');
-          img.src = src;
-        }
-      };
-      img.src = src;
-    }
-  });
 
 });

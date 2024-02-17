@@ -118,6 +118,10 @@ type ThemeConfigData struct {
 	Element map[string]ThemeConfigElement
 }
 
+type ThemeConfigDataConfig struct {
+	Config map[string]string
+}
+
 type ThemeConfigColor struct {
 	Light string
 	Dark string
@@ -244,15 +248,30 @@ func handleCompileTheme(port string){
 		return
 	}
 
+	lastCompile := time.Now().UnixMilli()
+
 	watcher := fs.Watcher()
 	watcher.OnAny = func(path, op string) {
+		// prevent duplicate compilations from running twice in a row
+		if time.Now().UnixMilli() - lastCompile < 100 {
+			return
+		}
+
+		//! Do NOT Remove This Line Of Code!
+		// if this method is not delayed, strange things will happen.
+		// my guess is the computer operating system or file system reports the change
+		// before it actually fully finishes writing the file
+		time.Sleep(100 * time.Millisecond)
+
+		lastCompile = time.Now().UnixMilli()
+
 		path = string(regex.Comp(`^%1[\\/]?`, themeDir).RepStrLit([]byte(path), []byte{}))
 
 		if strings.HasSuffix(path, ".yml") || strings.HasSuffix(path, ".yaml") {
 			if path, darkMode, err := compileConfig(); err == nil {
 				if path != subThemePath || darkMode != defaultDarkMode {
-					compileCSS(themeDir, "style", true, subThemePath, defaultDarkMode)
-					compileJS(themeDir, "script", true, subThemePath)
+					compileCSS(themeDir, "style", true, path, darkMode)
+					compileJS(themeDir, "script", true, path)
 				}
 				subThemePath = path
 				defaultDarkMode = darkMode
@@ -354,6 +373,15 @@ func compileConfig() (string, bool, error) {
 		return "", false, err
 	}
 
+	themeConfigData := ThemeConfigDataConfig{}
+	err = yaml.Unmarshal(buf, &themeConfigData)
+	if err != nil {
+		return "", false, err
+	}
+	if themeConfigData.Config == nil {
+		themeConfigData.Config = map[string]string{}
+	}
+
 	buf = regex.Comp(`(?m)^(\s*\w+)([_-][\w_-]+|):`).RepFunc(buf, func(data func(int) []byte) []byte {
 		b := bytes.Split(bytes.ReplaceAll(data(2), []byte{'_'}, []byte{'-'}), []byte{'-'})
 		return bytes.ToLower(regex.JoinBytes(data(1), bytes.Join(b, []byte{}), ':'))
@@ -381,6 +409,18 @@ func compileConfig() (string, bool, error) {
 		if err != nil {
 			themePath = ""
 		}else{
+			themeConfigDataDef := ThemeConfigDataConfig{}
+			err = yaml.Unmarshal(buf, &themeConfigDataDef)
+			if err != nil {
+				return "", false, err
+			}
+
+			for key, val := range themeConfigDataDef.Config {
+				if _, ok := themeConfigData.Config[key]; !ok {
+					themeConfigData.Config[key] = val
+				}
+			}
+
 			buf = regex.Comp(`(?m)^(\s*\w+)([_-][\w_-]+|):`).RepFunc(buf, func(data func(int) []byte) []byte {
 				b := bytes.Split(bytes.ReplaceAll(data(2), []byte{'_'}, []byte{'-'}), []byte{'-'})
 				return bytes.ToLower(regex.JoinBytes(data(1), bytes.Join(b, []byte{}), ':'))
@@ -394,6 +434,8 @@ func compileConfig() (string, bool, error) {
 			}
 		}
 	}
+
+	themeConfig.Config = themeConfigData.Config
 
 	if themePath != "" {
 		themePath = string(regex.Comp(`[/\\]+config\.yml$`).RepStrLit([]byte(themePath), []byte{}))

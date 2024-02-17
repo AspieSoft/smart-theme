@@ -1,6 +1,12 @@
 theme: default
 
-default-dark-mode: true
+default-dark-mode: yes
+
+config:
+  header-a-top: 0
+  header-a: 0.75
+  page-a: 0.75
+  copyright-a: 0.75
 
 layout:
   page-padding-inline: 1.5rem

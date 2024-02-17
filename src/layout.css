@@ -57,6 +57,12 @@ main {
     border-radius: var(--border-radius);
     margin-block: 40px;
 
+    &.page-fill {
+      border-radius: 0;
+      margin-block: 0;
+      max-width: 100%;
+    }
+
     @media (max-width: desktop-width) {
       border-radius: 0;
       margin-block: 0;
@@ -111,10 +117,38 @@ main {
       &:last-child {
         border-radius: var(--border-radius) 0 0 var(--border-radius);
       }
+
+      &.page-fill {
+        border-radius: 0;
+        margin-block: 0;
+        max-width: 100%;
+      }
     }
 
     @media (max-width: desktop-width) {
       display: none;
+    }
+  }
+
+  &.page-fill {
+    gap: 0;
+
+    main.page-bg, main.card-bg, .widget.page-bg, .widget.card-bg, .sidebar.page-bg, .sidebar.card-bg {
+      border-radius: 0;
+      margin-block: 0;
+      max-width: 100%;
+    }
+
+    &:has(main.page-bg, main.card-bg) {
+      .widget.page-bg, .widget.card-bg, .sidebar.page-bg, .sidebar.card-bg {
+        &:first-child {
+          border-right: solid 0.2rem currentColor;
+        }
+
+        &:last-child {
+          border-left: solid 0.2rem currentColor;
+        }
+      }
     }
   }
 }

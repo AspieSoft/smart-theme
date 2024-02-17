@@ -22,6 +22,10 @@
     background-blend-mode: var(--img-blend);
     background-repeat: no-repeat;
   }
+
+  &.widget, &.sidebar {
+    border-radius: 0;
+  }
 }
 
 .page-bg {
