@@ -422,129 +422,9 @@ func handleCompileTheme(port string) (*string, *string, *bool, error) {
 
 
 func compileConfig() (string, bool, error) {
-	buf, err := os.ReadFile("./src/config.yml")
-	dist := "./dist/config.min.css"
-	inDistFolder := true
-	if err != nil {
-		buf, err = os.ReadFile("./theme.yml")
-		dist = "./theme.min.css"
-		inDistFolder = false
-	}
-	if err != nil {
-		buf, err = os.ReadFile("./config.yml")
-		dist = "./config.min.css"
-		inDistFolder = false
-	}
+	themeConfig, themePath, dist, inDistFolder, err := getThemeConfig()
 	if err != nil {
 		return "", false, err
-	}
-
-
-	// config list separate to allow '-' character in keys
-	themeConfigDataConfig := ThemeConfigDataConfig{}
-	err = yaml.Unmarshal(buf, &themeConfigDataConfig)
-	if err != nil {
-		return "", false, err
-	}
-	if themeConfigDataConfig.Config == nil {
-		themeConfigDataConfig.Config = map[string]string{}
-	}
-
-	buf = regex.Comp(`(?m)^(\s*\w+)([_-][\w_-]+|):`).RepFunc(buf, func(data func(int) []byte) []byte {
-		b := bytes.Split(bytes.ReplaceAll(data(2), []byte{'_'}, []byte{'-'}), []byte{'-'})
-		return bytes.ToLower(regex.JoinBytes(data(1), bytes.Join(b, []byte{}), ':'))
-	})
-
-	buf = regex.Comp(`(?m)^\s*\w+:\s*none(?:\s*#.*?|)$`).RepStrLit(buf, []byte{})
-
-	themeConfig := ThemeConfigData{}
-	err = yaml.Unmarshal(buf, &themeConfig)
-	if err != nil {
-		return "", false, err
-	}
-
-	// list based config data separate to prioritize elements with user prefrences over theme defaults
-	themeConfigData := ThemeConfigData{}
-	err = yaml.Unmarshal(buf, &themeConfigData)
-	if err != nil {
-		return "", false, err
-	}
-	if themeConfigData.Config == nil {
-		themeConfigData.Config = map[string]string{}
-	}
-
-	var themePath string
-	if themeConfig.Theme != "" && themeConfig.Theme != "none" {
-		var buf []byte
-		if themePath, err = fs.JoinPath("./src/themes", themeConfig.Theme, "config.yml"); err == nil {
-			buf, err = os.ReadFile(themePath)
-		}
-		if err != nil {
-			if themePath, err = fs.JoinPath("./src/theme", themeConfig.Theme, "config.yml"); err == nil {
-				buf, err = os.ReadFile(themePath)
-			}
-		}
-		if err != nil {
-			themePath = ""
-		}else{
-			themeConfigDataConfigDef := ThemeConfigDataConfig{}
-			err = yaml.Unmarshal(buf, &themeConfigDataConfigDef)
-			if err != nil {
-				return "", false, err
-			}
-
-			for key, val := range themeConfigDataConfigDef.Config {
-				if _, ok := themeConfigDataConfig.Config[key]; !ok {
-					themeConfigDataConfig.Config[key] = val
-				}
-			}
-
-			buf = regex.Comp(`(?m)^(\s*\w+)([_-][\w_-]+|):`).RepFunc(buf, func(data func(int) []byte) []byte {
-				b := bytes.Split(bytes.ReplaceAll(data(2), []byte{'_'}, []byte{'-'}), []byte{'-'})
-				return bytes.ToLower(regex.JoinBytes(data(1), bytes.Join(b, []byte{}), ':'))
-			})
-		
-			buf = regex.Comp(`(?m)^\s*\w+:\s*none(?:\s*#.*?|)$`).RepStrLit(buf, []byte{})
-
-			// letting the theme override some user prefrences
-			err = yaml.Unmarshal(buf, &themeConfig)
-			if err != nil {
-				return "", false, err
-			}
-
-			{ // mearging empty user prefrences with theme defaults
-				for key, val := range themeConfig.Color {
-					if _, ok := themeConfigData.Color[key]; !ok {
-						themeConfigData.Color[key] = val
-					}
-				}
-	
-				for key, val := range themeConfig.Element {
-					if _, ok := themeConfigData.Element[key]; !ok {
-						themeConfigData.Element[key] = val
-					}
-				}
-	
-				for key, val := range themeConfig.Topography.Font {
-					if _, ok := themeConfigData.Topography.Font[key]; !ok {
-						themeConfigData.Topography.Font[key] = val
-					}
-				}
-
-				themeConfigData.Topography.ImportFonts = append(themeConfigData.Topography.ImportFonts, themeConfig.Topography.ImportFonts...)
-			}
-		}
-	}
-
-	// restoring important user prefrences over theme defaults (without affecting allowed theme overrides)
-	themeConfig.Config = themeConfigDataConfig.Config
-	themeConfig.Color = themeConfigData.Color
-	themeConfig.Element = themeConfigData.Element
-	themeConfig.Topography.Font = themeConfigData.Topography.Font
-	themeConfig.Topography.ImportFonts = themeConfigData.Topography.ImportFonts
-
-	if themePath != "" {
-		themePath = string(regex.Comp(`[/\\]+config\.yml$`).RepStrLit([]byte(themePath), []byte{}))
 	}
 
 	res := []byte(":root {\n")
@@ -1505,6 +1385,163 @@ func compileConfig() (string, bool, error) {
 
 	return themePath, themeConfig.DefaultDarkMode, nil
 }
+
+func getThemeConfig() (ThemeConfigData, string, string, bool, error) {
+	buf, err := os.ReadFile("./src/config.yml")
+	dist := "./dist/config.min.css"
+	inDistFolder := true
+	if err != nil {
+		buf, err = os.ReadFile("./theme.yml")
+		dist = "./theme.min.css"
+		inDistFolder = false
+	}
+	if err != nil {
+		buf, err = os.ReadFile("./config.yml")
+		dist = "./config.min.css"
+		inDistFolder = false
+	}
+	if err != nil {
+		return ThemeConfigData{}, "", "", false, err
+	}
+
+
+	// get extra config
+	themeConfigExtra := ThemeConfigDataConfig{}
+	err = yaml.Unmarshal(buf, &themeConfigExtra)
+	if err != nil {
+		return ThemeConfigData{}, "", "", false, err
+	}
+	if themeConfigExtra.Config == nil {
+		themeConfigExtra.Config = map[string]string{}
+	}
+
+
+	// simplify config keys
+	buf = regex.Comp(`(?m)^(\s*\w+)([_-][\w_-]+|):`).RepFunc(buf, func(data func(int) []byte) []byte {
+		b := bytes.Split(bytes.ReplaceAll(data(2), []byte{'_'}, []byte{'-'}), []byte{'-'})
+		return bytes.ToLower(regex.JoinBytes(data(1), bytes.Join(b, []byte{}), ':'))
+	})
+
+	buf = regex.Comp(`(?m)^\s*\w+:\s*none(?:\s*#.*?|)$`).RepStrLit(buf, []byte{})
+
+	// get main theme config
+	themeConfig := ThemeConfigData{}
+	err = yaml.Unmarshal(buf, &themeConfig)
+	if err != nil {
+		return ThemeConfigData{}, "", "", false, err
+	}
+
+
+	//todo: test if this changes, or needs a different map cloning method
+	themeConfigColor := map[string]ThemeConfigColor{}
+	for key, val := range themeConfig.Color {
+		themeConfigColor[key] = val
+	}
+
+	themeConfigElement := map[string]ThemeConfigElement{}
+	for key, val := range themeConfig.Element {
+		themeConfigElement[key] = val
+	}
+
+	themeConfigFont := map[string]string{}
+	for key, val := range themeConfig.Topography.Font {
+		themeConfigFont[key] = val
+	}
+
+	themeConfigImportFonts := make([]ThemeConfigImportFont, len(themeConfig.Topography.ImportFonts))
+	copy(themeConfigImportFonts, themeConfig.Topography.ImportFonts)
+
+
+	var themePath string
+	if themeConfig.Theme != "" && themeConfig.Theme != "none" {
+		// get subtheme config
+		var buf []byte
+		if themePath, err = fs.JoinPath("./src/themes", themeConfig.Theme, "config.yml"); err == nil {
+			buf, err = os.ReadFile(themePath)
+		}
+		if err != nil {
+			if themePath, err = fs.JoinPath("./src/theme", themeConfig.Theme, "config.yml"); err == nil {
+				buf, err = os.ReadFile(themePath)
+			}
+		}
+		if err != nil {
+			themePath = ""
+		}else{
+			themeConfigExtraDef := ThemeConfigDataConfig{}
+			err = yaml.Unmarshal(buf, &themeConfigExtraDef)
+			if err != nil {
+				return ThemeConfigData{}, "", "", false, err
+			}
+
+			for key, val := range themeConfigExtraDef.Config {
+				if _, ok := themeConfigExtra.Config[key]; !ok {
+					themeConfigExtra.Config[key] = val
+				}
+			}
+
+			// simplify config keys
+			buf = regex.Comp(`(?m)^(\s*\w+)([_-][\w_-]+|):`).RepFunc(buf, func(data func(int) []byte) []byte {
+				b := bytes.Split(bytes.ReplaceAll(data(2), []byte{'_'}, []byte{'-'}), []byte{'-'})
+				return bytes.ToLower(regex.JoinBytes(data(1), bytes.Join(b, []byte{}), ':'))
+			})
+		
+			buf = regex.Comp(`(?m)^\s*\w+:\s*none(?:\s*#.*?|)$`).RepStrLit(buf, []byte{})
+
+			// mearge subtheme config (should override root config)
+			err = yaml.Unmarshal(buf, &themeConfig)
+			if err != nil {
+				return ThemeConfigData{}, "", "", false, err
+			}
+
+			// mearge empty root config settings with subtheme config (should Not override root config)
+			for key, val := range themeConfig.Color {
+				if _, ok := themeConfigColor[key]; !ok {
+					themeConfigColor[key] = val
+				}
+			}
+
+			for key, val := range themeConfig.Element {
+				if _, ok := themeConfigElement[key]; !ok {
+					themeConfigElement[key] = val
+				}
+			}
+
+			for key, val := range themeConfig.Topography.Font {
+				if _, ok := themeConfigFont[key]; !ok {
+					themeConfigFont[key] = val
+				}
+			}
+
+			for _, val := range themeConfig.Topography.ImportFonts {
+				hasFont := false
+				for _, font := range themeConfigImportFonts {
+					if font.Name == val.Name {
+						hasFont = true
+						break
+					}
+				}
+
+				if !hasFont {
+					themeConfigImportFonts = append(themeConfigImportFonts, val)
+				}
+			}
+		}
+	}
+
+	themeConfig.Config = themeConfigExtra.Config
+	themeConfig.Color = themeConfigColor
+	themeConfig.Element = themeConfigElement
+	themeConfig.Topography.Font = themeConfigFont
+	themeConfig.Topography.ImportFonts = themeConfigImportFonts
+
+
+	if themePath != "" {
+		themePath = string(regex.Comp(`[/\\]+config\.yml$`).RepStrLit([]byte(themePath), []byte{}))
+	}
+
+	return themeConfig, themePath, dist, inDistFolder, nil
+}
+
 
 func compileConfigFonts(importFonts []ThemeConfigImportFont) []byte {
 	res := []byte{}
