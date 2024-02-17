@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"log"
 	"math"
@@ -144,6 +145,7 @@ type ThemeConfigElement struct {
 	}
 }
 
+
 type ThemeConfigImportFont struct {
 	Name string
 	Local string
@@ -161,18 +163,10 @@ func main(){
 	}
 
 	startTime := time.Now()
-	handleCompileTheme(port)
-	endTime := time.Now()
+	themeDir, subThemePath, defaultDarkMode, err := handleCompileTheme(port)
+	printCompTime("", startTime)
 
-	if compTime := endTime.UnixMilli() - startTime.UnixMilli(); compTime >= 1000 {
-		fmt.Println("\x1b[1;36mCompiled In\x1b[35m", float64(compTime) / 1000, "\x1b[36mseconds\x1b[0m")
-	}else if compTime := endTime.UnixNano() - startTime.UnixNano(); compTime >= 1000 {
-		fmt.Println("\x1b[1;36mCompiled In\x1b[35m", float64(compTime / 1000) / 1000, "\x1b[36mmilliseconds\x1b[0m")
-	}else{
-		fmt.Println("\x1b[1;36mCompiled In\x1b[35m", compTime, "\x1b[36mnanoseconds\x1b[0m")
-	}
-
-	if port == "" {
+	if port == "" || err != nil {
 		return
 	}
 
@@ -219,15 +213,84 @@ func main(){
 		w.Write([]byte("error 404"))
 	})
 
-	fmt.Println("\x1b[1;36mRunning Server On Port \x1b[35m"+port, "\x1b[0m")
+	go func(){
+		for {
+			var input string
+			fmt.Print("> ")
+			fmt.Scanln(&input)
+			fmt.Print("\033[1A", strings.Repeat(" ", 20), "\r")
+
+			if input == "" || input == "stop" || input == "exit" {
+				fmt.Println("\x1b[1;31mStopping Server!", "\x1b[0m")
+
+				time.Sleep(300 * time.Millisecond)
+				os.Exit(0)
+			}else if input == "compile" || input == "comp" {
+				fmt.Print("\x1b[1;36mCompiling Theme...", "\x1b[0m")
+				time.Sleep(300 * time.Millisecond)
+				startTime := time.Now()
+
+				os.RemoveAll("./dist")
+				os.Mkdir("./dist", 0755)
+
+				*subThemePath, *defaultDarkMode, _ = compileConfig()
+				compileCSS(*themeDir, "style", true, *subThemePath, *defaultDarkMode)
+				compileJS(*themeDir, "script", true, *subThemePath)
+
+				printCompTime("Theme", startTime)
+			}else if input == "compile config" || input == "config" || input == "compile conf" || input == "conf" || input == "compile yml" || input == "yml" {
+				fmt.Print("\x1b[1;36mCompiling Config...", "\x1b[0m")
+				time.Sleep(300 * time.Millisecond)
+				startTime := time.Now()
+
+				*subThemePath, *defaultDarkMode, _ = compileConfig()
+
+				printCompTime("Config", startTime)
+			}else if input == "compile css" || input == "css" || input == "compile style" || input == "style" {
+				fmt.Print("\x1b[1;36mCompiling CSS...", "\x1b[0m")
+				time.Sleep(300 * time.Millisecond)
+				startTime := time.Now()
+				
+				compileCSS(*themeDir, "style", true, *subThemePath, *defaultDarkMode)
+
+				printCompTime("CSS", startTime)
+			}else if input == "compile js" || input == "js" || input == "compile script" || input == "script" {
+				fmt.Print("\x1b[1;36mCompiling JS...", "\x1b[0m")
+				time.Sleep(300 * time.Millisecond)
+				startTime := time.Now()
+
+				compileJS(*themeDir, "script", true, *subThemePath)
+
+				printCompTime("JS", startTime)
+			}
+		}
+	}()
+
+	fmt.Println("\x1b[1;32mRunning Server On Port \x1b[35m"+port, "\x1b[0m")
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
 
-func handleCompileTheme(port string){
+func printCompTime(name string, startTime time.Time){
+	endTime := time.Now()
+
+	if name != "" {
+		name = " "+name
+	}
+
+	if compTime := endTime.UnixMilli() - startTime.UnixMilli(); compTime >= 1000 {
+		fmt.Println("\r\x1b[1;36mCompiled"+name+" in\x1b[35m", float64(compTime) / 1000, "\x1b[36mseconds\x1b[0m")
+	}else if compTime := endTime.UnixNano() - startTime.UnixNano(); compTime >= 1000 {
+		fmt.Println("\r\x1b[1;36mCompiled"+name+" in\x1b[35m", float64(compTime / 1000) / 1000, "\x1b[36mmilliseconds\x1b[0m")
+	}else{
+		fmt.Println("\r\x1b[1;36mCompiled"+name+" in\x1b[35m", compTime, "\x1b[36mnanoseconds\x1b[0m")
+	}
+}
+
+func handleCompileTheme(port string) (*string, *string, *bool, error) {
 	themeDir, err := filepath.Abs("./src")
 	if err != nil {
 		compileConfig()
-		return
+		return nil, nil, nil, err
 	}
 
 	if stat, err := os.Stat("./src"); err == nil && stat.IsDir() {
@@ -238,14 +301,14 @@ func handleCompileTheme(port string){
 	subThemePath, defaultDarkMode, _ := compileConfig()
 
 	if stat, err := os.Stat("./src"); err != nil || !stat.IsDir() {
-		return
+		return nil, nil, nil, errors.New("src directory not found")
 	}
 
 	compileCSS(themeDir, "style", true, subThemePath, defaultDarkMode)
 	compileJS(themeDir, "script", true, subThemePath)
 
 	if port == "" {
-		return
+		return nil, nil, nil, errors.New("port not specified")
 	}
 
 	lastCompile := time.Now().UnixMilli()
@@ -352,6 +415,8 @@ func handleCompileTheme(port string){
 		return true
 	}
 	watcher.WatchDir(themeDir)
+
+	return &themeDir, &subThemePath, &defaultDarkMode, nil
 }
 
 
@@ -372,6 +437,9 @@ func compileConfig() (string, bool, error) {
 	if err != nil {
 		return "", false, err
 	}
+
+	//todo: have root config also prioritized over theme config for colors and elements (so the theme config can set defaults)
+	// may consider removing the theme overriding other main config options
 
 	themeConfigData := ThemeConfigDataConfig{}
 	err = yaml.Unmarshal(buf, &themeConfigData)

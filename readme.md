@@ -16,7 +16,7 @@ git clone https://github.com/AspieSoft/smart-theme.git
 
 In the src directory, you will find a config.yml file that you can modify.
 Run ./compile to compile the config.yml file and to compile scripts and stylesheets for the theme, into the dist directory.
-In the themes directory, you can add custom styles and scripts to add to the existing base theme. You can even override settings from the config.yml file to make theme specific configurations.
+In the themes directory, you can add custom styles and scripts to add to the existing base theme.
 
 ## Setup
 
