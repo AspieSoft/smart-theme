@@ -1377,12 +1377,12 @@ img {
 }
 
 @keyframes scroll-scale-bg-w {
-  0% {background-size: 100% auto;}
+  0% {background-size: 105% auto;}
   100% {background-size: 125% auto;}
 }
 
 @keyframes scroll-scale-bg-h {
-  0% {background-size: auto 100%;}
+  0% {background-size: auto 105%;}
   100% {background-size: auto 125%;}
 }
 

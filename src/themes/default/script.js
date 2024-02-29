@@ -23,7 +23,10 @@ onReady(async function(){
             if(img.width !== 0 && img.height !== 0){
               elm.setAttribute('img-width', img.width);
               elm.setAttribute('img-height', img.height);
-              if(elm.clientWidth / img.width >= elm.clientHeight / img.height){
+
+              let w = elm.clientWidth - img.width;
+              let h = elm.clientHeight - img.height;
+              if(elm.clientWidth / img.width >= elm.clientHeight / img.height && Math.sqrt((w * w) + (h * h)) >= Math.sqrt((img.width * img.width) + (img.height * img.height))){
                 elm.classList.add('background-size-w');
                 elm.classList.remove('background-size-h');
               }else{
@@ -59,23 +62,20 @@ onReady(async function(){
         elm.classList.remove('background-size-w', 'background-size-h');
         return;
       }
-
+      
       if(!elm.classList.contains('background-size-w') && !elm.classList.contains('background-size-h')){
         return;
       }
-
+      
       const imgWidth = elm.getAttribute('img-width');
       const imgHeight = elm.getAttribute('img-height');
       if(!imgWidth || !imgHeight || imgWidth === 0 || imgHeight === 0){
         return;
       }
 
-      if(imgWidth >= imgHeight){
-        //todo: fix background-size-w and background-size-h not setting correctly
-      }
-
-      // console.log(elm.clientWidth / imgWidth, elm.clientHeight / imgHeight)
-      if(elm.clientWidth / imgWidth >= elm.clientHeight / imgHeight){
+      let w = elm.clientWidth - imgWidth;
+      let h = elm.clientHeight - imgHeight;
+      if(elm.clientWidth / imgWidth >= elm.clientHeight / imgHeight && Math.sqrt((w * w) + (h * h)) >= Math.sqrt((imgWidth * imgWidth) + (imgHeight * imgHeight))){
         elm.classList.add('background-size-w');
         elm.classList.remove('background-size-h');
       }else{
