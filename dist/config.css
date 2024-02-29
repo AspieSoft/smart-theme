@@ -7,7 +7,7 @@
   --widget-size: 20%;
   --widget-max-size: 320px;
   --headerimg-width: auto;
-  --headerimg-height: 100vh;
+  --headerimg-height: 50vh;
   --headernav-justify: center;
   --nav-underline-radius: 0.125em;
   --shadow-size: 0.25rem;
@@ -24,10 +24,10 @@
   --shadow-dark: hsla(0, 0, 0, 0.5);
   --textshadow-light: hsla(0, 0, 29, 0.25);
   --textshadow-dark: hsla(0, 0, 0, 0.25);
-  --page-a: 0.75;
-  --copyright-a: 0.75;
   --header-a-top: 0;
   --header-a: 0.75;
+  --page-a: 0.75;
+  --copyright-a: 0.75;
   --text-light: hsl(var(--text-light-h), var(--text-light-s), var(--text-light-l)); --text-light-h: var(--fg-h); --text-light-s: 0%; --text-light-l: 100%;
   --text-dark: hsl(var(--text-dark-h), var(--text-dark-s), var(--text-dark-l)); --text-dark-h: var(--fg-h); --text-dark-s: 0%; --text-dark-l: 6%;
   --link-light: hsl(var(--link-light-h), var(--link-light-s), var(--link-light-l)); --link-light-h: 197deg; --link-light-s: 81%; --link-light-l: 58%;

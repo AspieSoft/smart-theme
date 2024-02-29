@@ -158,6 +158,8 @@ func main(){
 	if len(os.Args) > 1 {
 		if p, err := strconv.Atoi(os.Args[1]); err == nil && p >= 3000 && p <= 65535 /* golang only accepts 16 bit port numbers */ {
 			port = strconv.Itoa(p)
+		}else if p, err := strconv.Atoi(os.Args[1]); err == nil && p == 0 {
+			port = "0"
 		}
 	}
 
@@ -169,48 +171,50 @@ func main(){
 		return
 	}
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		url := string(regex.Comp(`[^\w_\-\/\.]+`).RepStrLit([]byte(strings.Trim(r.URL.Path, "/")), []byte{}))
-		if url == "" {
-			http.ServeFile(w, r, "./test/html/index.html")
-			return
-		}else if strings.HasPrefix(url, "theme/") || strings.HasPrefix(url, "assets/") {
-			for _, ext := range validExtList {
-				if strings.HasSuffix(url, "."+ext) {
-					if strings.HasPrefix(url, "theme/") {
-						if path, err := fs.JoinPath("./dist", strings.Replace(url, "theme/", "", 1)); err == nil {
-							http.ServeFile(w, r, path)
-							return
-						}
-					}else if strings.HasPrefix(url, "assets/") {
-						if path, err := fs.JoinPath("./test/assets", strings.Replace(url, "assets/", "", 1)); err == nil {
-							http.ServeFile(w, r, path)
-							return
+	if port != "0" {
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			url := string(regex.Comp(`[^\w_\-\/\.]+`).RepStrLit([]byte(strings.Trim(r.URL.Path, "/")), []byte{}))
+			if url == "" {
+				http.ServeFile(w, r, "./test/html/index.html")
+				return
+			}else if strings.HasPrefix(url, "theme/") || strings.HasPrefix(url, "assets/") {
+				for _, ext := range validExtList {
+					if strings.HasSuffix(url, "."+ext) {
+						if strings.HasPrefix(url, "theme/") {
+							if path, err := fs.JoinPath("./dist", strings.Replace(url, "theme/", "", 1)); err == nil {
+								http.ServeFile(w, r, path)
+								return
+							}
+						}else if strings.HasPrefix(url, "assets/") {
+							if path, err := fs.JoinPath("./test/assets", strings.Replace(url, "assets/", "", 1)); err == nil {
+								http.ServeFile(w, r, path)
+								return
+							}
 						}
 					}
 				}
-			}
-		}else{
-			url = string(regex.Comp(`\.[\w_-]+$`).RepStrLit([]byte(url), []byte{}))
-
-			if path, err := fs.JoinPath("./test/html", url+".html"); err == nil {
-				if stat, err := os.Stat(path); err == nil && !stat.IsDir() {
-					http.ServeFile(w, r, path)
-					return
+			}else{
+				url = string(regex.Comp(`\.[\w_-]+$`).RepStrLit([]byte(url), []byte{}))
+	
+				if path, err := fs.JoinPath("./test/html", url+".html"); err == nil {
+					if stat, err := os.Stat(path); err == nil && !stat.IsDir() {
+						http.ServeFile(w, r, path)
+						return
+					}
+				}
+	
+				if path, err := fs.JoinPath("./test/html", url, "index.html"); err == nil {
+					if stat, err := os.Stat(path); err == nil && !stat.IsDir() {
+						http.ServeFile(w, r, path)
+						return
+					}
 				}
 			}
-
-			if path, err := fs.JoinPath("./test/html", url, "index.html"); err == nil {
-				if stat, err := os.Stat(path); err == nil && !stat.IsDir() {
-					http.ServeFile(w, r, path)
-					return
-				}
-			}
-		}
-
-		w.WriteHeader(404)
-		w.Write([]byte("error 404"))
-	})
+	
+			w.WriteHeader(404)
+			w.Write([]byte("error 404"))
+		})
+	}
 
 	go func(){
 		for {
@@ -265,8 +269,15 @@ func main(){
 		}
 	}()
 
-	fmt.Println("\x1b[1;32mRunning Server On Port \x1b[35m"+port, "\x1b[0m")
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	if port != "0" {
+		fmt.Println("\x1b[1;32mRunning Server On Port \x1b[35m"+port, "\x1b[0m")
+		log.Fatal(http.ListenAndServe(":"+port, nil))
+	}else{
+		fmt.Println("\x1b[1;32mRunning File Watcher", "\x1b[0m")
+		for {
+			time.Sleep(100 * time.Millisecond)
+		}
+	}
 }
 
 

@@ -52,6 +52,7 @@ onReady(async function(){
   onInterval();
   setInterval(onInterval, 1000);
 
+
   function onResize(){
     document.querySelectorAll('header .header-img, footer').forEach(function(elm){
       if(elm.clientHeight < 300){
@@ -68,6 +69,12 @@ onReady(async function(){
       if(!imgWidth || !imgHeight || imgWidth === 0 || imgHeight === 0){
         return;
       }
+
+      if(imgWidth >= imgHeight){
+        //todo: fix background-size-w and background-size-h not setting correctly
+      }
+
+      // console.log(elm.clientWidth / imgWidth, elm.clientHeight / imgHeight)
       if(elm.clientWidth / imgWidth >= elm.clientHeight / imgHeight){
         elm.classList.add('background-size-w');
         elm.classList.remove('background-size-h');

@@ -28,6 +28,10 @@ async function onReady(cb){
 }
 
 onReady(async function(){
+  const headerTop = document.querySelector('header .header-top');
+  const headerTopNav = document.querySelector('header .header-top nav.top-nav > ul');
+
+
   function onInterval(){
     document.querySelectorAll('.widget > *, .sidebar > *').forEach(function(elm) {
       if(elm.clientHeight < window.innerHeight - 150) {
@@ -39,6 +43,79 @@ onReady(async function(){
   }
   onInterval();
   setInterval(onInterval, 1000);
+
+
+  function onResize(){
+    if(headerTop && headerTopNav){
+      let headerRect = headerTop.getBoundingClientRect();
+
+      if(headerTop.scrollWidth > headerRect.width){
+        let allHidden = true;
+
+        for(let i = headerTopNav.children.length - 1; i >= 0; i--){
+          headerTopNav.children[i].style['display'] = 'none';
+          headerRect = headerTop.getBoundingClientRect();
+          if(headerTop.scrollWidth <= headerRect.width){
+            allHidden = false;
+            break;
+          }
+        }
+
+        if(allHidden){
+          headerTop.querySelectorAll('nav:not(.top-nav) > ul').forEach(function(elm){
+            if(!allHidden){
+              return;
+            }
+
+            if(headerTop.scrollWidth > headerRect.width){
+              for(let i = 0; i < elm.children.length; i++){
+                elm.children[i].style['display'] = 'none';
+                headerRect = headerTop.getBoundingClientRect();
+                if(headerTop.scrollWidth <= headerRect.width){
+                  allHidden = false;
+                  break;
+                }
+              }
+            }
+          });
+        }
+      }else{
+        let allVisible = true;
+
+        headerTop.querySelectorAll('nav:not(.top-nav) > ul').forEach(function(elm){
+          if(!allVisible){
+            return;
+          }
+          
+          if(headerTop.scrollWidth <= headerRect.width){
+            for(let i = elm.children.length - 1; i >= 0; i--){
+              elm.children[i].style['display'] = '';
+              headerRect = headerTop.getBoundingClientRect();
+              if(headerTop.scrollWidth > headerRect.width){
+                elm.children[i].style['display'] = 'none';
+                allVisible = false;
+                break;
+              }
+            }
+          }
+        });
+
+        if(allVisible){
+          for(let i = 0; i < headerTopNav.children.length; i++){
+            headerTopNav.children[i].style['display'] = '';
+            headerRect = headerTop.getBoundingClientRect();
+            if(headerTop.scrollWidth > headerRect.width){
+              headerTopNav.children[i].style['display'] = 'none';
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+  onResize();
+  window.addEventListener('resize', onResize, {passive: true});
+
 
   //todo: add other imidiatelly visible header elements to list
   document.querySelectorAll('html, header .header-img, header .header-top').forEach(function(elm){

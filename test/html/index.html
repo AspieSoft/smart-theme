@@ -12,13 +12,31 @@
 
   <!-- <script src="https://cdn.tailwindcss.com"></script> -->
   <!-- <script src="https://unpkg.com/htmx.org@1.9.10"></script> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
 </head>
 <body>
   <header>
-    <div class="header-top">
+    <!-- todo: remember to set nav menu for both left and right verients -->
+    <div class="header-top nav-left-off hide-mobile-off">
       <a class="site-logo" href="/">Smart Theme</a>
+      <div class="top-menu center-off">
+        <nav class="top-nav">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+          </ul>
+        </nav>
+        <nav>
+          <ul>
+            <li><a href="#login"><i class="fa-solid fa-right-to-bracket"></i></a></li>
+            <li><a href="#search"><i class="fa-solid fa-magnifying-glass"></i></a></li>
+            <li><a href="#menu" class="nav-btn"><i class="fa-solid fa-bars"></i></a></li>
+          </ul>
+        </nav>
+      </div>
     </div>
-    <div class="header-img">
+    <div class="header-img stack-off">
       <!-- todo: add headerimg navigation -->
       <!-- <nav>
         <ul>
@@ -30,6 +48,7 @@
       <div class="content">
         <h1>Smart Theme</h1>
       </div>
+      <img src="/assets/background/beach.480p.webp"/>
     </div>
   </header>
   <div id="page-content" class="page-fill-off">

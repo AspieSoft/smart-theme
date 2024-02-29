@@ -1,5 +1,8 @@
 header .header-top {
   --bg-a: var(--header-a, 1);
+
+  background-color: hsla(var(--bg-h), var(--bg-s), var(--bg-l), var(--bg-a));
+  box-shadow: 0 0 var(--shadow-size) var(--shadow);
 }
 
 .page-bg, .card-bg {

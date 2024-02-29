@@ -204,13 +204,36 @@ header {
     font-size: calc(var(--font-size) * 1.3);
     font-weight: bold;
     color: var(--text);
+    text-wrap: nowrap;
+
+    padding: 15px 0.5rem;
+  }
+
+  nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: var(--headernav-justify, flex-end);
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    & > ul {
+      display: contents;
+    }
   }
 
   .header-top {
     background-color: var(--bg);
 
     margin: 0;
-    padding: 15px 40px;
+    padding: 0;
+    /* padding-block: 15px; */
     box-shadow: 0 0 var(--shadow-size) var(--shadow);
     box-sizing: border-box;
     z-index: 10000;
@@ -219,6 +242,12 @@ header {
     top: 0;
     left: 0;
     right: 0;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
 
     &::before {
       content: '';
@@ -236,6 +265,86 @@ header {
 
     a {
       color: var(--text);
+    }
+
+    .top-menu {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 1rem;
+
+      flex: 1;
+
+      &.center {
+        display: contents;
+      }
+    }
+
+    nav {
+      flex-wrap: nowrap;
+      gap: 0;
+
+      & > ul > li {
+        text-wrap: nowrap;
+        padding-block: 15px;
+        padding: 15px 0.5rem;
+      }
+    }
+
+    &.nav-left {
+      li.nav-btn, li:has(.nav-btn) {
+        position: absolute;
+        left: calc(40px - 0.5rem);
+      }
+
+      & > :first-child {
+        margin-left: 2rem;
+      }
+    }
+
+    & > :first-child {
+      padding-left: calc(40px - 0.5rem);
+
+      &.site-logo {
+        padding-left: 40px;
+      }
+    }
+
+    & > :last-child:not(.top-menu), & > :has(+ nav[style*="display:none"], + nav[style*="display: none"]):not(.top-menu) {
+      padding-right: calc(40px - 0.5rem);
+    }
+
+    & > :last-child.top-menu > :last-child, & > :last-child.top-menu > :has(+ nav[style*="display:none"], + nav[style*="display: none"]) {
+      padding-right: calc(40px - 0.5rem);
+    }
+
+    @media (max-width: 800px) {
+      &.nav-left {
+        li.nav-btn, li:has(.nav-btn) {
+          left: calc(20px - 0.5rem);
+        }
+      }
+
+      & > :first-child {
+        padding-left: calc(20px - 0.5rem);
+
+        &.site-logo {
+          padding-left: 20px;
+        }
+      }
+  
+      & > :last-child:not(.top-menu), & > :has(+ nav[style*="display:none"], + nav[style*="display: none"]):not(.top-menu) {
+        padding-right: calc(20px - 0.5rem);
+      }
+  
+      & > :last-child.top-menu > :last-child, & > :last-child.top-menu > :has(+ nav[style*="display:none"], + nav[style*="display: none"]) {
+        padding-right: calc(20px - 0.5rem);
+      }
+
+      &.hide-mobile .top-nav {
+        display: none;
+      }
     }
   }
 
@@ -325,6 +434,10 @@ header {
       object-fit: var(--img-size, cover);
       object-position: var(--img-pos, center);
       background-repeat: no-repeat;
+    }
+
+    &:has(> img) > .content {
+      padding-top: 40px;
     }
   }
 }
@@ -1340,6 +1453,9 @@ img {
 
 header .header-top {
   --bg-a: var(--header-a, 1);
+
+  background-color: hsla(var(--bg-h), var(--bg-s), var(--bg-l), var(--bg-a));
+  box-shadow: 0 0 var(--shadow-size) var(--shadow);
 }
 
 .page-bg, .card-bg {
