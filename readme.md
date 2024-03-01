@@ -10,6 +10,8 @@ A simple theme that adjusts easily to a users preferences.
 
 ```shell
 git clone https://github.com/AspieSoft/smart-theme.git
+cd smart-theme
+go build
 ```
 
 ## Test Run
