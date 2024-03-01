@@ -12,6 +12,16 @@ A simple theme that adjusts easily to a users preferences.
 git clone https://github.com/AspieSoft/smart-theme.git
 ```
 
+## Test Run
+
+```shell
+# listen on port 3000 and listen for file changes (with hot reload)
+./compile 3000
+
+# or listen for file changes without running an http server on localhost
+./compile 0
+```
+
 ## Config
 
 In the src directory, you will find a config.yml file that you can modify.

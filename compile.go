@@ -153,6 +153,11 @@ type ThemeConfigImportFont struct {
 	Display string
 }
 
+// this will be incramented when files change and the theme gets recompiled
+// uint8 should be ok, since the hot reload script only cares whether or not
+// the number is the same, and does not care if its a bigger or smaller number
+var currentReversion = uint8(0);
+
 func main(){
 	port := ""
 	if len(os.Args) > 1 {
@@ -172,6 +177,23 @@ func main(){
 	}
 
 	if port != "0" {
+		http.HandleFunc("/reversion.test", func(w http.ResponseWriter, r *http.Request) {
+			res, err := goutil.JSON.Stringify(map[string]interface{}{
+				"reversion": currentReversion,
+			})
+
+			w.Header().Set("Content-Type", "application/json")
+
+			if err != nil {
+				w.WriteHeader(500)
+				w.Write([]byte("error 500"))
+				return
+			}
+
+			w.WriteHeader(200)
+			w.Write(res)
+		})
+
 		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 			url := string(regex.Comp(`[^\w_\-\/\.]+`).RepStrLit([]byte(strings.Trim(r.URL.Path, "/")), []byte{}))
 			if url == "" {
@@ -240,6 +262,8 @@ func main(){
 				compileCSS(*themeDir, "style", true, *subThemePath, *defaultDarkMode)
 				compileJS(*themeDir, "script", true, *subThemePath)
 
+				time.Sleep(100 * time.Millisecond)
+				currentReversion++
 				printCompTime("Theme", startTime)
 			}else if input == "compile config" || input == "config" || input == "compile conf" || input == "conf" || input == "compile yml" || input == "yml" {
 				fmt.Print("\x1b[1;36mCompiling Config...", "\x1b[0m")
@@ -248,6 +272,8 @@ func main(){
 
 				*subThemePath, *defaultDarkMode, _ = compileConfig()
 
+				time.Sleep(100 * time.Millisecond)
+				currentReversion++
 				printCompTime("Config", startTime)
 			}else if input == "compile css" || input == "css" || input == "compile style" || input == "style" {
 				fmt.Print("\x1b[1;36mCompiling CSS...", "\x1b[0m")
@@ -256,6 +282,8 @@ func main(){
 				
 				compileCSS(*themeDir, "style", true, *subThemePath, *defaultDarkMode)
 
+				time.Sleep(100 * time.Millisecond)
+				currentReversion++
 				printCompTime("CSS", startTime)
 			}else if input == "compile js" || input == "js" || input == "compile script" || input == "script" {
 				fmt.Print("\x1b[1;36mCompiling JS...", "\x1b[0m")
@@ -264,6 +292,8 @@ func main(){
 
 				compileJS(*themeDir, "script", true, *subThemePath)
 
+				time.Sleep(100 * time.Millisecond)
+				currentReversion++
 				printCompTime("JS", startTime)
 			}
 		}
@@ -394,6 +424,9 @@ func handleCompileTheme(port string) (*string, *string, *bool, error) {
 				compileJS(themeDir, "script", false, subThemePath)
 			}
 		}
+
+		time.Sleep(100 * time.Millisecond)
+		currentReversion++
 	}
 	watcher.OnRemove = func(path, op string) (removeWatcher bool) {
 		path = string(regex.Comp(`^%1[\\/]?`, themeDir).RepStrLit([]byte(path), []byte{}))

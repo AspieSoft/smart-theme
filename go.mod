@@ -7,7 +7,7 @@ require (
 	github.com/AspieSoft/goutil/fs/v2 v2.0.0-20240115235727-0e749133fd47
 	github.com/AspieSoft/goutil/v7 v7.6.1
 	github.com/lucasb-eyer/go-colorful v1.2.0
-	github.com/tdewolff/minify/v2 v2.20.17
+	github.com/tdewolff/minify/v2 v2.20.18
 	gopkg.in/yaml.v3 v3.0.1
 )
 
