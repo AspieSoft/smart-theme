@@ -947,11 +947,11 @@ func compileConfig() (string, bool, error) {
 					`  --`, name, `--dark-input: var(--input-`, dark, `)`, ";\n",
 
 					//* shadow
-					`  --`, name, `--light-shadow: var(--shadow-`, light, `)`, "; ",
-						`--`, name, `--light-textshadow: var(--textshadow-`, light, `)`, ";\n",
+					`  --`, name, `--light-shadow: var(--shadow-`, lightCont, `)`, "; ",
+						`--`, name, `--light-textshadow: var(--textshadow-`, lightCont, `)`, ";\n",
 
-					`  --`, name, `--dark-shadow: var(--shadow-`, dark, `)`, "; ",
-						`--`, name, `--dark-textshadow: var(--textshadow-`, dark, `)`, ";\n",
+					`  --`, name, `--dark-shadow: var(--shadow-`, darkCont, `)`, "; ",
+						`--`, name, `--dark-textshadow: var(--textshadow-`, darkCont, `)`, ";\n",
 				)...)
 
 				if color.FG == "text" {
@@ -1112,11 +1112,11 @@ func compileConfig() (string, bool, error) {
 				`  --`, name, `--dark-input: var(--input-`, dark, `)`, ";\n",
 
 				//* shadow
-				`  --`, name, `--light-shadow: var(--shadow-`, light, `)`, "; ",
-					`--`, name, `--light-textshadow: var(--textshadow-`, light, `)`, ";\n",
+				`  --`, name, `--light-shadow: var(--shadow-`, lightCont, `)`, "; ",
+					`--`, name, `--light-textshadow: var(--textshadow-`, lightCont, `)`, ";\n",
 
-				`  --`, name, `--dark-shadow: var(--shadow-`, dark, `)`, "; ",
-					`--`, name, `--dark-textshadow: var(--textshadow-`, dark, `)`, ";\n",
+				`  --`, name, `--dark-shadow: var(--shadow-`, darkCont, `)`, "; ",
+					`--`, name, `--dark-textshadow: var(--textshadow-`, darkCont, `)`, ";\n",
 			)...)
 
 			if color.FG == "text" {
@@ -1262,11 +1262,11 @@ func compileConfig() (string, bool, error) {
 				`  --`, name, `--dark-input: var(--input-`, dark, `)`, ";\n",
 
 				//* shadow
-				`  --`, name, `--light-shadow: var(--shadow-`, light, `)`, "; ",
-					`--`, name, `--light-textshadow: var(--textshadow-`, light, `)`, ";\n",
+				`  --`, name, `--light-shadow: var(--shadow-`, lightCont, `)`, "; ",
+					`--`, name, `--light-textshadow: var(--textshadow-`, lightCont, `)`, ";\n",
 
-				`  --`, name, `--dark-shadow: var(--shadow-`, dark, `)`, "; ",
-					`--`, name, `--dark-textshadow: var(--textshadow-`, dark, `)`, ";\n",
+				`  --`, name, `--dark-shadow: var(--shadow-`, darkCont, `)`, "; ",
+					`--`, name, `--dark-textshadow: var(--textshadow-`, darkCont, `)`, ";\n",
 			)...)
 
 			if color.FG == "text" {
@@ -1667,7 +1667,7 @@ func compileConfigElm(name string, defaultDarkMode bool) []byte {
 			`--input: var(--`, name, `--`, main, `-input)`, "; ",
 			// `--shadow: var(--`, name, `--`, main, `-shadow)`, "; ",
 			`--textshadow: var(--`, name, `--`, main, `-textshadow)`, "; ",
-			`--font: var(--`, name, `--`, main, `-font, var(--ff-sans))`, ";\n",
+			`--font: var(--`, name, `-font, var(--ff-sans))`, ";\n",
 
 		`  --img: var(--`, name, `--img-`, main, `, none)`, "; ",
 			`--img-size: var(--`, name, `--img-size, cover)`, "; ",
@@ -1698,8 +1698,7 @@ func compileConfigElm(name string, defaultDarkMode bool) []byte {
 				`--stringheading: var(--`, name, `--`, alt, `-strongheading)`, "; ",
 				`--input: var(--`, name, `--`, alt, `-input)`, "; ",
 				// `--shadow: var(--`, name, `--`, alt, `-shadow)`, "; ",
-				`--textshadow: var(--`, name, `--`, alt, `-textshadow)`, "; ",
-				`--font: var(--`, name, `--`, alt, `-font, var(--ff-sans))`, ";\n",
+				`--textshadow: var(--`, name, `--`, alt, `-textshadow)`, ";\n",
 
 		`    --img: var(--`, name, `--img-`, alt, `, none)`, ";\n",
 
@@ -1707,7 +1706,7 @@ func compileConfigElm(name string, defaultDarkMode bool) []byte {
 
 		"  & > * {\n",
 		`    --shadow: var(--`, name, `--`, main, `-shadow)`, ";\n",
-		`    @media(prefers-color-scheme: ", alt, "){--shadow: var(--`, name, `--`, alt, `-shadow)`, ";}\n",
+		`    @media(prefers-color-scheme: `, alt, `){--shadow: var(--`, name, `--`, alt, `-shadow)`, ";}\n",
 		"  }\n",
 	)
 }
@@ -1747,7 +1746,7 @@ func compileConfigColor(name string, defaultDarkMode bool) []byte {
 			`--input: var(--`, name, `--`, main, `-input)`, "; ",
 			// `--shadow: var(--`, name, `--`, main, `-shadow)`, "; ",
 			`--textshadow: var(--`, name, `--`, main, `-textshadow)`, "; ",
-			`--font: var(--`, name, `--`, main, `-font, var(--ff-sans))`, ";\n",
+			`--font: var(--`, name, `-font, var(--ff-sans))`, ";\n",
 
 		`  --img: none`, ";\n",
 
@@ -1774,14 +1773,13 @@ func compileConfigColor(name string, defaultDarkMode bool) []byte {
 				`--stringheading: var(--`, name, `--`, alt, `-strongheading)`, "; ",
 				`--input: var(--`, name, `--`, alt, `-input)`, "; ",
 				// `--shadow: var(--`, name, `--`, alt, `-shadow)`, "; ",
-				`--textshadow: var(--`, name, `--`, alt, `-textshadow)`, "; ",
-				`--font: var(--`, name, `--`, alt, `-font, var(--ff-sans))`, ";\n",
+				`--textshadow: var(--`, name, `--`, alt, `-textshadow)`, ";\n",
 
 		"  }\n",
 
 		"  & > * {\n",
 		`    --shadow: var(--`, name, `--`, main, `-shadow)`, ";\n",
-		`    @media(prefers-color-scheme: ", alt, "){--shadow: var(--`, name, `--`, alt, `-shadow)`, ";}\n",
+		`    @media(prefers-color-scheme: `, alt, `){--shadow: var(--`, name, `--`, alt, `-shadow)`, ";}\n",
 		"  }\n",
 	)
 }

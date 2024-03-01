@@ -23,6 +23,7 @@ layout:
 
   headerimg-width: auto #? only for side image
   headerimg-height: 100vh
+  # headerimg-height: 50vh
   headernav-justify: center #? center | flex-start | flex-end | space-around | space-evenly | stretch
   nav-underline-radius: 0.125em #? default: 0.125em | cool effect: 50%
 
@@ -75,7 +76,7 @@ input:
 shadow:
   light: "hsla(0, 0, 29, 0.5)"
   dark: "hsla(0, 0, 0, 0.5)"
-  light-text: "hsla(0, 0, 29, 0.25)"
+  light-text: "rgba(0, 0, 29, 0.25)"
   dark-text: "hsla(0, 0, 0, 0.25)"
 
 color:
@@ -164,7 +165,7 @@ element:
     font: sans #? auto | @font[keyword] | 'custom font'
     img:
       light: "url('/assets/background/wave.webp')"
-      dark: "url('/assets/background/wave.webp')"
+      dark: "url('/assets/background/wave.webp') rgba(0, 0, 0, 0.25)"
       size: cover #? cover | contain
       pos: center #? center | top | bottom | left | right
       att: fixed #? fixed | scroll

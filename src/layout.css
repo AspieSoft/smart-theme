@@ -227,6 +227,7 @@ main {
 /** Spacer */
 .spacer {
   display: block;
+  min-width: 95%;
   height: 0.2rem;
   margin: 0.5rem;
   border-radius: 0.2rem;

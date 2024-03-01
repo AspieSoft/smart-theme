@@ -24,6 +24,7 @@ onReady(async function(){
               elm.setAttribute('img-width', img.width);
               elm.setAttribute('img-height', img.height);
 
+
               let w = elm.clientWidth - img.width;
               let h = elm.clientHeight - img.height;
               if(elm.clientWidth / img.width >= elm.clientHeight / img.height && Math.sqrt((w * w) + (h * h)) >= Math.sqrt((img.width * img.width) + (img.height * img.height))){

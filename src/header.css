@@ -50,6 +50,11 @@ header {
 
     & > ul {
       display: contents;
+
+      & > li {
+        text-wrap: nowrap;
+        padding: 15px 0.5rem;
+      }
     }
   }
 
@@ -58,7 +63,6 @@ header {
 
     margin: 0;
     padding: 0;
-    /* padding-block: 15px; */
     box-shadow: 0 0 var(--shadow-size) var(--shadow);
     box-sizing: border-box;
     z-index: 10000;
@@ -109,12 +113,6 @@ header {
     nav {
       flex-wrap: nowrap;
       gap: 0;
-
-      & > ul > li {
-        text-wrap: nowrap;
-        padding-block: 15px;
-        padding: 15px 0.5rem;
-      }
     }
 
     &.nav-left {
@@ -171,6 +169,12 @@ header {
         display: none;
       }
     }
+
+    @media (min-width: mobile-width) {
+      li.nav-btn, li:has(.nav-btn) {
+        display: none;
+      }
+    }
   }
 
   .header-img {
@@ -214,12 +218,6 @@ header {
       background-repeat: no-repeat;
     }
 
-    &.column, &.stack {
-      flex-direction: column;
-    }
-
-    /* todo: add headerimg navigation */
-
     & > .content {
       display: flex;
       flex-direction: column;
@@ -227,7 +225,7 @@ header {
       align-items: center;
 
       flex: 1;
-      padding: 20px 40px 40px;
+      padding: 40px;
 
       @media (max-width: mobile-width) {
         padding-inline: 20px;
@@ -246,8 +244,59 @@ header {
       background-repeat: no-repeat;
     }
 
-    &:has(> img) > .content {
-      padding-top: 40px;
+    & > nav {
+      position: absolute;
+      top: var(--header-height);
+      left: 0;
+      right: 0;
+
+      background-color: hsla(var(--bg-h), var(--bg-s), var(--bg-l), var(--bg-a));
+      color: var(--text);
+      font-family: var(--header-font);
+      box-shadow: 0 0 var(--shadow-size) var(--shadow);
+
+      a {
+        color: var(--header-link);
+      }
+
+      &:last-child {
+        top: unset;
+        bottom: 0;
+      }
+    }
+
+    &.column, &.stack {
+      flex-direction: column;
+
+      &:has(> nav:first-child) {
+        & > :nth-child(2) {
+          margin-top: var(--header-height);
+        }
+      }
+
+      &:has(> nav:last-child) {
+        & > :nth-last-child(2) {
+          margin-bottom: var(--header-height);
+        }
+      }
+    }
+
+    &:not(.column, .stack) {
+      &:has(> nav:first-child) {
+        & > img {
+          margin-top: var(--header-height);
+        }
+      }
+
+      &:has(> nav:last-child) {
+        & > img {
+          margin-bottom: var(--header-height);
+        }
+      }
+
+      &:has(> nav) > .content {
+        margin-block: var(--header-height);
+      }
     }
   }
 }
