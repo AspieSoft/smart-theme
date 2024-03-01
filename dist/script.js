@@ -186,10 +186,7 @@ onReady(async function(){
               elm.setAttribute('img-width', img.width);
               elm.setAttribute('img-height', img.height);
 
-
-              let w = elm.clientWidth - img.width;
-              let h = elm.clientHeight - img.height;
-              if(elm.clientWidth / img.width >= elm.clientHeight / img.height && Math.sqrt((w * w) + (h * h)) >= Math.sqrt((img.width * img.width) + (img.height * img.height))){
+              if(calculateImgSizeRatioDiff(elm, img.width, img.height)){
                 elm.classList.add('background-size-w');
                 elm.classList.remove('background-size-h');
               }else{
@@ -236,9 +233,7 @@ onReady(async function(){
         return;
       }
 
-      let w = elm.clientWidth - imgWidth;
-      let h = elm.clientHeight - imgHeight;
-      if(elm.clientWidth / imgWidth >= elm.clientHeight / imgHeight && Math.sqrt((w * w) + (h * h)) >= Math.sqrt((imgWidth * imgWidth) + (imgHeight * imgHeight))){
+      if(calculateImgSizeRatioDiff(elm, imgWidth, imgHeight)){
         elm.classList.add('background-size-w');
         elm.classList.remove('background-size-h');
       }else{
@@ -249,5 +244,35 @@ onReady(async function(){
   }
   onResize();
   window.addEventListener('resize', onResize, {passive: true});
+
+
+  // Im not sure what to name this funnction, but it does some complex math
+  // to calculate whether a background image should use
+  // `background-size: 100% auto`, or `background-size: auto 100%`
+  // to simulate a `background-size: cover` while allowing an animation
+  // to adjust the 100% to a 125%
+  //
+  // the changes to `background-size` are handled by a css class
+  function calculateImgSizeRatioDiff(elm, imgWidth, imgHeight){
+    if(elm.clientWidth / elm.clientHeight > imgWidth / imgHeight){
+      return true;
+    }
+    return false;
+
+    /* let w = elm.clientWidth - imgWidth;
+    let h = elm.clientHeight - imgHeight;
+
+    if(w < h){
+      if(elm.clientWidth / imgWidth >= elm.clientHeight / imgHeight){
+        return true;
+      }
+      return false;
+    }
+
+    if(elm.clientWidth / imgWidth >= elm.clientHeight / imgHeight && Math.sqrt((w * w) + (h * h)) >= Math.sqrt((imgWidth * imgWidth) + (imgHeight * imgHeight))){
+      return true;
+    }
+    return false; */
+  }
 
 });
