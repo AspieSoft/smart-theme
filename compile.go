@@ -1907,9 +1907,21 @@ func compileCSS(inDir string, outName string, init bool, subThemePath string, de
 
 	res = compileMethodsCSS(res, defaultDarkMode)
 
+	//todo: fix browser support with nested @media elements
+	// res = compileNestedCSS(res, true)
+
+
 	if path, err := fs.JoinPath("./dist", outName+".css"); err == nil {
 		os.WriteFile(path, regex.JoinBytes(`/*! `, config["theme_name"], ' ', config["theme_version"], ` | `, config["theme_license"], ` | `, config["theme_uri"], ` */`, '\n', res), 0755)
 	}
+
+	
+	if path, err := fs.JoinPath("./dist", outName+".fix.css"); err == nil {
+		//todo: fix browser support with nested @media elements
+		resFix := compileNestedCSS(res, true)
+		os.WriteFile(path, regex.JoinBytes(`/*! `, config["theme_name"], ' ', config["theme_version"], ` | `, config["theme_license"], ` | `, config["theme_uri"], ` */`, '\n', resFix), 0755)
+	}
+
 
 	m := minify.New()
 	m.AddFunc("text/css", css.Minify)
@@ -2194,6 +2206,92 @@ func compileMethodsCSS(buf []byte, defaultDarkMode bool) []byte {
 	})
 
 	return buf
+}
+
+//todo: fix issues with empty @media tags
+func compileNestedCSS(buf []byte, init bool) []byte {
+	if init {
+		buf = regex.Comp(`/\*.*?\*/`).RepStr(buf, []byte{})
+		buf = regex.Comp(`([{};])`).RepStr(buf, []byte("$1\n"))
+
+		// encode bracket indexes
+		buf = regex.Comp(`\%!([\w]+)!\%`).RepFunc(buf, func(data func(int) []byte) []byte {
+			return regex.JoinBytes(`%!o!%`, data(1), `%!c!%`)
+		})
+	
+		ind := 0
+		buf = regex.Comp(`\{|\}`).RepFunc(buf, func(data func(int) []byte) []byte {
+			if data(0)[0] == '}' && ind > 0 {
+				ind--
+				return regex.JoinBytes(`%!`, ind, `!%}`)
+			}
+			r := regex.JoinBytes(`{%!`, ind, `!%`)
+			ind++
+			return r
+		})
+	}
+
+
+	buf = compileNestedCSS_DeindexAtTag(buf)
+
+
+	buf = regex.Comp(`(?m)^\s*(.*?)\{%!([0-9]+)!%((?:[r\n\t\s ]|.)*?)%!\2!%\}`).RepFunc(buf, func(data func(int) []byte) []byte {
+		if bytes.HasPrefix(data(1), []byte{'@'}) {
+			return regex.JoinBytes(data(1), '{', []byte("%!"), data(2), []byte("!%"), compileNestedCSS(data(3), false), []byte("%!"), data(2), []byte("!%"), '}')
+		}
+		
+		sel := bytes.Split(data(1), []byte{','})
+		for i, v := range sel {
+			sel[i] = bytes.TrimSpace(v)
+		}
+
+		addCSS := []byte{}
+		b := regex.Comp(`(?m)^\s*(.*?)\{%!([0-9]+)!%((?:[r\n\t\s ]|.)*?)%!\2!%\}`).RepFunc(data(3), func(data func(int) []byte) []byte {
+			if bytes.HasPrefix(data(1), []byte{'@'}) {
+				return regex.JoinBytes(data(1), '{', []byte("%!"), data(2), []byte("!%"), compileNestedCSS(data(3), false), []byte("%!"), data(2), []byte("!%"), '}')
+			}
+
+			newSel := [][]byte{}
+			s := bytes.Split(data(1), []byte{','})
+			for _, v := range s {
+				v = bytes.TrimSpace(v)
+				if !bytes.ContainsRune(v, '&') {
+					v = append([]byte("& "), v...)
+				}
+
+				
+				for _, selI := range sel {
+					newSel = append(newSel, bytes.ReplaceAll(v, []byte{'&'}, selI))
+				}
+			}
+
+			addCSS = compileNestedCSS(regex.JoinBytes(addCSS, bytes.Join(newSel, []byte{','}), '{', []byte("%!"), data(2), []byte("!%"), data(3), []byte("%!"), data(2), []byte("!%"), '}', '\n'), false)
+			return []byte{}
+		})
+
+		return regex.JoinBytes(data(1), '{', []byte("%!"), data(2), []byte("!%"), compileNestedCSS(b, false), []byte("%!"), data(2), []byte("!%"), '}', '\n', addCSS)
+	})
+
+
+	if init {
+		// decode bracket indexes
+		buf = regex.Comp(`\%!([\w]+)!\%`).RepFunc(buf, func(data func(int) []byte) []byte {
+			if data(0)[0] == 'o' {
+				return []byte(`%!`)
+			}else if data(0)[0] == 'c' {
+				return []byte(`!%`)
+			}
+			return []byte{}
+		})
+	}
+
+	return buf
+}
+
+func compileNestedCSS_DeindexAtTag(buf []byte) []byte {
+	return regex.Comp(`(?m)^\s*(@.*?)\{%!([0-9]+)!%((?:[r\n\t\s ]|.)*?)%!\2!%\}`).RepFunc(buf, func(data func(int) []byte) []byte {
+		return regex.JoinBytes(data(1), '{', compileNestedCSS_DeindexAtTag(data(3)), '}')
+	})
 }
 
 
