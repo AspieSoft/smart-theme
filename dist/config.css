@@ -24,10 +24,10 @@
   --shadow-dark: hsla(0, 0, 0, 0.5);
   --textshadow-light: rgba(0, 0, 29, 0.25);
   --textshadow-dark: hsla(0, 0, 0, 0.25);
+  --page-a: 0.75;
   --copyright-a: 0.75;
   --header-a-top: 0;
   --header-a: 0.75;
-  --page-a: 0.75;
   --text-light: hsl(var(--text-light-h), var(--text-light-s), var(--text-light-l)); --text-light-h: var(--fg-h); --text-light-s: 0%; --text-light-l: 100%;
   --text-dark: hsl(var(--text-dark-h), var(--text-dark-s), var(--text-dark-l)); --text-dark-h: var(--fg-h); --text-dark-s: 0%; --text-dark-l: 6%;
   --link-light: hsl(var(--link-light-h), var(--link-light-s), var(--link-light-l)); --link-light-h: 197deg; --link-light-s: 81%; --link-light-l: 58%;
@@ -106,22 +106,7 @@
   --light--dark-input: var(--input-light);
   --light--light-shadow: var(--shadow-light); --light--light-textshadow: var(--textshadow-light);
   --light--dark-shadow: var(--shadow-dark); --light--dark-textshadow: var(--textshadow-dark);
-  --light--light-fg: hsl(var(--light--light-fg-h), var(--light--light-fg-s), var(--light--light-fg-l)); --light--light-fg-h: var(--fg--dark-h); --light--light-fg-s: var(--fg--dark-s); --light--light-fg-l: var(--fg--dark-l);   --light--dark-fg: hsl(var(--light--dark-fg-h), var(--light--dark-fg-s), var(--light--dark-fg-l)); --light--dark-fg-h: var(--fg--light-h); --light--dark-fg-s: var(--fg--light-s); --light--dark-fg-l: var(--fg--light-l);   --copyright--light: hsl(var(--copyright--light-h), var(--copyright--light-s), var(--copyright--light-l)); --copyright--light-h: var(--fg-h); --copyright--light-s: 0%; --copyright--light-l: 0%;
-  --copyright--dark: hsl(var(--copyright--dark-h), var(--copyright--dark-s), var(--copyright--dark-l)); --copyright--dark-h: var(--fg-h); --copyright--dark-s: 0%; --copyright--dark-l: 0%;
-  --copyright--light-text: hsl(var(--copyright--light-text-h), var(--copyright--light-text-s), var(--copyright--light-text-l)); --copyright--light-text-h: var(--text-light-h); --copyright--light-text-s: var(--text-light-s); --copyright--light-text-l: var(--text-light-l);
-  --copyright--dark-text: hsl(var(--copyright--dark-text-h), var(--copyright--dark-text-s), var(--copyright--dark-text-l)); --copyright--dark-text-h: var(--text-light-h); --copyright--dark-text-s: var(--text-light-s); --copyright--dark-text-l: var(--text-light-l);
-  --copyright--light-link: hsl(var(--copyright--light-link-h), var(--copyright--light-link-s), var(--copyright--light-link-l)); --copyright--light-link-h: var(--link-light-h); --copyright--light-link-s: var(--link-light-s); --copyright--light-link-l: var(--link-light-l);
-  --copyright--dark-link: hsl(var(--copyright--dark-link-h), var(--copyright--dark-link-s), var(--copyright--dark-link-l)); --copyright--dark-link-h: var(--link-light-h); --copyright--dark-link-s: var(--link-light-s); --copyright--dark-link-l: var(--link-light-l);
-  --copyright--light-heading: var(--heading-light); --copyright--light-strongheading: var(--strongheading-light);
-  --copyright--dark-heading: var(--heading-light); --copyright--dark-strongheading: var(--strongheading-light);
-  --copyright--light-input: var(--input-light);
-  --copyright--dark-input: var(--input-light);
-  --copyright--light-shadow: var(--shadow-dark); --copyright--light-textshadow: var(--textshadow-dark);
-  --copyright--dark-shadow: var(--shadow-dark); --copyright--dark-textshadow: var(--textshadow-dark);
-  --copyright--light-fg: hsl(var(--copyright--light-fg-h), var(--copyright--light-fg-s), var(--copyright--light-fg-l)); --copyright--light-fg-h: var(--copyright--light-text-h); --copyright--light-fg-s: var(--copyright--light-text-s); --copyright--light-fg-l: var(--copyright--light-text-l); --copyright--light-fg-text: var(--text-dark);
-  --copyright--dark-fg: hsl(var(--copyright--dark-fg-h), var(--copyright--dark-fg-s), var(--copyright--dark-fg-l)); --copyright--dark-fg-h: var(--copyright--dark-text-h); --copyright--dark-fg-s: var(--copyright--dark-text-s); --copyright--dark-fg-l: var(--copyright--dark-text-l); --copyright--dark-fg-text: var(--text-dark);
-  --copyright-font: var(--ff-logo);
-  --base--light: hsl(var(--base--light-h), var(--base--light-s), var(--base--light-l)); --base--light-h: var(--fg-h); --base--light-s: 0%; --base--light-l: 10%;
+  --light--light-fg: hsl(var(--light--light-fg-h), var(--light--light-fg-s), var(--light--light-fg-l)); --light--light-fg-h: var(--fg--dark-h); --light--light-fg-s: var(--fg--dark-s); --light--light-fg-l: var(--fg--dark-l);   --light--dark-fg: hsl(var(--light--dark-fg-h), var(--light--dark-fg-s), var(--light--dark-fg-l)); --light--dark-fg-h: var(--fg--light-h); --light--dark-fg-s: var(--fg--light-s); --light--dark-fg-l: var(--fg--light-l);   --base--light: hsl(var(--base--light-h), var(--base--light-s), var(--base--light-l)); --base--light-h: var(--fg-h); --base--light-s: 0%; --base--light-l: 10%;
   --base--dark: hsl(var(--base--dark-h), var(--base--dark-s), var(--base--dark-l)); --base--dark-h: var(--fg-h); --base--dark-s: 0%; --base--dark-l: 10%;
   --base--light-text: hsl(var(--base--light-text-h), var(--base--light-text-s), var(--base--light-text-l)); --base--light-text-h: var(--text-light-h); --base--light-text-s: var(--text-light-s); --base--light-text-l: var(--text-light-l);
   --base--dark-text: hsl(var(--base--dark-text-h), var(--base--dark-text-s), var(--base--dark-text-l)); --base--dark-text-h: var(--text-light-h); --base--dark-text-s: var(--text-light-s); --base--dark-text-l: var(--text-light-l);
@@ -212,6 +197,21 @@
   --footer--dark-fg: hsl(var(--footer--dark-fg-h), var(--footer--dark-fg-s), var(--footer--dark-fg-l)); --footer--dark-fg-h: var(--fg--light-h); --footer--dark-fg-s: var(--fg--light-s); --footer--dark-fg-l: var(--fg--light-l); --footer--dark-fg-text: var(--fg--light-text);
   --footer-font: var(--ff-sans);
   --footer--img-light: url('/assets/background/wave.webp'); --footer--img-dark: url('/assets/background/wave.webp') rgba(0, 0, 0, 0.25); --footer--img-size: cover; --footer--img-pos: center; --footer--img-att: fixed; --footer--img-blend: overlay;
+  --copyright--light: hsl(var(--copyright--light-h), var(--copyright--light-s), var(--copyright--light-l)); --copyright--light-h: var(--fg-h); --copyright--light-s: 0%; --copyright--light-l: 0%;
+  --copyright--dark: hsl(var(--copyright--dark-h), var(--copyright--dark-s), var(--copyright--dark-l)); --copyright--dark-h: var(--fg-h); --copyright--dark-s: 0%; --copyright--dark-l: 0%;
+  --copyright--light-text: hsl(var(--copyright--light-text-h), var(--copyright--light-text-s), var(--copyright--light-text-l)); --copyright--light-text-h: var(--text-light-h); --copyright--light-text-s: var(--text-light-s); --copyright--light-text-l: var(--text-light-l);
+  --copyright--dark-text: hsl(var(--copyright--dark-text-h), var(--copyright--dark-text-s), var(--copyright--dark-text-l)); --copyright--dark-text-h: var(--text-light-h); --copyright--dark-text-s: var(--text-light-s); --copyright--dark-text-l: var(--text-light-l);
+  --copyright--light-link: hsl(var(--copyright--light-link-h), var(--copyright--light-link-s), var(--copyright--light-link-l)); --copyright--light-link-h: var(--link-light-h); --copyright--light-link-s: var(--link-light-s); --copyright--light-link-l: var(--link-light-l);
+  --copyright--dark-link: hsl(var(--copyright--dark-link-h), var(--copyright--dark-link-s), var(--copyright--dark-link-l)); --copyright--dark-link-h: var(--link-light-h); --copyright--dark-link-s: var(--link-light-s); --copyright--dark-link-l: var(--link-light-l);
+  --copyright--light-heading: var(--heading-light); --copyright--light-strongheading: var(--strongheading-light);
+  --copyright--dark-heading: var(--heading-light); --copyright--dark-strongheading: var(--strongheading-light);
+  --copyright--light-input: var(--input-light);
+  --copyright--dark-input: var(--input-light);
+  --copyright--light-shadow: var(--shadow-dark); --copyright--light-textshadow: var(--textshadow-dark);
+  --copyright--dark-shadow: var(--shadow-dark); --copyright--dark-textshadow: var(--textshadow-dark);
+  --copyright--light-fg: hsl(var(--copyright--light-fg-h), var(--copyright--light-fg-s), var(--copyright--light-fg-l)); --copyright--light-fg-h: var(--copyright--light-text-h); --copyright--light-fg-s: var(--copyright--light-text-s); --copyright--light-fg-l: var(--copyright--light-text-l); --copyright--light-fg-text: var(--text-dark);
+  --copyright--dark-fg: hsl(var(--copyright--dark-fg-h), var(--copyright--dark-fg-s), var(--copyright--dark-fg-l)); --copyright--dark-fg-h: var(--copyright--dark-text-h); --copyright--dark-fg-s: var(--copyright--dark-text-s); --copyright--dark-fg-l: var(--copyright--dark-text-l); --copyright--dark-fg-text: var(--text-dark);
+  --copyright-font: var(--ff-logo);
 }
 
 :root {
