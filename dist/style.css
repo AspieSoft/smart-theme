@@ -408,6 +408,10 @@ header {
       background-repeat: no-repeat;
     }
 
+    body.home & {
+      min-height: var(--headerimg-height-home, 80vh);
+    }
+
     & > .content {
       display: flex;
       flex-direction: column;
@@ -1426,14 +1430,9 @@ img {
   }
 }
 
-@keyframes scroll-scale-bg-w {
-  0% {background-size: 105% auto;}
-  100% {background-size: 125% auto;}
-}
-
-@keyframes scroll-scale-bg-h {
-  0% {background-size: auto 105%;}
-  100% {background-size: auto 125%;}
+@keyframes scroll-scale-bg {
+  0% {background-size: auto calc(100% + var(--scale-offset, 0px));}
+  100% {background-size: auto calc(125% + var(--scale-offset, 0px));}
 }
 
 @supports (animation-timeline: view()) {
@@ -1452,50 +1451,24 @@ img {
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    header .header-img {
-      &.background-size-w, &.background-size-h {
-        &::before {
-          animation-timing-function: linear;
-          animation-fill-mode: forwards;
-          animation-timeline: view(y);
-          animation-range: exit;
-        }
-      }
-
-      &.background-size-w {
-        &::before {
-          animation-name: scroll-scale-bg-w;
-        }
-      }
-
-      &.background-size-h {
-        &::before {
-          animation-name: scroll-scale-bg-h;
-        }
+    header .header-img.background-size-anim {
+      &::before {
+        animation-name: scroll-scale-bg;
+        animation-timing-function: linear;
+        animation-fill-mode: forwards;
+        animation-timeline: view(y);
+        animation-range: exit;
       }
     }
 
-    footer {
-      &.background-size-w, &.background-size-h {
-        &::before {
-          animation-timing-function: linear;
-          animation-fill-mode: forwards;
-          animation-direction: reverse;
-          animation-timeline: view(y);
-          animation-range: enter;
-        }
-      }
-
-      &.background-size-w {
-        &::before {
-          animation-name: scroll-scale-bg-w;
-        }
-      }
-
-      &.background-size-h {
-        &::before {
-          animation-name: scroll-scale-bg-h;
-        }
+    footer.background-size-anim {
+      &::before {
+        animation-name: scroll-scale-bg;
+        animation-direction: reverse;
+        animation-timing-function: linear;
+        animation-fill-mode: forwards;
+        animation-timeline: view(y);
+        animation-range: enter;
       }
     }
   }

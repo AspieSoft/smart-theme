@@ -2,11 +2,11 @@ onReady(async function(){
   function onInterval(){
     document.querySelectorAll('header .header-img, footer').forEach(function(elm){
       if(elm.clientHeight < 300){
-        elm.classList.remove('background-size-w', 'background-size-h');
+        elm.classList.remove('background-size-anim');
         return;
       }
 
-      if(elm.classList.contains('background-size-w') || elm.classList.contains('background-size-h')){
+      if(elm.classList.contains('background-size-anim')){
         return;
       }
 
@@ -24,13 +24,8 @@ onReady(async function(){
               elm.setAttribute('img-width', img.width);
               elm.setAttribute('img-height', img.height);
 
-              if(calculateImgSizeRatioDiff(elm, img.width, img.height)){
-                elm.classList.add('background-size-w');
-                elm.classList.remove('background-size-h');
-              }else{
-                elm.classList.add('background-size-h');
-                elm.classList.remove('background-size-w');
-              }
+              elm.classList.add('background-size-anim');
+              elm.style.setProperty('--scale-offset', calculateImgSizeRatioDiff(elm, img.width, img.height) + 'px');
             }
             img.remove();
           }
@@ -57,11 +52,11 @@ onReady(async function(){
   function onResize(){
     document.querySelectorAll('header .header-img, footer').forEach(function(elm){
       if(elm.clientHeight < 300){
-        elm.classList.remove('background-size-w', 'background-size-h');
+        elm.classList.remove('background-size-anim');
         return;
       }
       
-      if(!elm.classList.contains('background-size-w') && !elm.classList.contains('background-size-h')){
+      if(!elm.classList.contains('background-size-anim')){
         return;
       }
       
@@ -71,46 +66,20 @@ onReady(async function(){
         return;
       }
 
-      if(calculateImgSizeRatioDiff(elm, imgWidth, imgHeight)){
-        elm.classList.add('background-size-w');
-        elm.classList.remove('background-size-h');
-      }else{
-        elm.classList.add('background-size-h');
-        elm.classList.remove('background-size-w');
-      }
+      elm.classList.add('background-size-anim');
+      elm.style.setProperty('--scale-offset', calculateImgSizeRatioDiff(elm, imgWidth, imgHeight) + 'px');
     });
   }
   onResize();
   window.addEventListener('resize', onResize, {passive: true});
 
 
-  // Im not sure what to name this funnction, but it does some complex math
-  // to calculate whether a background image should use
-  // `background-size: 100% auto`, or `background-size: auto 100%`
-  // to simulate a `background-size: cover` while allowing an animation
-  // to adjust the 100% to a 125%
-  //
-  // the changes to `background-size` are handled by a css class
+  // complex math to calculate the offset to add to a background image size
+  // add this number to `background-size: auto 100%` to simulate `cover`
   function calculateImgSizeRatioDiff(elm, imgWidth, imgHeight){
-    if(elm.clientWidth / elm.clientHeight > imgWidth / imgHeight){
-      return true;
-    }
-    return false;
-
-    /* let w = elm.clientWidth - imgWidth;
-    let h = elm.clientHeight - imgHeight;
-
-    if(w < h){
-      if(elm.clientWidth / imgWidth >= elm.clientHeight / imgHeight){
-        return true;
-      }
-      return false;
-    }
-
-    if(elm.clientWidth / imgWidth >= elm.clientHeight / imgHeight && Math.sqrt((w * w) + (h * h)) >= Math.sqrt((imgWidth * imgWidth) + (imgHeight * imgHeight))){
-      return true;
-    }
-    return false; */
+    //todo: test math on bigger screens
+    // console.log((imgHeight / 5))
+    return (elm.clientWidth / imgWidth) * (imgWidth / imgHeight) * 100;
   }
 
 });

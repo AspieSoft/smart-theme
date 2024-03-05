@@ -22,8 +22,8 @@ layout:
   widget-max-size: 320px
 
   headerimg-width: auto #? only for side image
-  headerimg-height: 100vh
-  # headerimg-height: 50vh
+  headerimg-height: 50vh
+  headerimg-height-home: 100vh
   headernav-justify: center #? center | flex-start | flex-end | space-around | space-evenly | stretch
   nav-underline-radius: 0.125em #? default: 0.125em | cool effect: 50%
 

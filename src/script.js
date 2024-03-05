@@ -28,8 +28,13 @@ async function onReady(cb){
 }
 
 onReady(async function(){
+  const body = document.body || document.querySelector('body');
   const headerTop = document.querySelector('header .header-top');
   const headerTopNav = document.querySelector('header .header-top nav.top-nav > ul');
+
+  if(body && window.location.pathname === '/'){
+    body.classList.add('home');
+  }
 
 
   function onInterval(){
@@ -86,7 +91,7 @@ onReady(async function(){
           if(!allVisible){
             return;
           }
-          
+
           if(headerTop.scrollWidth <= headerRect.width){
             for(let i = elm.children.length - 1; i >= 0; i--){
               elm.children[i].style['display'] = '';

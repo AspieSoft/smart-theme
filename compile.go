@@ -68,6 +68,7 @@ type ThemeConfigData struct {
 
 		HeaderimgWidth string
 		HeaderimgHeight string
+		HeaderimgHeightHome string
 		HeadernavJustify string
 		NavUnderlineRadius string
 
@@ -486,6 +487,7 @@ func compileConfig() (string, bool, error) {
 
 		`  --headerimg-width: `, themeConfig.Layout.HeaderimgWidth, ";\n",
 		`  --headerimg-height: `, themeConfig.Layout.HeaderimgHeight, ";\n",
+		`  --headerimg-height-home: `, themeConfig.Layout.HeaderimgHeightHome, ";\n",
 		`  --headernav-justify: `, themeConfig.Layout.HeadernavJustify, ";\n",
 		`  --nav-underline-radius: `, themeConfig.Layout.NavUnderlineRadius, ";\n",
 
