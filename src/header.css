@@ -119,10 +119,20 @@ header {
       li.nav-btn, li:has(.nav-btn) {
         position: absolute;
         left: calc(40px - 0.5rem);
+
+        @media (max-width: mobile-width) {
+          left: calc(20px - 0.5rem);
+        }
       }
 
       & > :first-child {
         margin-left: 2rem;
+      }
+    }
+
+    &:not(.nav-desktop).nav-left > :first-child {
+      @media (min-width: mobile-width) {
+        margin-left: 0;
       }
     }
 
@@ -142,13 +152,21 @@ header {
       padding-right: calc(40px - 0.5rem);
     }
 
-    @media (max-width: mobile-width) {
-      &.nav-left {
+    &.hide-mobile .top-nav {
+      @media (max-width: mobile-width) {
+        display: none;
+      }
+    }
+
+    &:not(.nav-desktop) {
+      @media (min-width: mobile-width) {
         li.nav-btn, li:has(.nav-btn) {
-          left: calc(20px - 0.5rem);
+          display: none;
         }
       }
+    }
 
+    @media (max-width: mobile-width) {
       & > :first-child {
         padding-left: calc(20px - 0.5rem);
 
@@ -163,16 +181,6 @@ header {
   
       & > :last-child.top-menu > :last-child, & > :last-child.top-menu > :has(+ nav[style*="display:none"], + nav[style*="display: none"]) {
         padding-right: calc(20px - 0.5rem);
-      }
-
-      &.hide-mobile .top-nav {
-        display: none;
-      }
-    }
-
-    @media (min-width: mobile-width) {
-      li.nav-btn, li:has(.nav-btn) {
-        display: none;
       }
     }
   }

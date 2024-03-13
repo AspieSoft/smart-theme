@@ -2,11 +2,11 @@ onReady(async function(){
   function onInterval(){
     document.querySelectorAll('header .header-img, footer').forEach(function(elm){
       if(elm.clientHeight < 300){
-        elm.classList.remove('background-size-anim');
+        elm.classList.remove('background-size-anim-w', 'background-size-anim-h');
         return;
       }
 
-      if(elm.classList.contains('background-size-anim')){
+      if(elm.classList.contains('background-size-anim-w') || elm.classList.contains('background-size-anim-h')){
         return;
       }
 
@@ -24,7 +24,6 @@ onReady(async function(){
               elm.setAttribute('img-width', img.width);
               elm.setAttribute('img-height', img.height);
 
-              elm.classList.add('background-size-anim');
               elm.style.setProperty('--scale-offset', calculateImgSizeRatioDiff(elm, img.width, img.height) + 'px');
             }
             img.remove();
@@ -52,11 +51,11 @@ onReady(async function(){
   function onResize(){
     document.querySelectorAll('header .header-img, footer').forEach(function(elm){
       if(elm.clientHeight < 300){
-        elm.classList.remove('background-size-anim');
+        elm.classList.remove('background-size-anim-w', 'background-size-anim-h');
         return;
       }
       
-      if(!elm.classList.contains('background-size-anim')){
+      if(!elm.classList.contains('background-size-anim-w') && !elm.classList.contains('background-size-anim-h')){
         return;
       }
       
@@ -66,7 +65,6 @@ onReady(async function(){
         return;
       }
 
-      elm.classList.add('background-size-anim');
       elm.style.setProperty('--scale-offset', calculateImgSizeRatioDiff(elm, imgWidth, imgHeight) + 'px');
     });
   }
@@ -77,8 +75,14 @@ onReady(async function(){
   // complex math to calculate the offset to add to a background image size
   // add this number to `background-size: auto 100%` to simulate `cover`
   function calculateImgSizeRatioDiff(elm, imgWidth, imgHeight){
-    //todo: test math on bigger screens
-    // console.log((imgHeight / 5))
+    if(imgWidth / imgHeight < elm.clientWidth / elm.clientHeight){
+      elm.classList.add('background-size-anim-w');
+      elm.classList.remove('background-size-anim-h');
+    }else{
+      elm.classList.add('background-size-anim-h');
+      elm.classList.remove('background-size-anim-w');
+    }
+
     return (elm.clientWidth / imgWidth) * (imgWidth / imgHeight) * 100;
   }
 

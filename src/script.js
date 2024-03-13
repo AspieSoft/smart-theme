@@ -53,14 +53,15 @@ onReady(async function(){
   function onResize(){
     if(headerTop && headerTopNav){
       let headerRect = headerTop.getBoundingClientRect();
+      let hW = Math.round(headerRect.width);
 
-      if(headerTop.scrollWidth > headerRect.width){
+      if(headerTop.scrollWidth > hW){
         let allHidden = true;
 
         for(let i = headerTopNav.children.length - 1; i >= 0; i--){
           headerTopNav.children[i].style['display'] = 'none';
           headerRect = headerTop.getBoundingClientRect();
-          if(headerTop.scrollWidth <= headerRect.width){
+          if(headerTop.scrollWidth <= hW){
             allHidden = false;
             break;
           }
@@ -72,11 +73,11 @@ onReady(async function(){
               return;
             }
 
-            if(headerTop.scrollWidth > headerRect.width){
+            if(headerTop.scrollWidth > hW){
               for(let i = 0; i < elm.children.length; i++){
                 elm.children[i].style['display'] = 'none';
                 headerRect = headerTop.getBoundingClientRect();
-                if(headerTop.scrollWidth <= headerRect.width){
+                if(headerTop.scrollWidth <= hW){
                   allHidden = false;
                   break;
                 }
@@ -92,11 +93,11 @@ onReady(async function(){
             return;
           }
 
-          if(headerTop.scrollWidth <= headerRect.width){
+          if(headerTop.scrollWidth <= hW){
             for(let i = elm.children.length - 1; i >= 0; i--){
               elm.children[i].style['display'] = '';
               headerRect = headerTop.getBoundingClientRect();
-              if(headerTop.scrollWidth > headerRect.width){
+              if(headerTop.scrollWidth > hW){
                 elm.children[i].style['display'] = 'none';
                 allVisible = false;
                 break;
@@ -109,7 +110,7 @@ onReady(async function(){
           for(let i = 0; i < headerTopNav.children.length; i++){
             headerTopNav.children[i].style['display'] = '';
             headerRect = headerTop.getBoundingClientRect();
-            if(headerTop.scrollWidth > headerRect.width){
+            if(headerTop.scrollWidth > hW){
               headerTopNav.children[i].style['display'] = 'none';
               break;
             }
