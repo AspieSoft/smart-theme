@@ -47,9 +47,30 @@ onReady(async function(){
         elm.classList.remove('widget-smaller-than-vh');
       }
     });
+
+    if(headerTop){
+      headerTop.querySelectorAll('a.nav-btn:not([nav-btn-ready]), li.nav-btn a:not([nav-btn-ready])').forEach(function(elm) {
+        elm.setAttribute('nav-btn-ready', '');
+  
+        elm.addEventListener('click', function(e){
+          e.preventDefault();
+          headerNavBtnClick();
+        });
+      });
+    }
   }
   onInterval();
   setInterval(onInterval, 1000);
+
+  function headerNavBtnClick(){
+    if(window.innerWidth >= 1400){
+      headerTop.classList.remove('nav-open');
+      headerTop.classList.toggle('nav-closed');
+    }else{
+      headerTop.classList.remove('nav-closed');
+      headerTop.classList.toggle('nav-open');
+    }
+  }
 
 
   function onResize(){
@@ -119,6 +140,10 @@ onReady(async function(){
           }
         }
       }
+    }
+
+    if(headerTop && !headerTop.classList.contains('nav-desktop') && window.innerWidth >= 800){
+      headerTop.classList.remove('nav-open');
     }
   }
   onResize();

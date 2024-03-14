@@ -23,12 +23,13 @@
     <!-- todo: remember to set nav menu for both left and right verients -->
 
     <!-- todo: fix nav-left and hide-mobile classes for header-top -->
-    <!--? nav-left: moves the nav button to the left of the screen -->
     <!--? hide-mobile: hides the top-nav menu on mobile -->
+    <!--? nav-left: moves the nav button to the left of the screen -->
     <!--? nav-desktop: shows the nav button on desktop (and large screens should keep the mobile nav menu visible) -->
     <!-- todo: make sure 'nav-desktop' also keeps the mobile nav menu open on '@media desktop-width' -->
-    <div class="header-top nav-left-off hide-mobile-off nav-desktop-off">
+    <div class="header-top hide-mobile-off nav-left-off nav-desktop-off nav-open-auto-js nav-closed-auto-js">
       <a class="site-logo" href="/">Smart Theme</a>
+
       <!--? center: moves the top-nav menu to the center instead of the default to the right -->
       <div class="top-menu center-off">
         <nav class="top-nav">
@@ -43,11 +44,25 @@
           <ul>
             <li><a href="#login"><i class="fa-solid fa-right-to-bracket"></i></a></li>
             <li><a href="#search"><i class="fa-solid fa-magnifying-glass"></i></a></li>
+
+            <!-- todo: replace menu button with an svg animation -->
             <li><a href="#menu" class="nav-btn"><i class="fa-solid fa-bars"></i></a></li>
           </ul>
         </nav>
       </div>
     </div>
+    
+    <div class="nav-menu">
+      <nav class="side-nav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact Us</a></li>
+          <!-- todo: add submenu and megamenu support -->
+        </ul>
+      </nav>
+    </div>
+
     <!--? stack: makes an inline image align above or below the content, instead of the default on the side of the content -->
     <div class="header-img stack-off">
       <!-- <nav>

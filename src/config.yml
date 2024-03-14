@@ -27,6 +27,8 @@ layout:
   headernav-justify: center #? center | flex-start | flex-end | space-around | space-evenly | stretch
   nav-underline-radius: 0.125em #? default: 0.125em | cool effect: 50%
 
+  side-nav-width: 250px #? default: 250px
+
   shadow-size: 0.25rem
   textshadow-size: 0.1em
 
@@ -74,10 +76,10 @@ input:
   font: sans
 
 shadow:
-  light: "hsla(0, 0, 29, 0.5)"
-  dark: "hsla(0, 0, 0, 0.5)"
-  light-text: "rgba(0, 0, 29, 0.25)"
-  dark-text: "hsla(0, 0, 0, 0.25)"
+  light: "hsla(0, 0%, 50%, 0.5)"
+  dark: "hsla(0, 0%, 25%, 0.5)"
+  light-text: "hsla(0, 0%, 50%, 0.25)"
+  dark-text: "hsla(0, 0%, 25%, 0.25)"
 
 color:
   primary:
@@ -112,7 +114,7 @@ color:
 
 element:
   base:
-    light: "hsl(0, 0%, 10%)"
+    light: "hsl(0, 0%, 90%)"
     dark: "hsl(0, 0%, 10%)"
     fg: auto #? auto | text
     font: sans #? auto | @font[keyword] | 'custom font'
@@ -125,29 +127,29 @@ element:
       blend: overlay #? normal | overlay | darken | lighten | multiply | difference
 
   page:
-    light: "hsl(0, 0, 0)"
-    dark: "hsl(0, 0, 0)"
+    light: "hsl(0, 0%, 100%)"
+    dark: "hsl(0, 0%, 0%)"
     fg: auto #? auto | text
     font: auto #? auto | @font[keyword] | 'custom font'
     img: none
 
   card:
-    light: "hsl(0, 0, 0)"
-    dark: "hsl(0, 0, 0)"
+    light: "hsl(0, 0%, 100%)"
+    dark: "hsl(0, 0%, 0%)"
     fg: auto #? auto | text
     font: auto #? auto | @font[keyword] | 'custom font'
     img: none
 
   header:
-    light: "hsl(0, 0, 0)"
-    dark: "hsl(0, 0, 0)"
+    light: "hsl(0, 0%, 100%)"
+    dark: "hsl(0, 0%, 0%)"
     fg: text #? auto | text
     font: sans #? auto | @font[keyword] | 'custom font'
     img: none
 
   headerimg:
-    light: "hsl(0, 0, 0)"
-    dark: "hsl(0, 0, 0)"
+    light: "hsl(0, 0%, 0%)"
+    dark: "hsl(0, 0%, 0%)"
     fg: auto #? auto | text
     font: sans #? auto | @font[keyword] | 'custom font'
     img:
@@ -159,12 +161,12 @@ element:
       blend: overlay #? normal | overlay | darken | lighten | multiply | difference
 
   footer:
-    light: "hsl(0, 0, 0)"
-    dark: "hsl(0, 0, 0)"
+    light: "hsl(0, 0%, 0%)"
+    dark: "hsl(0, 0%, 0%)"
     fg: auto #? auto | text
     font: sans #? auto | @font[keyword] | 'custom font'
     img:
-      light: "url('/assets/background/wave.webp')"
+      light: "url('/assets/background/wave.webp') rgba(0, 0, 0, 0.25)"
       dark: "url('/assets/background/wave.webp') rgba(0, 0, 0, 0.25)"
       size: cover #? cover | contain
       pos: center #? center | top | bottom | left | right
@@ -172,8 +174,8 @@ element:
       blend: overlay #? normal | overlay | darken | lighten | multiply | difference
 
   copyright:
-    light: "hsl(0, 0, 0)"
-    dark: "hsl(0, 0, 0)"
+    light: "hsl(0, 0%, 0%)"
+    dark: "hsl(0, 0%, 0%)"
     fg: text #? auto | text
     font: logo #? auto | @font[keyword] | 'custom font'
     img: none

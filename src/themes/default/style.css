@@ -7,6 +7,19 @@ header .header-top {
   &.nav-open {
     background-color: hsla(var(--bg-h), var(--bg-s), var(--bg-l), var(--bg-a)) !important;
   }
+
+  &.nav-desktop {
+    @media (min-width: desktop-width) {
+      background-color: hsla(var(--bg-h), var(--bg-s), var(--bg-l), var(--bg-a)) !important;
+    }
+  }
+}
+
+header .nav-menu {
+  --bg-a: var(--header-a, 1);
+
+  background-color: hsla(var(--bg-h), var(--bg-s), var(--bg-l), var(--bg-a));
+  box-shadow: 0 0 var(--shadow-size) var(--shadow);
 }
 
 header .header-img nav {

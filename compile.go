@@ -66,14 +66,16 @@ type ThemeConfigData struct {
 		PageBreakoutMaxWidth string
 		PageHardMaxWidth string
 
+		WidgetSize string
+		WidgetMaxSize string
+
 		HeaderimgWidth string
 		HeaderimgHeight string
 		HeaderimgHeightHome string
 		HeadernavJustify string
 		NavUnderlineRadius string
 
-		WidgetSize string
-		WidgetMaxSize string
+		SideNavWidth string
 
   	ShadowSize string
   	TextshadowSize string
@@ -178,6 +180,8 @@ func main(){
 	}
 
 	if port != "0" {
+		watchTestDirAndReloadClientPage()
+
 		http.HandleFunc("/reversion.test", func(w http.ResponseWriter, r *http.Request) {
 			res, err := goutil.JSON.Stringify(map[string]interface{}{
 				"reversion": currentReversion,
@@ -296,6 +300,8 @@ func main(){
 				time.Sleep(100 * time.Millisecond)
 				currentReversion++
 				printCompTime("JS", startTime)
+			}else if input == "reload page" || input == "reload" || input == "refresh page" || input == "refresh" {
+				currentReversion++
 			}
 		}
 	}()
@@ -465,6 +471,30 @@ func handleCompileTheme(port string) (*string, *string, *bool, error) {
 	return &themeDir, &subThemePath, &defaultDarkMode, nil
 }
 
+func watchTestDirAndReloadClientPage(){
+	testDir, err := filepath.Abs("./test")
+	if err != nil {
+		return
+	}
+
+	lastCompile := time.Now().UnixMilli()
+
+	watcher := fs.Watcher()
+	watcher.OnAny = func(path, op string) {
+		// prevent duplicate compilations from running twice in a row
+		if time.Now().UnixMilli() - lastCompile < 100 {
+			return
+		}
+
+		time.Sleep(100 * time.Millisecond)
+
+		lastCompile = time.Now().UnixMilli()
+
+		currentReversion++
+	}
+	watcher.WatchDir(testDir)
+}
+
 
 func compileConfig() (string, bool, error) {
 	themeConfig, themePath, dist, inDistFolder, err := getThemeConfig()
@@ -490,6 +520,8 @@ func compileConfig() (string, bool, error) {
 		`  --headerimg-height-home: `, themeConfig.Layout.HeaderimgHeightHome, ";\n",
 		`  --headernav-justify: `, themeConfig.Layout.HeadernavJustify, ";\n",
 		`  --nav-underline-radius: `, themeConfig.Layout.NavUnderlineRadius, ";\n",
+
+		`  --side-nav-width: `, themeConfig.Layout.SideNavWidth, ";\n",
 
 		`  --shadow-size: `, themeConfig.Layout.ShadowSize, ";\n",
 		`  --textshadow-size: `, themeConfig.Layout.TextshadowSize, ";\n",
@@ -2207,7 +2239,7 @@ func compileMethodsCSS(buf []byte, defaultDarkMode bool) []byte {
 
 func compileNestedCSS(buf []byte, init bool) []byte {
 	if init {
-		buf = regex.Comp(`/\*.*?\*/`).RepStr(buf, []byte{})
+		buf = regex.Comp(`/\*(?:[\r\n\t\s ]|.)*?\*/`).RepStr(buf, []byte{})
 		buf = regex.Comp(`([{};])`).RepStr(buf, []byte("$1\n"))
 
 		// encode bracket indexes
