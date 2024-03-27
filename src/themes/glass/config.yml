@@ -1,7 +1,7 @@
-theme: default
+theme: glass
 
 config:
-  header-a-top: 0
-  header-a: 0.75
-  page-a: 0.5
-  copyright-a: 0.5
+  header-a-top: 0.2
+  header-a: 0.58
+  page-a: 0.52
+  copyright-a: 0.52

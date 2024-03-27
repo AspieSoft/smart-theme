@@ -5,8 +5,8 @@ default-dark-mode: yes
 config:
   header-a-top: 0
   header-a: 0.75
-  page-a: 0.75
-  copyright-a: 0.75
+  page-a: 0.52
+  copyright-a: 0.52
 
 layout:
   page-padding-inline: 1.5rem
@@ -141,7 +141,7 @@ element:
     img: none
 
   header:
-    light: "hsl(0, 0%, 100%)"
+    light: "hsl(0, 0%, 0%)"
     dark: "hsl(0, 0%, 0%)"
     fg: text #? auto | text
     font: sans #? auto | @font[keyword] | 'custom font'

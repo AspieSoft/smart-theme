@@ -2,10 +2,25 @@
   0% {
     background-color: hsla(var(--bg-h), var(--bg-s), var(--bg-l), var(--header-a-top));
     box-shadow: 0 0 0 var(--shadow);
+    padding: 10px 20px;
   }
   100% {
     background-color: hsla(var(--bg-h), var(--bg-s), var(--bg-l), var(--bg-a));
     box-shadow: 0 0 var(--shadow-size) var(--shadow);
+    padding: 0;
+  }
+}
+
+@keyframes scroll-header-top-m {
+  0% {
+    background-color: hsla(var(--bg-h), var(--bg-s), var(--bg-l), var(--header-a-top));
+    box-shadow: 0 0 0 var(--shadow);
+    padding: 7px 10px;
+  }
+  100% {
+    background-color: hsla(var(--bg-h), var(--bg-s), var(--bg-l), var(--bg-a));
+    box-shadow: 0 0 var(--shadow-size) var(--shadow);
+    padding: 0;
   }
 }
 
@@ -38,21 +53,25 @@
 }
 
 @supports (animation-timeline: view()) {
-  header:has(.header-img) .header-top {
-    animation: scroll-header-top ease-out forwards;
-    animation-timeline: view(y);
-    animation-range-start: exit;
-    animation-range-end: exit calc(var(--headerimg-height) / 2);
-
-    &::before {
-      animation: scroll-header-top-img ease-out forwards;
+  @media (prefers-reduced-motion: no-preference) {
+    header:has(.header-img) .header-top {
+      animation: scroll-header-top ease-out forwards;
       animation-timeline: view(y);
       animation-range-start: exit;
       animation-range-end: exit calc(var(--headerimg-height) / 2);
+  
+      &::before {
+        animation: scroll-header-top-img ease-out forwards;
+        animation-timeline: view(y);
+        animation-range-start: exit;
+        animation-range-end: exit calc(var(--headerimg-height) / 2);
+      }
+  
+      @media (max-width: mobile-width) {
+        animation-name: scroll-header-top-m;
+      }
     }
-  }
 
-  @media (prefers-reduced-motion: no-preference) {
     header .header-img {
       &.background-size-anim-w, &.background-size-anim-h {
         &::before {
